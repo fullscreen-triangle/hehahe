@@ -1,8 +1,8 @@
 # Rust
 /target/
 **/*.rs.bk
-Cargo.lock
 *.pdb
+Cargo.lock
 
 # Python
 __pycache__/
@@ -22,227 +22,97 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
-*.gz
-*.pkl
-*.joblib
-*.model
-*.h5
-*.pkl
-*.joblib
-*.model
-*.h5
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
-
-# Django
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask
-instance/
-.webassets-cache
-
-# Scrapy
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# poetry
-poetry.lock
-
-# pdm
-.pdm.toml
-.pdm-python
-.pdm-build/
-
-# PEP 582
-__pypackages__/
-
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
+# Virtual environments
 venv/
+env/
 ENV/
 env.bak/
 venv.bak/
 
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
 
 # PyCharm
 .idea/
 
-# VS Code
+# VSCode
 .vscode/
+*.code-workspace
 
-# Emacs
-*~
-\#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
-*.elc
-auto-save-list
-tramp
-.\#*
+# Data files (personal health data)
+data/
+*.fit
+*.gpx
+*.tcx
+*.kml
+*.csv
+*.parquet
+*.h5
+*.hdf5
 
-# Vim
-[._]*.s[a-v][a-z]
-[._]*.sw[a-p]
-[._]s[a-rt-v][a-z]
-[._]ss[a-gi-z]
-[._]sw[a-p]
-Session.vim
-Sessionx.vim
-.netrwhist
-*~
-tags
-[._]*.un~
+# Results and outputs
+results/
+outputs/
+*.png
+*.jpg
+*.pdf
+plots/
+
+# Logs
+*.log
+logs/
+
+# LaTeX auxiliary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+
+# Keep LaTeX PDFs in docs
+!docs/**/*.pdf
 
 # OS files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 *.swp
 *.swo
+*~
 
-# Project specific
-/data/
-/models/
-/experiments/
-/results/
-/logs/
-*.h5
-*.pkl
-*.joblib
-*.model
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.hypothesis/
 
-# Cheminformatics specific
-*.sdf
-*.mol
-*.mol2
-*.pdb
-*.xyz
-*.cif
-*.mmcif
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Config files with secrets
-config.toml
-secrets.toml
-.env.local
-.env.production
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.backup
-
-# Compiled files
-*.o
-*.obj
-*.dll
-*.exe
-*.dylib
+# Profiling
+*.prof
+dhat-heap.json
 
 # Benchmarks
-/benches/criterion/
+criterion/
 
-# Documentation build
-/docs/build/
-/docs/_build/
+# Documentation builds
+docs/_build/
+docs/api/_autosummary/
 
-# maturin
-/python/borgia/_borgia.so
-
-# Development
-scratch/
-sandbox/
-playground/
+# Temporary files
+tmp/
+temp/
+*.tmp
