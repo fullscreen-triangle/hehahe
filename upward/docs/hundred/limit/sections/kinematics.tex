@@ -1,0 +1,477 @@
+\section{Stride Kinematics and Spatial Optimization}
+
+\subsection{Fundamental Kinematic Relationships}
+
+Sprint velocity emerges from stride parameter coupling:
+
+\begin{equation}
+v(t) = f_{stride}(t) \times L_{stride}(t) \times \eta_{mechanical}(t)
+\label{eq:velocity_decomposition}
+\end{equation}
+
+where $\eta_{mechanical}$ captures mechanical efficiency losses.
+
+\subsection{Stride Length Biomechanics}
+
+\subsubsection{Anatomical Constraints}
+
+Stride length is constrained by leg geometry:
+
+\begin{equation}
+L_{stride,max} = 2 \times L_{leg} \times \sin(\theta_{max}/2) \times (1 + \epsilon_{stretch})
+\label{eq:stride_length_anatomical}
+\end{equation}
+
+where:
+\begin{itemize}
+\item $L_{leg}$ = leg length (hip to ground)
+\item $\theta_{max}$ = maximum hip angle ($\sim$110°)
+\item $\epsilon_{stretch}$ = elastic stretch factor (0.05-0.10)
+\end{itemize}
+
+\textbf{Elite Athlete Values:}
+
+For Bolt ($L_{leg} = 1.10$ m, height 1.95m):
+\begin{equation}
+L_{stride,max} = 2 \times 1.10 \times \sin(55°) \times 1.08 = 1.95 \times 1.08 = 2.11~\text{m (geometric)}
+\label{eq:bolt_stride_geometric}
+\end{equation}
+
+But observed stride length: $L_{stride} = 2.77$ m!
+
+\subsubsection{Resolution: Flight Phase Extension}
+
+The discrepancy resolves through flight phase extension:
+
+\begin{equation}
+L_{stride} = L_{contact} + L_{flight}
+\label{eq:stride_decomposition}
+\end{equation}
+
+where:
+\begin{align}
+L_{contact} &= 2 L_{leg} \sin(\theta_{max}/2) && \text{(geometric)} \\
+L_{flight} &= v_{horizontal} \times t_{flight} && \text{(ballistic)}
+\end{align}
+
+Flight time:
+
+\begin{equation}
+t_{flight} = \frac{2 v_{vertical}}{g}
+\label{eq:flight_time}
+\end{equation}
+
+with $v_{vertical} = 0.3-0.5$ m/s (small vertical component).
+
+\textbf{Complete Stride Length:}
+
+\begin{equation}
+L_{stride} = 2 L_{leg} \sin(\theta/2) (1+\epsilon) + v_{horizontal} \times \frac{2v_{vertical}}{g}
+\label{eq:complete_stride_length}
+\end{equation}
+
+At $v = 12$ m/s, $v_{vertical} = 0.4$ m/s:
+
+\begin{equation}
+L_{stride} = 1.95 \times 1.08 + 12 \times \frac{2 \times 0.4}{9.8} = 2.11 + 0.98 = 3.09~\text{m (theoretical max)}
+\label{eq:theoretical_max_stride}
+\end{equation}
+
+Observed elite: 2.75-2.85 m (90\% of theoretical, accounting for efficiency losses).
+
+\subsubsection{Optimal Stride Length}
+
+Stride length exhibits optimal range:
+
+\begin{equation}
+L_{stride,opt} = L_{leg} \times k_{stride}
+\label{eq:optimal_stride}
+\end{equation}
+
+where $k_{stride} = 2.4-2.6$ for elite sprinters.
+
+\textbf{Berlin 2009 Stride Lengths:}
+\begin{align}
+\text{Bolt (}L_{leg}=1.10\text{m)}: && L_{stride} = 2.77~\text{m} && (k = 2.52) \\
+\text{Gay (}L_{leg}=1.02\text{m)}: && L_{stride} = 2.59~\text{m} && (k = 2.54) \\
+\text{Powell (}L_{leg}=1.01\text{m)}: && L_{stride} = 2.51~\text{m} && (k = 2.49)
+\end{align}
+
+All within optimal range: $k_{stride} = 2.5 \pm 0.1$.
+
+\subsection{Stride Frequency Dynamics}
+
+\subsubsection{Ground Contact Time Constraint}
+
+Stride frequency limited by contact time:
+
+\begin{equation}
+f_{stride} = \frac{1}{t_{contact} + t_{flight}}
+\label{eq:stride_frequency_definition}
+\end{equation}
+
+Contact time minimum determined by force application:
+
+\begin{equation}
+t_{contact,min} = \frac{m v_{vertical}}{F_{vertical} - mg}
+\label{eq:minimum_contact_time}
+\end{equation}
+
+For $F_{vertical} \sim 4.5 \times$ body weight (elite values):
+
+\begin{equation}
+t_{contact,min} = \frac{m \times 0.4}{4.5 mg - mg} = \frac{0.4}{3.5 \times 9.8} = 0.012~\text{s}
+\label{eq:contact_time_calc}
+\end{equation}
+
+But effective minimum considering force application dynamics:
+
+\begin{equation}
+t_{contact,eff} = t_{impact} + t_{propulsion} = 0.015 + 0.065 = 0.080~\text{s}
+\label{eq:effective_contact_time}
+\end{equation}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/comparative_analysis_top3.png}
+    \caption{Comparative performance analysis of top three finishers in 2009 World Championships 100m final: Usain Bolt (9.58s, world record), Tyson Gay (9.71s), and Asafa Powell (9.84s). \textbf{Panel A:} Cumulative time differences reveal Bolt separates from Gay at 40m and Powell at 50m, with divergence accelerating through final 50m; Gay accumulates +0.13s deficit while Powell reaches +0.26s by finish line. \textbf{Panel B:} Velocity profiles demonstrate Bolt's superior peak velocity (12.66 m/s at $\sim$6s) compared to Gay (12.05 m/s) and Powell (11.76 m/s), with all three maintaining velocities above 11 m/s through 60--80m before deceleration phase. \textbf{Panel C:} Performance decomposition by phase shows near-identical acceleration times (3.78--3.79s for 0--30m) and maximum velocity phases (2.53--2.58s for 30--60m), but critical differences emerge in maintenance phase (60--80m: Bolt 1.65s vs Gay 1.68s vs Powell 1.70s) and especially deceleration phase (80--100m: Bolt 1.62s vs Gay 1.69s [+0.07s] vs Powell 1.78s [+0.16s]). \textbf{Panel D:} Component analysis quantifies time losses relative to Bolt: Gay loses +0.13s total (+0.02s acceleration, +0.03s max velocity, +0.07s maintenance, +0.05s deceleration, $-$0.01s reaction time advantage), while Powell loses +0.26s total (+0.05s acceleration, +0.05s max velocity, +0.16s deceleration). Deceleration phase (80--100m) emerges as primary differentiator, accounting for 54\% of Gay's deficit and 62\% of Powell's deficit, highlighting importance of velocity maintenance in final 20m for elite 100m performance.}
+    \label{fig:comparative_bolt_gay_powell}
+    \end{figure}
+
+
+\subsubsection{Optimal Stride Frequency}
+
+Optimal frequency emerges from contact-flight ratio:
+
+\begin{equation}
+f_{opt} = \frac{1}{t_{contact,opt} + t_{flight,opt}}
+\label{eq:optimal_frequency}
+\end{equation}
+
+For elite sprint:
+\begin{itemize}
+\item $t_{contact,opt} = 0.078-0.082$ s
+\item $t_{flight,opt} = 0.10-0.12$ s
+\item $f_{opt} = 4.4-4.6$ Hz
+\end{itemize}
+
+\textbf{Berlin 2009 Stride Frequencies (peak velocity):}
+\begin{align}
+\text{Bolt:} && 4.50~\text{Hz} && (t_{contact}=0.080, t_{flight}=0.142) \\
+\text{Gay:} && 4.65~\text{Hz} && (t_{contact}=0.078, t_{flight}=0.137) \\
+\text{Powell:} && 4.68~\text{Hz} && (t_{contact}=0.079, t_{flight}=0.135)
+\end{align}
+
+All within optimal range.
+
+\subsection{Stride Parameter Phase Space}
+
+\subsubsection{Constraint Space Visualization}
+
+Feasible stride parameters occupy bounded region in $(L_{stride}, f_{stride})$ space:
+
+\begin{equation}
+\mathcal{F} = \{(L, f) : \text{all constraints satisfied}\}
+\label{eq:feasible_region}
+\end{equation}
+
+\textbf{Constraints defining} $\mathcal{F}$:
+
+\textbf{1. Anatomical upper bound:}
+\begin{equation}
+L_{stride} \leq L_{max} = 2.6 \times L_{leg}
+\label{eq:length_upper}
+\end{equation}
+
+\textbf{2. Contact time lower bound:}
+\begin{equation}
+f_{stride} \leq \frac{1}{t_{contact,min} + t_{flight,min}}
+\label{eq:frequency_upper}
+\end{equation}
+
+\textbf{3. Force production limit:}
+\begin{equation}
+F_{required}(L, f) \leq F_{max,muscle}
+\label{eq:force_limit}
+\end{equation}
+
+\textbf{4. Power availability:}
+\begin{equation}
+P_{required}(L, f) \leq P_{available}
+\label{eq:power_limit}
+\end{equation}
+
+\textbf{5. Velocity consistency:}
+\begin{equation}
+v = L \times f = \text{constant}
+\label{eq:velocity_consistency}
+\end{equation}
+
+\subsubsection{Iso-Velocity Contours}
+
+For constant velocity, stride parameters follow:
+
+\begin{equation}
+L_{stride} = \frac{v}{f_{stride}}
+\label{eq:iso_velocity}
+\end{equation}
+
+Plotting iso-velocity contours at $v = 12$ m/s reveals optimal region.
+
+\textbf{Optimal Point:} The constraint intersection at $(L_{opt}, f_{opt}) = (2.77, 4.50)$ yields minimum time.
+
+\subsection{Joint Kinematics}
+
+\subsubsection{Hip Angle Dynamics}
+
+Hip angle follows periodic motion:
+
+\begin{equation}
+\theta_{hip}(t) = \theta_{hip,0} + A_{hip} \sin(\omega_{stride} t + \phi_{hip})
+\label{eq:hip_angle}
+\end{equation}
+
+\textbf{Range of motion:}
+\begin{itemize}
+\item Maximum flexion: $\theta_{max} \approx 110°$
+\item Maximum extension: $\theta_{min} \approx -15°$
+\item Total ROM: $\Delta\theta = 125°$
+\end{itemize}
+
+\subsubsection{Knee Angle Dynamics}
+
+Knee exhibits more complex pattern:
+
+\begin{equation}
+\theta_{knee}(t) = \theta_{0} + A_1 \sin(\omega t) + A_2 \sin(2\omega t + \phi_2)
+\label{eq:knee_angle}
+\end{equation}
+
+Second harmonic ($2\omega$) captures rapid flexion during swing phase.
+
+\textbf{Key phases:}
+\begin{itemize}
+\item Touch-down: $\theta \approx 160°$ (slight flex)
+\item Mid-stance: $\theta \approx 140°$ (maximum flex)
+\item Toe-off: $\theta \approx 170°$ (near full extension)
+\item Mid-swing: $\theta \approx 90°$ (maximum flex)
+\end{itemize}
+
+\subsubsection{Ankle Angle Dynamics}
+
+Ankle plantarflexion/dorsiflexion:
+
+\begin{equation}
+\theta_{ankle}(t) = \theta_{neutral} + A_{ankle} \sin(\omega_{stride} t + \phi_{ankle})
+\label{eq:ankle_angle}
+\end{equation}
+
+\textbf{Range:}
+\begin{itemize}
+\item Dorsiflexion (touch-down): $\theta \approx 90°$ (foot perpendicular)
+\item Plantarflexion (toe-off): $\theta \approx 130°$ (foot extended)
+\item ROM: $\Delta\theta = 40°$
+\end{itemize}
+
+\subsection{Center of Mass Trajectory}
+
+\subsubsection{Horizontal Velocity}
+
+CoM horizontal velocity during stride:
+
+\begin{equation}
+v_x(t) = v_{avg} + \Delta v \cos(\omega_{stride} t)
+\label{eq:horizontal_velocity}
+\end{equation}
+
+Velocity oscillates around mean with amplitude $\Delta v = 0.5-0.8$ m/s.
+
+\subsubsection{Vertical Oscillation}
+
+CoM vertical displacement:
+
+\begin{equation}
+z(t) = z_0 + A_z \sin(2\omega_{stride} t + \phi_z)
+\label{eq:vertical_oscillation}
+\end{equation}
+
+Factor of 2 because two peaks per stride (left and right contact).
+
+\textbf{Vertical oscillation amplitude:}
+\begin{itemize}
+\item Elite sprinters: $A_z = 0.06-0.08$ m
+\item Sub-elite: $A_z = 0.08-0.12$ m
+\item Excessive oscillation wastes energy
+\end{itemize}
+
+\textbf{Berlin 2009 Vertical Oscillations:}
+\begin{align}
+\text{Bolt:} && A_z = 0.064~\text{m} && \text{(minimal)} \\
+\text{Gay:} && A_z = 0.071~\text{m} \\
+\text{Powell:} && A_z = 0.078~\text{m}
+\end{align}
+
+Bolt's minimal vertical oscillation contributes to superior coupling efficiency.
+
+\subsection{Kinematic Coupling to Neural Oscillations}
+
+\subsubsection{Phase Relationships}
+
+Joint angles maintain fixed phase relationships:
+
+\begin{equation}
+\phi_{hip} - \phi_{knee} = \phi_{HK} = 0.25 \times 2\pi
+\label{eq:hip_knee_phase}
+\end{equation}
+
+\begin{equation}
+\phi_{knee} - \phi_{ankle} = \phi_{KA} = 0.15 \times 2\pi
+\label{eq:knee_ankle_phase}
+\end{equation}
+
+These phase relationships ensure coordinated limb motion.
+
+\subsubsection{Neural-Kinematic Coupling}
+
+Neural firing couples to kinematic oscillations:
+
+\begin{equation}
+f_{neural}(t) = f_{base} + A_n \cos(\omega_{stride} t + \phi_{coupling})
+\label{eq:neural_kinematic_coupling}
+\end{equation}
+
+Optimal coupling: $\phi_{coupling} \approx -0.1$ radians (neural leads kinematic by $\sim$35 ms).
+
+This accounts for neuromuscular transmission delay.
+
+\subsection{Kinematic Constraints on Performance Limit}
+
+\subsubsection{Stride Parameter Optimization}
+
+From constraint space analysis:
+
+\begin{theorem}[Optimal Stride Parameters]
+The unique optimal stride parameters for maximum velocity sprint:
+\begin{align}
+L_{stride,opt} &= 2.77 \pm 0.03~\text{m} \\
+f_{stride,opt} &= 4.50 \pm 0.05~\text{Hz} \\
+v_{max} &= L_{stride,opt} \times f_{stride,opt} = 12.47~\text{m/s}
+\end{align}
+\end{theorem}
+
+\begin{proof}
+From simultaneous satisfaction of:
+\begin{enumerate}
+\item Anatomical constraint: $L \leq 2.6 L_{leg}$
+\item Force constraint: $F(L,f) \leq F_{max}$
+\item Contact time: $t_c \geq 0.078$ s
+\item Power availability: $P(v) \leq 2500$ W
+\end{enumerate}
+
+Lagrange multiplier optimization yields unique solution at constraint intersection.
+\end{proof}
+
+\subsubsection{Velocity Upper Bound}
+
+Maximum sustainable velocity:
+
+\begin{equation}
+v_{max,kinematic} = \frac{L_{stride,max} \times t_{flight,max}}{t_{contact,min} + t_{flight,max}}
+\label{eq:kinematic_velocity_bound}
+\end{equation}
+
+Substituting limits:
+\begin{equation}
+v_{max,kinematic} = \frac{2.85 \times 0.14}{0.078 + 0.14} = \frac{0.399}{0.218} = 13.12~\text{m/s}
+\label{eq:velocity_upper_bound}
+\end{equation}
+
+But biochemical constraints limit sustainable velocity to $v_{max} \approx 12.5$ m/s.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/demo2_frequency_decomposition.png}
+    \caption{Frequency decomposition of muscle force signal into hierarchical physiological scales during 5-second contraction cycle. \textbf{Top Left:} Original force signal exhibits complex oscillatory pattern (2000--6000 N) with dominant low-frequency envelope modulated by higher-frequency components, demonstrating multi-scale temporal structure characteristic of biological force production; amplitude variations (peak-to-trough $\sim$4000 N) reflect integrated contributions from multiple physiological subsystems operating across frequency bands. \textbf{Top Right:} Rhythmic excitation pattern shows periodic activation (0--1.0) cycling at $\sim$2 Hz with amplitude modulation, representing neural drive signal that coordinates muscle fiber recruitment; consistent periodicity with varying amplitude (0.2--1.0) demonstrates central pattern generator output modulated by feedback mechanisms. \textbf{Middle Left:} Tissue scale (0.0--10.0 Hz) captures slow metabolic and structural dynamics with amplitude range $\pm$2500, showing gradual oscillations ($\sim$0.5 Hz) reflecting ATP-PCr turnover, calcium handling, and cross-bridge cycling kinetics; low-frequency content dominates tissue-level force modulation. \textbf{Middle Right:} Neural scale (1.0--100.0 Hz) reveals motor unit firing patterns with amplitude $\pm$3000 and characteristic frequency $\sim$10--20 Hz, demonstrating asynchronous recruitment and rate coding strategies; higher-frequency content (>50 Hz) reflects individual motor unit action potentials, while lower frequencies (<10 Hz) represent recruitment patterns and firing rate modulation across motor pool. \textbf{Bottom Left:} Neuromuscular scale (0.0--20.0 Hz) shows muscle fiber contraction dynamics (amplitude $\pm$2500) with dominant frequencies 5--15 Hz, capturing twitch summation and tetanic fusion; intermediate frequency band bridges neural commands and mechanical output, reflecting excitation-contraction coupling and force-length-velocity relationships. \textbf{Bottom Middle:} Cardiovascular scale (0.0--5.0 Hz) exhibits low-frequency oscillations (amplitude $\pm$3000) at $\sim$1 Hz corresponding to cardiac cycle and blood flow modulation, demonstrating metabolic support system dynamics; oscillation amplitude increases over time, suggesting cardiovascular response to sustained contraction demands. \textbf{Bottom Right:} Locomotor scale (0.5--3.0 Hz) captures gross movement dynamics (amplitude $\pm$3000) with primary frequency $\sim$1 Hz reflecting stride or contraction cycle rate; large amplitude at cycle initiation (0--1s) followed by damped oscillations demonstrates transient dynamics and steady-state pattern establishment. Decomposition reveals hierarchical frequency organization: locomotor (0.5--3 Hz) $\rightarrow$ cardiovascular (0--5 Hz) $\rightarrow$ tissue (0--10 Hz) $\rightarrow$ neuromuscular (0--20 Hz) $\rightarrow$ neural (1--100 Hz), with each scale contributing distinct temporal features that combine to produce complex original force signal, validating multi-scale oscillatory coupling framework for muscle force generation.}
+    \label{fig:frequency_decomposition}
+    \end{figure}
+
+\subsection{Distance-Time Integration}
+
+\subsubsection{Kinematic Performance Model}
+
+Total race time integrates over distance:
+
+\begin{equation}
+t_{total} = t_{reaction} + \int_0^{100} \frac{dx}{v(x)}
+\label{eq:kinematic_time_integral}
+\end{equation}
+
+Velocity profile $v(x)$ from empirical data:
+
+\begin{equation}
+v(x) = \begin{cases}
+v_{max} \tanh(x/x_{acc}) & 0 < x < 30 \\
+v_{max} & 30 < x < 65 \\
+v_{max} e^{-(x-65)/\lambda} & 65 < x < 100
+\end{cases}
+\label{eq:velocity_distance_profile}
+\end{equation}
+
+with $x_{acc} = 25$ m and $\lambda = 80$ m.
+
+\textbf{Optimal Time Calculation:}
+
+\begin{align}
+t_{0-30} &= \int_0^{30} \frac{dx}{v_{max} \tanh(x/25)} \approx 3.75~\text{s} \\
+t_{30-65} &= \frac{35}{12.47} = 2.81~\text{s} \\
+t_{65-100} &= \int_{65}^{100} \frac{dx}{12.47 e^{-(x-65)/80}} \approx 2.86~\text{s}
+\end{align}
+
+Total: $t_{kinematic} = 0.145 + 3.75 + 2.81 + 2.86 = 9.57$ s
+
+\subsection{Surface Interaction Effects (Preview)}
+
+Stride parameters couple to surface properties:
+
+\begin{equation}
+L_{stride}(C_{surface}) = L_{stride,0} (1 - \alpha_L C_{surface})
+\label{eq:stride_surface_coupling}
+\end{equation}
+
+\begin{equation}
+f_{stride}(C_{surface}) = f_{stride,0} (1 - \alpha_f C_{surface})
+\label{eq:frequency_surface_coupling}
+\end{equation}
+
+With surface compliance factor $C_{surface} = 0.35$ (Berlin):
+\begin{itemize}
+\item Stride length: $-2.9\%$ modulation
+\item Stride frequency: $-5.0\%$ modulation
+\end{itemize}
+
+Net effect on velocity: $-3.5\%$ (but enhanced energy return compensates).
+
+Full treatment in Section 8 (Surface Compliance).
+
+\subsection{Summary: Kinematic Constraints}
+
+The kinematic analysis establishes:
+
+\begin{enumerate}
+\item \textbf{Optimal Stride Length:} $L = 2.77 \pm 0.03$ m
+\item \textbf{Optimal Stride Frequency:} $f = 4.50 \pm 0.05$ Hz
+\item \textbf{Maximum Velocity:} $v_{max} = 12.47$ m/s (kinematic limit)
+\item \textbf{Ground Contact Time:} $t_c = 0.078-0.080$ s (critical constraint)
+\item \textbf{Vertical Oscillation:} $A_z < 0.07$ m for efficiency
+\end{enumerate}
+
+\textbf{Key Integration Equation:}
+
+\begin{equation}
+\boxed{t_{100m} = t_{reaction} + \frac{30}{v_{acc}} + \frac{35}{v_{max}} + \frac{35}{v_{dec}}}
+\label{eq:kinematic_time_formula}
+\end{equation}
+
+With optimal parameters: $t_{100m,kinematic} = 9.57$ s.
+
+This kinematic constraint, combined with biochemical (9.5-10.0 s) and neuromuscular (coupling efficiency) constraints, defines the complete performance boundary.

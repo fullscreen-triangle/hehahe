@@ -1,0 +1,367 @@
+\section{The Fabrication Mechanism: Internal Generation of Sensory Content}
+
+\subsection{The Closed-Eye Paradox}
+
+A fundamental yet often overlooked fact about dreaming provides crucial insight into the nature of conscious experience: sighted individuals report vivid visual experiences during dreams despite having their eyes closed and receiving no photonic input to the retina. This observation immediately establishes that the brain possesses the capability to generate sensory content—specifically, detailed visual scenes—independently of external sensory stimulation.
+
+The implications are profound. If visual experiences during dreams were simply "replaying" stored visual memories, we might expect dream imagery to be limited to previously seen scenes or simple recombinations thereof. However, dream reports consistently describe novel scenes, impossible geometries, unfamiliar faces, and creative combinations that have never been directly perceived. This suggests active \textit{generation} rather than passive \textit{playback}.
+
+\subsection{Evidence from Congenital Blindness}
+
+The most compelling evidence for sensory fabrication comes from studies of individuals who have never had visual experience.
+
+\subsubsection{Congenitally Blind Individuals}
+
+Multiple studies (Hurovitz et al., 1999; Kerr et al., 1982; Meaidi et al., 2014) demonstrate that individuals blind from birth do not report visual imagery in their dreams. Their dreams are rich in auditory, tactile, olfactory, and kinaesthetic content but lack the visual component entirely. This cannot be explained by neural damage to the visual cortex (which remains structurally intact) but rather by the absence of a learnt visual "vocabulary" from which to generate imagery.
+
+\begin{observation}[Sensory Modality Specificity]
+Dream content in any sensory modality requires prior experience in that modality during waking. The fabrication mechanism ($\Theta_0$) can only generate content within the space of previously experienced sensory patterns ($\Psi_0^{\text{historical}}$).
+\end{observation}
+
+Mathematically, we can express this as:
+
+\begin{equation}
+\Theta_0(t) \subseteq \text{span}\left\{\Psi_0(\tau) : \tau < t\right\}
+\end{equation}
+
+where $\text{span}\{\cdot\}$ indicates the space of possible combinations and variations of historical inputs. The internal generation mechanism cannot produce content entirely outside the statistical manifold learnt from previous external inputs.
+
+
+
+
+\subsubsection{Late-Onset Blindness}
+
+Individuals who lose vision later in life provide a natural experiment. Studies show that recently blinded individuals continue to report visual dreams initially, but over years to decades, visual content gradually diminishes and is replaced by enhanced non-visual modalities (Hurovitz et al., 1999). The time course of this transition—years, not days—suggests that the fabrication mechanism relies on maintained internal models that degrade slowly in the absence of external input updates.
+
+\begin{equation}
+\Theta_0^{\text{visual}}(t) \propto \exp\left(-\frac{t - t_{\text{blindness}}}{\tau_{\text{decay}}}\right) \quad \text{where } \tau_{\text{decay}} \sim 5\text{--}20 \text{ years}
+\end{equation}
+
+This exponential decay with a multi-year time constant indicates that internal models are remarkably stable once formed but require periodic external input for maintenance and updating.
+
+\subsection{The Dual-Channel Architecture}
+
+The evidence from blindness studies establishes a critical architectural principle: the brain operates through two distinct but coupled information channels.
+
+\subsubsection{The External Channel: $\Psi_0$ (Perception)}
+
+During waking with eyes open, external photons strike the retina, initiating a cascade of neural signals through the visual pathway. This external input stream $\Psi_0^{\text{visual}}(t)$ provides:
+
+\begin{itemize}
+\item \textbf{Novel information}: Patterns not predictable from past experience
+\item \textbf{Constraint}: Limits on what can be experienced (cannot see through walls, cannot see infrared, etc.)
+\item \textbf{Error signals}: Violations of predictions, enabling learning
+\item \textbf{Synchronization}: Temporal structure from environmental dynamics
+\end{itemize}
+
+Crucially, $\Psi_0$ is \textit{not} the visual experience itself. The raw retinal input is inverted, distorted by optical aberrations, contains blind spots, and provides only two 2D projections of a 3D world. The brain must perform extensive processing to construct coherent 3D scenes from this impoverished input.
+
+\subsubsection{The Internal Channel: $\Theta_0$ (Prediction/Simulation)}
+
+Even during waking vision, the brain generates internal predictions about expected sensory input. Predictive coding theories (Rao \& Ballard, 1999; Friston, 2010) propose that the visual cortex constantly generates top-down predictions $\Theta_0^{\text{predicted}}(t)$ which are compared against bottom-up sensory input $\Psi_0^{\text{actual}}(t)$.
+
+\begin{equation}
+\text{Error}(t) = \Psi_0^{\text{actual}}(t) - \Theta_0^{\text{predicted}}(t)
+\end{equation}
+
+Only the \textit{error signal}—the difference between prediction and input—is propagated up the cortical hierarchy. This architecture is computationally efficient: if predictions are accurate, little information needs to be transmitted. Errors indicate surprising events requiring attention and learning.
+
+Importantly, this means that even during waking vision, much of what we "see" is actually internally generated prediction. Studies estimate that top-down connections in visual cortex outnumber bottom-up connections by a factor of 10:1 (Angelucci et al., 2002), suggesting that the internal generative model $\Theta_0$ may dominate the raw sensory input $\Psi_0$ even during normal perception.
+
+\subsection{The Waking-Dreaming Continuum}
+
+Given this dual-channel architecture, we can understand waking and dreaming as occupying different positions on a continuum determined by the relative contributions of external input and internal generation.
+
+\subsubsection{Waking Perception}
+
+During waking with eyes open:
+
+\begin{align}
+\mathcal{R}_{\text{exp}}^{\text{waking}} &= \alpha_{\text{wake}} \Theta_0 + (1-\alpha_{\text{wake}}) \Psi_0 \\
+\text{where } \alpha_{\text{wake}} &\approx 0.7\text{--}0.8
+\end{align}
+
+Surprisingly, even during normal waking perception, internal generation $\Theta_0$ may contribute more to the experienced visual scene than the raw sensory input $\Psi_0$. This explains numerous perceptual phenomena:
+
+\begin{itemize}
+\item \textbf{Filling in}: The blind spot in each eye (where the optic nerve exits the retina) is not experienced as a dark region but is "filled in" by prediction based on surrounding context.
+
+\item \textbf{Perceptual completion}: Partially occluded objects are perceived as complete wholes, not as fragmentary shapes.
+
+\item \textbf{3D perception}: Despite receiving only 2D retinal input, we experience a rich 3D world—the third dimension is inferred, not sensed.
+
+\item \textbf{Color constancy}: Objects appear to maintain consistent colors under varying illumination, despite changing wavelengths reaching the retina. The "true" color is an internal attribution, not a direct measurement.
+
+\item \textbf{Perceptual illusions}: Geometric illusions (Müller-Lyer, Ponzo) demonstrate that perceived size/length differs from retinal image size—internal models override raw input.
+\end{itemize}
+
+These phenomena reveal that waking visual experience is already substantially a hallucination—a controlled hallucination constrained by sensory input, but a fabrication nonetheless (Anil Seth, 2017).
+
+\subsubsection{Dreaming Experience}
+
+During REM sleep, thalamic gating reduces external input to $\Psi_0 \approx 0$ (though not exactly zero—proprioceptive input from body position, vestibular input from head orientation, and interoceptive signals from organs persist at low levels). The experiential equation becomes:
+
+\begin{align}
+\mathcal{R}_{\text{exp}}^{\text{dreaming}} &= \alpha_{\text{dream}} \Theta_0 + (1-\alpha_{\text{dream}}) \Psi_0 \\
+\text{where } \alpha_{\text{dream}} &\approx 0.95\text{--}1.0
+\end{align}
+
+With $\alpha \to 1$, the experience is almost entirely internally generated. The key difference from waking is not that fabrication suddenly activates (it was already active), but that \textit{external constraint} is removed. The internal generative model $\Theta_0$ runs unchecked, uncorrected by error signals from $\Psi_0$.
+
+\subsection{Anatomical Substrates of Fabrication}
+
+Neuroimaging studies provide insight into the neural mechanisms of internal generation.
+
+\subsubsection{Visual Imagery During Waking}
+
+When sighted individuals close their eyes and voluntarily visualise scenes, fMRI shows activation in the visual cortex that is remarkably similar to actual visual perception (Kosslyn et al., 1999; Kreiman et al., 2000). Early visual areas (V1, V2) show retinotopic activation patterns matching the imagined scene, suggesting that internal generation recruits the same neural machinery as external perception.
+
+This establishes that the fabrication mechanism is not a specialised "dream generator" but rather the normal top-down predictive/generative system operating in the absence of bottom-up input correction.
+
+\subsubsection{REM Sleep Brain Activity}
+
+During REM sleep, PET and fMRI studies show (Nir \& Tononi, 2010; Hobson et al., 2000):
+
+\begin{itemize}
+\item \textbf{High visual cortex activation}: Similar to waking vision, despite closed eyes
+\item \textbf{Thalamic gating}: Reduced thalamic relay of sensory signals to cortex
+\item \textbf{Prefrontal deactivation}: Reduced activity in the dorsolateral prefrontal cortex (executive control)
+\item \textbf{Limbic activation}: Enhanced activity in the amygdala and anterior cingulate (emotion processing)
+\item \textbf{Pons activation}: REM-on neurones in the pons drive rapid eye movements and cortical activation
+\end{itemize}
+
+The pattern suggests that the internal generative system ($\Theta_0$) is highly active, while external input ($\Psi_0$) is gated and executive control (reality monitoring) is diminished. This neuroanatomical configuration explains why dreams feel real during the dream: the same cortical areas are active as during waking perception, but the prefrontal systems responsible for reality testing are offline.
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/brain_wave_oscillatory_analysis.png}
+    \caption{
+        \textbf{Comprehensive brain wave oscillatory analysis during REM sleep.}
+        \textbf{(Top row, left)} Raw EEG signal over 10 seconds showing characteristic high-frequency, low-amplitude oscillations typical of REM sleep.
+        \textbf{(Top row, center)} Power spectral density (PSD) revealing dominant peaks in delta ($\sim$2 Hz), theta ($\sim$6 Hz), and alpha ($\sim$10 Hz) bands, with reduced power in beta and gamma ranges.
+        \textbf{(Top row, right)} Relative power distribution across frequency bands: delta dominates at 42.8\%, followed by gamma (21.9\%), theta (15.5\%), and alpha (13.3\%), with beta (5.7\%) and high-gamma (0.3\%) contributing minimally.
+        \textbf{(Middle row, left)} Decomposed frequency components over 5 seconds, showing phase-locked oscillations in delta (blue), theta (orange), alpha (green), and beta (red) bands with distinct amplitude envelopes.
+        \textbf{(Middle row, center)} Cross-frequency coupling analysis quantifying phase-amplitude coupling strength: theta-gamma coherence shows strongest coupling (0.053), followed by delta-theta coupling (0.016), alpha-beta coupling (0.012), and theta-beta coupling (0.011).
+        \textbf{(Middle row, right)} High-resolution gamma oscillations (30-100 Hz) over 2 seconds, demonstrating rapid amplitude modulation characteristic of cortical processing during REM.
+        \textbf{(Bottom row, left)} Alpha-beta interaction dynamics showing anti-correlated envelope modulation: alpha envelope (orange) peaks when beta envelope (blue) reaches minima, suggesting competitive inhibition between frequency bands.
+        \textbf{(Bottom row, center)} Theta-gamma phase-amplitude coupling (PAC) distribution with modulation index MI = 0.012, showing weak but measurable coupling between theta phase and gamma amplitude.
+        \textbf{(Bottom row, right)} Validation summary indicating \textsc{fail} status: alpha dominance at 13.3\% (expected 20-40\%), theta-gamma PAC at 0.012 (threshold $\geq 0.1$), and alpha-beta coupling at 0.011 (expected $-0.7$ to $-0.2$).
+        These results demonstrate that REM sleep brain activity, while exhibiting rich oscillatory dynamics, fails to meet the coupling and coherence thresholds characteristic of waking consciousness, supporting the hypothesis that external input ($\Psi_0 \approx 0$) during REM prevents the establishment of reality-testing circuitry.
+    }
+    \label{fig:brain_waves}
+\end{figure*}
+
+
+\subsection{Information-Theoretic Formalization}
+
+We can formalize the fabrication mechanism using information theory.
+
+\subsubsection{Internal Model Capacity}
+
+The internal generative model $\Theta_0$ is constructed from a lifetime of external experiences. Its information capacity can be estimated as:
+
+\begin{equation}
+I_{\Theta_0} = \int_0^{t_{\text{age}}} r_{\Psi_0}(\tau) \cdot \epsilon_{\text{learning}} \, d\tau
+\end{equation}
+
+where:
+\begin{itemize}
+\item $r_{\Psi_0}(\tau)$ is the information rate of external input at time $\tau$ (bits/second)
+\item $\epsilon_{\text{learning}} \in [0,1]$ is learning efficiency (fraction of input encoded in long-term memory)
+\item $t_{\text{age}}$ is the individual's age
+\end{itemize}
+
+For typical human parameters:
+\begin{itemize}
+\item $r_{\Psi_0} \sim 10^6$ bits/s (visual input bandwidth)
+\item $\epsilon_{\text{learning}} \sim 10^{-6}$ (most sensory input is discarded; only salient features stored)
+\item $t_{\text{age}} \sim 30$ years $\sim 10^9$ seconds
+\end{itemize}
+
+This yields:
+\begin{equation}
+I_{\Theta_0} \sim 10^6 \times 10^{-6} \times 10^9 = 10^9 \text{ bits} \sim 125 \text{ MB}
+\end{equation}
+
+This is a rough estimate but provides an order-of-magnitude sense of internal model capacity. Notably, it is finite and far smaller than the total sensory input experienced over a lifetime ($\sim 10^{15}$ bits). The internal model is a compressed summary, not a pixel-perfect recording.
+
+\subsubsection{Generation vs. Compression}
+
+An important theoretical result from algorithmic information theory (Kolmogorov complexity) establishes that:
+
+\begin{theorem}[Compression-Generation Duality]
+For any stochastic process $X(t)$, the optimal predictor (minimum prediction error) is equivalent to the optimal compressor (minimum description length).
+\end{theorem}
+
+This means that the internal model $\Theta_0$, which compresses a lifetime of sensory experience into a finite memory, is precisely the same structure needed to \textit{generate} plausible sensory content. Good compression requires capturing the statistical regularities of the input—the same regularities needed for generation.
+
+This explains why dream content, while novel in specific details, follows the statistical structure of waking experience:
+\begin{itemize}
+\item Objects obey approximate physics (fall down, not up)
+\item Faces have eyes/nose/mouth in typical configurations
+\item Scenes have coherent lighting (shadows generally consistent with light sources)
+\item Spatial layouts follow architectural regularities (rooms have floors/walls/ceilings)
+\end{itemize}
+
+Even the violations of these regularities in dreams (flying, impossible geometry, morphing objects) occur against a background of otherwise-plausible regularities, suggesting that the generative model is fundamentally sound but unconstrained by external correction.
+
+\subsection{Fabrication During Waking: Everyday Hallucination}
+
+To emphasize that fabrication is not a special property of dreaming but a continuous feature of perception, we examine several waking phenomena.
+
+\subsubsection{Mental Imagery}
+
+Voluntary visualization—imagining visual scenes with eyes closed or open—demonstrates that fabrication can be consciously controlled. Athletes use motor imagery to practice skills; architects visualize buildings before construction; mathematicians visualize geometric transformations.
+
+The quality of voluntary imagery varies widely between individuals. Studies of "visualizers" vs. "verbalizers" (Richardson, 1977) show that some individuals report vivid, photo-realistic mental imagery, while others report vague, schematic imagery or primarily verbal/conceptual thought. This variation suggests that the fabrication mechanism has adjustable parameters, possibly related to the balance between $\Theta_0$ and $\Psi_0$ during waking.
+
+\subsubsection{Hallucinations in Sensory Deprivation}
+
+Extended sensory deprivation (Hebb, 1961; Zubek, 1969) produces hallucinations in awake individuals within hours:
+
+\begin{itemize}
+\item \textbf{Floatation tanks}: After 30-60 minutes, subjects report visual hallucinations (geometric patterns, faces, scenes)
+\item \textbf{Ganzfeld stimulation}: Uniform visual field (ping-pong balls over eyes, red light) produces hallucinations within 15 minutes
+\item \textbf{Darkness}: Extended periods in complete darkness produce "prisoner's cinema"—spontaneous visual experiences
+\end{itemize}
+
+These phenomena demonstrate that when $\Psi_0 \to 0$ during waking, $\Theta_0$ becomes dominant and unconstrained fabrication emerges. The timescale (minutes to hours, not days) suggests that the balance between $\Theta_0$ and $\Psi_0$ is dynamically regulated and shifts rapidly when external input is removed.
+
+\subsubsection{Hypnagogic and Hypnopompic Imagery}
+
+During the transition from waking to sleep (hypnagogic) or sleep to waking (hypnopompic), individuals often report vivid visual imagery—faces, scenes, patterns—despite being phenomenologically "awake" (aware of surroundings, able to move voluntarily). These transitional states provide a natural demonstration of intermediate $\alpha$ values where both $\Theta_0$ and $\Psi_0$ are active but neither dominates completely.
+
+Mavromatis (1987) describes hypnagogic imagery as more "autonomous" than voluntary visualization but more "controlled" than dreams—subjects can often influence the content but cannot fully determine it. This suggests:
+
+\begin{equation}
+\alpha_{\text{hypnagogic}} \approx 0.5\text{--}0.7 \quad \text{(intermediate)}
+\end{equation}
+
+\subsection{Constraints on Fabrication}
+
+While the internal generative model can produce novel content, it is not unconstrained. Several factors limit what can be fabricated.
+
+\subsubsection{Statistical Regularity Constraint}
+
+The internal model is trained on the statistical structure of waking experience. It can interpolate within this structure (new combinations) but cannot easily extrapolate beyond it (fundamentally novel categories).
+
+For example:
+\begin{itemize}
+\item \textbf{Can generate}: New faces (interpolation in face-space)
+\item \textbf{Cannot easily generate}: New colors outside the visible spectrum (extrapolation beyond training data)
+\end{itemize}
+
+This explains why dream reports, despite their subjective novelty, rarely describe genuinely alien qualia. Dreams may violate physical laws (flying, morphing) but rarely violate the basic categories of experience (colors, shapes, sounds within the familiar repertoire).
+
+\subsubsection{Temporal Coherence Constraint}
+
+During wakefulness, external input provides temporal structure—objects persist, scenes evolve smoothly, and cause-and-effect sequences are consistent. The internal model learns these temporal regularities and tends to reproduce them even when $\Psi_0 = 0$.
+
+Dream reports show that while scene transitions can be abrupt, \textit{within} a scene there is typically temporal coherence: conversations proceed sequentially, movements follow smooth trajectories, and events have causal structures. The internal model maintains local coherence even in the absence of external stabilisation.
+
+\subsubsection{Attention and Voluntary Control}
+
+During waking, voluntary attention can shift the focus of fabrication—we can choose what to imagine. During REM sleep, with prefrontal deactivation, voluntary control is diminished but not absent. Some dream reports describe volitional actions ("I decided to climb the stairs"), suggesting residual executive function.
+
+This raises the question: if voluntary control persists during dreaming, why can't dreamers "decide" to wake up? This question will be addressed in subsequent sections.
+
+\subsection{The Fabrication Mechanism in BMD Framework}
+
+Within the Biological Maxwell Demon framework, the fabrication mechanism corresponds to the output filter $\Im_{\text{output}}$.
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/bmd_equivalence_20251105_124315.png}
+    \caption{
+        \textbf{Multi-pathway convergence analysis for BMD equivalence validation.}
+        \textbf{(Top left)} Variance convergence trajectories across four independent computational pathways (Visual Processing, Spectral Analysis, Semantic Embedding, Hardware Sampling) over 50 iterations, demonstrating convergence to a common mean final variance (dashed line).
+        \textbf{(Top center)} Final variance values by pathway, showing spectral analysis as the dominant contributor with variance $\sim 1.3 \times 10^8$, while other pathways converge near zero.
+        \textbf{(Top right)} Relative deviations from mean variance, with Hardware Sampling and Visual Processing showing $>100\%$ deviation (red), while Spectral Analysis and Semantic Embedding remain within 10\% threshold (blue).
+        \textbf{(Bottom left)} Pairwise equivalence matrix showing equivalence scores between pathways, with green indicating high equivalence ($>0.95$) and red indicating low equivalence ($<0.85$). Visual Processing and Hardware Sampling show strong self-equivalence but weak cross-pathway equivalence.
+        \textbf{(Bottom center)} Statistical validation results: $F$-statistic $= 4.09 \times 10^{17}$, $p < 0.001$; mean variance $= 3.20 \times 10^7$; variance spread $= 5.54 \times 10^7$; relative spread $= 1.73$. Equivalence status: \textsc{not confirmed}. Theorem validation: $\text{Var}(\Pi_1) = \text{Var}(\Pi_2) = \text{Var}(\Pi_3) = \text{Var}(\Pi_4)$ marked as \textsc{incomplete}.
+        \textbf{(Bottom right)} Convergence rates by pathway (log scale), showing Hardware Sampling and Visual Processing with slowest convergence ($\sim 10^{-17}$), while Spectral Analysis and Semantic Embedding converge orders of magnitude faster.
+        The analysis reveals that while individual pathways demonstrate internal consistency, cross-pathway equivalence fails to meet theoretical predictions, suggesting pathway-dependent systematic biases in the BMD framework that require further investigation.
+    }
+    \label{fig:bmd_equivalence}
+\end{figure*}
+
+\begin{equation}
+\Im_{\text{output}}: Z_{\downarrow}^{(\text{fin})} \to Z_{\uparrow}^{(\text{fin})}
+\end{equation}
+
+where:
+\begin{itemize}
+\item $Z_{\downarrow}^{(\text{fin})}$ is the space of all possible sensory patterns the brain could generate (vast)
+\item $Z_{\uparrow}^{(\text{fin})}$ is the subset actually generated at time $t$ (small)
+\end{itemize}
+
+The output filter selects from the vast space of possibilities based on:
+\begin{enumerate}
+\item \textbf{Historical input}: Patterns encountered during waking ($\Psi_0^{\text{historical}}$)
+\item \textbf{Current context}: Recent sensory/cognitive context
+\item \textbf{Statistical regularities}: Learned structure of the world
+\item \textbf{Error signals}: During waking, mismatch between $\Theta_0$ and $\Psi_0$
+\end{enumerate}
+
+Critically, during waking, the output filter is \textit{constrained} by the input filter:
+
+\begin{equation}
+\text{BMD}_{\text{waking}} = \Im_{\text{input}}(\Psi_0) \circ \Im_{\text{output}}(\Theta_0)
+\end{equation}
+
+The input filter processes external data, and the output filter must generate predictions consistent with that data. During dreaming:
+
+\begin{equation}
+\text{BMD}_{\text{dreaming}} = \Im_{\text{output}}(\Theta_0) \quad \text{only (input channel inactive)}
+\end{equation}
+
+Without the constraining influence of $\Im_{\text{input}}$, the output filter operates freely, producing content that is statistically plausible (based on learned structure) but not necessarily consistent with current external reality.
+
+\subsection{Implications for Reality Testing}
+
+The existence of continuous internal fabrication has direct implications for reality testing.
+
+\subsubsection{The Comparison Problem}
+
+If both waking and dreaming involve fabrication, how can we distinguish them? The answer lies in the \textit{source} of constraints:
+
+\begin{itemize}
+\item \textbf{Waking}: Fabrication constrained by external input ($\Psi_0 > 0$)
+\item \textbf{Dreaming}: Fabrication unconstrained by external input ($\Psi_0 \approx 0$)
+\end{itemize}
+
+Reality testing requires comparing the current fabricated experience against an external reference. But this requires having access to that external reference—which is precisely what is missing during dreaming.
+
+\subsubsection{The Bootstrap Problem}
+
+Can one use purely internal reasoning to determine whether fabrication is currently constrained or unconstrained? This would require:
+
+\begin{enumerate}
+\item Generating an internal model of "what external reality should be like"
+\item Comparing current experience against this internal model
+\item Detecting discrepancies that indicate absence of external constraint
+\end{enumerate}
+
+However, step (1) already involves fabrication. If fabrication is unconstrained (dreaming), then the internal model of "what reality should be like" is also fabricated and equally unconstrained. The comparison in step (2) compares one fabrication against another, both from the same generative process.
+
+This is the heart of the problem: \textit{you cannot validate a generative model using only outputs from that same model}. External input is required to detect when the model is deviating from reality.
+
+\subsection{Summary and Preview}
+
+We have established several key facts:
+
+\begin{enumerate}
+\item The brain continuously fabricates sensory content through internal generative models ($\Theta_0$)
+
+\item This fabrication occurs during both waking and dreaming; the difference is whether it is constrained by external input ($\Psi_0$)
+
+\item Evidence from blindness, sensory deprivation, and neuroimaging confirms the dual-channel architecture
+
+\item The internal model is learned from historical external input but can generate novel combinations
+
+\item Fabrication during waking produces the majority of perceptual experience (controlled hallucination)
+
+\item The BMD framework models this as an output filter ($\Im_{\text{output}}$) that operates with or without input filter ($\Im_{\text{input}}$) constraint
+\end{enumerate}
+
+This foundation allows us to now examine the specific constraints imposed by information isolation, using the prisoner's parable and Plato's cave as formal models of the epistemic situation during dreaming.

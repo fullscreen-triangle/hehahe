@@ -1,0 +1,336 @@
+\section{Race Phase Dynamics and Temporal Evolution}
+
+\subsection{Overview of Sprint Phase Structure}
+
+The 100m sprint exhibits distinct temporal phases characterized by different dominant oscillatory processes and coupling relationships. Understanding these phases is essential for deriving performance constraints.
+
+\begin{definition}[Sprint Phase Decomposition]
+The 100m sprint decomposes into four sequential phases:
+\begin{align}
+\text{Phase I: } &\text{Reaction \& Block Clearance} && (0-0.15~\text{s}) \label{eq:phase1}\\
+\text{Phase II: } &\text{Acceleration} && (0.15-3.0~\text{s},~0-30~\text{m}) \label{eq:phase2}\\
+\text{Phase III: } &\text{Maximum Velocity} && (3.0-6.5~\text{s},~30-65~\text{m}) \label{eq:phase3}\\
+\text{Phase IV: } &\text{Velocity Maintenance/Deceleration} && (6.5-10~\text{s},~65-100~\text{m}) \label{eq:phase4}
+\end{align}
+\end{definition}
+
+Each phase exhibits characteristic oscillatory signatures and coupling requirements.
+
+\subsection{Phase I: Reaction and Block Clearance (0-0.15s)}
+
+\subsubsection{Neural Oscillatory Cascade}
+
+Reaction time involves oscillatory signal propagation across neural networks:
+
+\begin{equation}
+t_{reaction} = t_{auditory} + t_{processing} + t_{transmission} + t_{activation}
+\label{eq:reaction_components}
+\end{equation}
+
+Each component follows oscillatory dynamics:
+
+\begin{align}
+t_{auditory} &= \frac{n_{cycles}}{f_{cochlear}} && f_{cochlear} \sim 1000~\text{Hz} \\
+t_{processing} &= \frac{n_{decisions}}{f_{cortical}} && f_{cortical} \sim 40~\text{Hz} \\
+t_{transmission} &= \frac{L_{neural}}{v_{action}} \cdot \frac{1}{f_{myelination}} && v_{action} \sim 100~\text{m/s} \\
+t_{activation} &= \frac{n_{motor\_units}}{f_{neuromuscular}} && f_{neuromuscular} \sim 50~\text{Hz}
+\end{align}
+
+\textbf{Optimal Reaction Time:}
+\begin{equation}
+t_{opt} = 0.12-0.15~\text{s}
+\label{eq:optimal_reaction}
+\end{equation}
+
+Faster times ($<$0.10s) indicate anticipation (false starts); slower times ($>$0.20s) indicate suboptimal neural preparation.
+
+\subsubsection{Block Clearance Biomechanics}
+
+Initial force application follows:
+\begin{equation}
+F_{block}(t) = F_{max} \left[1 - e^{-t/\tau_{rise}}\right] \cos(\omega_{neural} t)
+\label{eq:block_force}
+\end{equation}
+
+where $\tau_{rise} \sim 0.03$ s and $\omega_{neural} \sim 40$ Hz.
+
+\textbf{Berlin 2009 Measurements:}
+\begin{itemize}
+\item Bolt reaction time: 0.146 s
+\item Gay reaction time: 0.144 s (fastest)
+\item Powell reaction time: 0.134 s
+\item Optimal range: 0.140-0.150 s
+\end{itemize}
+
+\subsection{Phase II: Acceleration (0.15-3.0s, 0-30m)}
+
+\subsubsection{ATP-Phosphocreatine Dominant Phase}
+
+Acceleration phase is powered by ATP-PCr system operating at maximum flux:
+
+\begin{equation}
+\frac{d[ATP]}{dt} = k_{PCr} [PCr] [ADP] - k_{hydrolysis} [ATP] f_{demand}(t)
+\label{eq:acceleration_energy}
+\end{equation}
+
+where $f_{demand}(t)$ increases monotonically as velocity builds.
+
+\textbf{Energy Availability:}
+\begin{equation}
+E_{available}(t) = [ATP]_0 + [PCr]_0 e^{-t/\tau_{PCr}}
+\label{eq:energy_available}
+\end{equation}
+
+with $\tau_{PCr} = 9.5 \pm 1.0$ s.
+
+\subsubsection{Force-Velocity Dynamics}
+
+Horizontal ground reaction force during acceleration:
+
+\begin{equation}
+F_H(t) = F_{max} \left[1 - \frac{v(t)}{v_{max}}\right] \cos(\omega_{stride}(t) t + \phi_{stride})
+\label{eq:horizontal_force}
+\end{equation}
+
+Stride frequency increases with velocity:
+\begin{equation}
+\omega_{stride}(t) = \omega_{min} + (\omega_{max} - \omega_{min}) \left[1 - e^{-t/\tau_{freq}}\right]
+\label{eq:frequency_increase}
+\end{equation}
+
+\textbf{Empirical Parameters (Elite Athletes):}
+\begin{itemize}
+\item Initial frequency: $\omega_{min} = 3.8-4.0$ Hz
+\item Maximum frequency: $\omega_{max} = 4.4-4.6$ Hz
+\item Frequency rise time: $\tau_{freq} = 1.5-2.0$ s
+\item Force decline: $F_{max} = 1.2 \times$ body weight
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/split_time_analysis.pdf}
+    \caption{\textbf{Sprint Phase Dynamics and Temporal Evolution.} (A) Velocity profile across race phases showing acceleration (0-3s), maximum velocity (3-6s), and deceleration (6-10s). Berlin 2009 top-3 performers overlaid. (B) Split time analysis at 10m intervals revealing phase transitions. (C) Oscillatory coupling efficiency evolution showing maintenance during acceleration/max velocity, then degradation in deceleration phase. (D) Power output temporal profile showing ATP-PCr dominance (0-6s) transitioning to glycolytic compensation (6-10s) with declining total power availability.}
+    \label{fig:race_phases}
+    \end{figure}
+
+\subsubsection{Velocity Profile}
+
+Velocity during acceleration phase:
+
+\begin{equation}
+v(t) = v_{max} \left[1 - e^{-t/\tau_{acc}}\right]^{\beta}
+\label{eq:velocity_acceleration}
+\end{equation}
+
+where $\beta = 1.2-1.5$ (supralinear response) and $\tau_{acc} = 1.8-2.2$ s.
+
+\textbf{30m Split Times (Berlin 2009 Final):}
+\begin{align}
+\text{Bolt:} && 3.78~\text{s} && (7.94~\text{m/s avg}) \\
+\text{Gay:} && 3.76~\text{s} && (7.98~\text{m/s avg}) \\
+\text{Powell:} && 3.81~\text{s} && (7.87~\text{m/s avg})
+\end{align}
+
+\subsection{Phase III: Maximum Velocity (3.0-6.5s, 30-65m)}
+
+\subsubsection{Stride Optimization}
+
+Maximum velocity emerges from optimal stride parameter coupling:
+
+\begin{equation}
+v_{max} = f_{stride} \times L_{stride} \times \eta_{coupling}
+\label{eq:max_velocity}
+\end{equation}
+
+Coupling efficiency:
+\begin{equation}
+\eta_{coupling} = \cos(\Delta\phi_{neural-mechanical})
+\label{eq:coupling_efficiency}
+\end{equation}
+
+where $\Delta\phi_{neural-mechanical}$ is phase difference between neural commands and mechanical output.
+
+\textbf{Optimal Parameters:}
+\begin{align}
+f_{stride,opt} &= 4.45-4.55~\text{Hz} \\
+L_{stride,opt} &= 2.75-2.85~\text{m} \\
+\eta_{coupling,opt} &> 0.85
+\end{align}
+
+\subsubsection{Energy System Transition}
+
+Around t$\sim$3-4s, energy supply transitions from pure ATP-PCr to glycolytic contribution:
+
+\begin{equation}
+\frac{E_{total}}{dt} = \alpha_{PCr}(t) E_{PCr} + \alpha_{glyc}(t) E_{glyc}
+\label{eq:energy_transition}
+\end{equation}
+
+where:
+\begin{align}
+\alpha_{PCr}(t) &= e^{-t/\tau_{PCr}} \\
+\alpha_{glyc}(t) &= 1 - e^{-t/\tau_{glyc}}
+\end{align}
+
+This transition creates subtle velocity modulation observable in high-resolution data.
+
+\subsubsection{Peak Velocity Timing}
+
+Peak velocity occurs at:
+\begin{equation}
+t_{peak} = \tau_{acc} \ln\left[\frac{\beta}{\beta - 1}\right]
+\label{eq:peak_velocity_time}
+\end{equation}
+
+\textbf{Berlin 2009 Peak Velocities:}
+\begin{align}
+\text{Bolt:} && 12.32~\text{m/s} && \text{at}~t \approx 5.5~\text{s}~(50-60\text{m}) \\
+\text{Gay:} && 12.05~\text{m/s} && \text{at}~t \approx 5.3~\text{s}~(50-60\text{m}) \\
+\text{Powell:} && 11.76~\text{m/s} && \text{at}~t \approx 5.1~\text{s}~(50-60\text{m})
+\end{align}
+
+\subsection{Phase IV: Velocity Maintenance/Deceleration (6.5-10s, 65-100m)}
+
+\subsubsection{Coupling Degradation Onset}
+
+Deceleration results from oscillatory coupling degradation:
+
+\begin{equation}
+\frac{dv}{dt} = -k_{fatigue}(t) v(t) \left[1 + A_{osc} \cos(\omega_{fatigue} t)\right]
+\label{eq:deceleration_dynamics}
+\end{equation}
+
+Fatigue rate increases with time:
+\begin{equation}
+k_{fatigue}(t) = k_0 \left[1 + \left(\frac{t}{\tau_{crit}}\right)^{\gamma}\right]
+\label{eq:fatigue_rate}
+\end{equation}
+
+where $\tau_{crit} \approx 9.5$ s (ATP-PCr depletion timescale) and $\gamma = 2-3$.
+
+\subsubsection{Neural Fatigue Contribution}
+
+Neural firing rate decreases:
+\begin{equation}
+f_{neural}(t) = f_{neural,0} \exp\left(-\frac{(t - t_{onset})^2}{2\sigma_{fatigue}^2}\right)
+\label{eq:neural_fatigue}
+\end{equation}
+
+for $t > t_{onset} \approx 6$ s.
+
+\subsubsection{Deceleration Magnitude}
+
+Elite athletes exhibit smaller deceleration:
+\begin{equation}
+\frac{dv}{dt}\bigg|_{t>6s} = -0.15~\text{to}~-0.30~\text{m/s}^2
+\label{eq:deceleration_rate}
+\end{equation}
+
+\textbf{Berlin 2009 Deceleration (60-100m):}
+\begin{align}
+\text{Bolt:} && -0.18~\text{m/s}^2 && \text{(best maintenance)} \\
+\text{Gay:} && -0.23~\text{m/s}^2 \\
+\text{Powell:} && -0.28~\text{m/s}^2
+\end{align}
+
+The athlete with smallest deceleration (best coupling maintenance) achieves fastest time.
+
+\subsection{Phase Integration and Total Time}
+
+Total race time integrates across phases:
+
+\begin{equation}
+t_{total} = t_{reaction} + \int_0^{100} \frac{dx}{v(x)}
+\label{eq:total_time}
+\end{equation}
+
+Velocity as function of distance:
+\begin{equation}
+v(x) = \begin{cases}
+v_{acc}(x) & 0 < x < 30~\text{m} \\
+v_{max} & 30 < x < 65~\text{m} \\
+v_{max} e^{-(x-65)/\lambda_{dec}} & 65 < x < 100~\text{m}
+\end{cases}
+\label{eq:velocity_profile}
+\end{equation}
+
+\subsection{Coupling Efficiency Across Phases}
+
+Phase coherence evolution:
+
+\begin{equation}
+\Psi(t) = \Psi_0 \begin{cases}
+1 - (1-\Psi_{min})e^{-t/\tau_{rise}} & t < 3~\text{s} \\
+1 & 3 < t < 6~\text{s} \\
+e^{-(t-6)/\tau_{decay}} & t > 6~\text{s}
+\end{cases}
+\label{eq:phase_coherence_evolution}
+\end{equation}
+
+\textbf{Critical Insight:} The athlete who maintains $\Psi(t) > 0.85$ longest achieves fastest time.
+
+\subsection{Phase-Specific Constraints}
+
+Each phase imposes distinct constraints:
+
+\textbf{Phase I (Reaction):}
+\begin{equation}
+0.12 < t_{reaction} < 0.18~\text{s}
+\end{equation}
+
+\textbf{Phase II (Acceleration):}
+\begin{equation}
+F_H \cdot v < P_{max} \sim 2500~\text{W}
+\end{equation}
+
+\textbf{Phase III (Max Velocity):}
+\begin{equation}
+f_{stride} \cdot L_{stride} < v_{max,biomech} \sim 13~\text{m/s}
+\end{equation}
+
+\textbf{Phase IV (Maintenance):}
+\begin{equation}
+E_{available}(t) > E_{threshold}
+\end{equation}
+
+\subsection{Berlin 2009 Phase Analysis Summary}
+
+\begin{table}[H]
+\centering
+\caption{Phase-by-Phase Performance (Berlin 2009 Final)}
+\begin{tabular}{lcccc}
+\toprule
+Athlete & React. (s) & 0-30m (s) & 30-65m (s) & 65-100m (s) \\
+\midrule
+Bolt & 0.146 & 3.78 & 2.77 & 2.86 \\
+Gay & 0.144 & 3.76 & 2.84 & 2.91 \\
+Powell & 0.134 & 3.81 & 2.93 & 3.00 \\
+\midrule
+Optimal & 0.140-0.150 & 3.75-3.80 & 2.75-2.85 & 2.85-2.95 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Key Observation:} Bolt's superiority emerges in Phase IV (velocity maintenance), not Phase II (acceleration) or Phase III (peak velocity). This indicates superior coupling efficiency, not superior peak capacity.
+
+\subsection{Temporal Constraint on Performance Limit}
+
+The phase analysis establishes temporal bounds:
+
+\begin{equation}
+t_{min} = t_{react,min} + t_{acc,min} + t_{maxV,min} + t_{maint,min}
+\label{eq:minimum_time}
+\end{equation}
+
+Substituting optimal values:
+\begin{align}
+t_{min} &= 0.145 + 3.75 + 2.75 + 2.85 \\
+&= 9.50~\text{s}
+\end{align}
+
+Adding measurement precision ($\pm$0.07s):
+\begin{equation}
+\boxed{t_{theoretical} = 9.57 \pm 0.07~\text{s}}
+\end{equation}
+
+This temporal constraint, combined with biochemical, neural, and mechanical constraints (following sections), defines the theoretical maximum performance.

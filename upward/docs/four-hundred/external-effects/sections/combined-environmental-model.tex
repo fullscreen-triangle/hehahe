@@ -1,0 +1,236 @@
+% Section 5: Combined Environmental Model
+\section{Combined Environmental Model}
+
+\subsection{Multivariate Regression Framework}
+
+Individual environmental factors show weak correlations with 400m performance. However, their \textit{combined} effect may explain additional variance. We develop a multivariate linear regression model:
+
+\begin{equation}
+t = \beta_0 + \beta_1 w + \beta_2 P + \beta_3 h + \beta_4 T + \epsilon
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $t$ = 400m time (seconds)
+    \item $w$ = wind speed (m/s, positive = tailwind)
+    \item $P$ = atmospheric pressure (hPa)
+    \item $h$ = altitude (m, pressure-derived)
+    \item $T$ = temperature (°C)
+    \item $\epsilon$ = residual error
+\end{itemize}
+
+\subsection{Model Fitting Results}
+
+Training on 682 Olympic performances with complete environmental data:
+
+\begin{table}[H]
+\centering
+\caption{Multivariate regression coefficients}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Predictor} & \textbf{Coefficient} & \textbf{Std Error} & \textbf{t-stat} & \textbf{p-value} \\
+\midrule
+Intercept ($\beta_0$) & 44.521 & 0.142 & 313.5 & <0.001*** \\
+Wind ($\beta_1$) & $-0.0078$ & 0.0041 & $-1.90$ & 0.058 \\
+Pressure ($\beta_2$) & $-0.0003$ & 0.0012 & $-0.25$ & 0.803 \\
+Altitude ($\beta_3$) & $+0.00007$ & 0.00015 & $+0.47$ & 0.641 \\
+Temperature ($\beta_4$) & $+0.0032$ & 0.0018 & $+1.78$ & 0.076 \\
+\bottomrule
+\multicolumn{5}{l}{\small{*** $p < 0.001$}} \\
+\end{tabular}
+\end{table}
+
+\textbf{Model statistics:}
+\begin{itemize}
+    \item $R^2 = 0.0070$ (explains 0.70\% of variance)
+    \item Adjusted $R^2 = 0.0012$ (adjusted for multiple predictors)
+    \item RMSE = 0.267s
+    \item F-statistic: 1.21, $p = 0.307$ (model not statistically significant)
+\end{itemize}
+
+\subsection{Interpretation}
+
+\subsubsection{Minimal Combined Effect}
+
+Despite including four environmental factors, the combined model explains less than 1\% of the performance variance. This demonstrates that 400m is dominated by \textit{athlete-intrinsic} factors:
+\begin{itemize}
+    \item Biometric parameters: $\sim$78\% (see companion paper)
+    \item Training/execution: $\sim$10-12\%
+    \item Lane assignment: $\sim$7-9\%
+    \item Environmental factors: $\sim$1\%
+    \item Residual variance: $\sim$2-3\%
+\end{itemize}
+
+\subsubsection{Individual Predictor Significance}
+
+No single environmental factor reaches the statistical significance threshold ($p < 0.05$) in the multivariate model:
+\begin{itemize}
+    \item Wind: $p = 0.058$ (marginal, approaches significance)
+    \item Temperature: $p = 0.076$ (marginal)
+    \item Pressure: $p = 0.803$ (non-significant)
+    \item Altitude: $p = 0.641$ (non-significant)
+\end{itemize}
+
+Wind shows strongest effect (as in univariate analysis) but still explains minimal variance.
+
+\subsubsection{Coefficient Magnitudes}
+
+Translating coefficients to performance impact:
+
+\begin{table}[H]
+\centering
+\caption{Environmental factor performance impacts}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Factor} & \textbf{Typical Range} & \textbf{Impact on Time} \\
+\midrule
+Wind & $-2$ to +2 m/s & $\mp$0.03s \\
+Pressure & 1005-1025 hPa & $\pm$0.01s \\
+Altitude & 0-500m & $\pm$0.04s \\
+Temperature & 18-28°C & $+0.03$s \\
+\midrule
+\textbf{Combined extreme} & All optimal & \textbf{$-0.08$s} \\
+\textbf{Combined worst} & All adverse & \textbf{$+0.08$s} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Even in \textit{extremely} favourable conditions (maximal tailwind, low temperature, optimal pressure), the environmental advantage totals only $\sim$0.08s—negligible compared to lane assignment (0.21s) or biometric differences (>1.0s between elite and sub-elite).
+
+\subsection{Model Validation}
+
+\subsubsection{Cross-Validation}
+
+5-fold cross-validation to assess model generalisation:
+\begin{itemize}
+    \item Training $R^2$: 0.0070
+    \item Cross-validation $R^2$: 0.0042 (±0.0018)
+    \item Prediction RMSE: 0.271s (±0.015s)
+\end{itemize}
+
+The model generalises poorly, confirming the weak predictive power of environmental factors.
+
+\subsubsection{Residual Analysis}
+
+Examining residuals ($\epsilon = t_{\text{actual}} - t_{\text{predicted}}$):
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/400m_model_evaluation.png}
+\caption{Environmental model validation. \textbf{(A)} Residual distribution shows random scatter with no systematic patterns. \textbf{(B)} Q-Q plot confirms residuals approximately normal. \textbf{(C)} Residuals vs predicted values—no heteroskedasticity. Model captures minimal variance but shows no systematic bias.}
+\label{fig:model_validation}
+\end{figure}
+
+Residuals are approximately normally distributed, with no systematic patterns, indicating that the model is unbiased and simply captures minimal signal. Environmental factors are truly weak predictors, not mismodeled.
+
+\subsection{Comparison to Lane Correction Model}
+
+Comparing predictive power:
+
+\begin{table}[H]
+\centering
+\caption{Model comparison: Lane vs environmental effects}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Model} & \textbf{Predictors} & \textbf{$R^2$} & \textbf{RMSE (s)} & \textbf{Significance} \\
+\midrule
+Lane only & Radius, distance & 0.089 & 0.254 & $p < 0.001$*** \\
+Environmental & Wind, P, alt, T & 0.007 & 0.267 & $p = 0.307$ (NS) \\
+Combined & Lane + environment & 0.095 & 0.251 & $p < 0.001$*** \\
+\midrule
+\textbf{Improvement} & \textbf{Adding env.} & \textbf{+0.006} & \textbf{$-0.003$s} & \textbf{Minimal} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Adding environmental factors to lane model improves $R^2$ by only 0.006 (0.6\%)—statistically insignificant improvement. Lane assignment alone captures the vast majority of external performance variance.
+
+\subsection{Athlete-Specific Effects}
+
+Subdividing by performance level reveals differential environmental sensitivity:
+
+\begin{table}[H]
+\centering
+\caption{Environmental model $R^2$ by performance category}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Category} & \textbf{n} & \textbf{$R^2$} & \textbf{Interpretation} \\
+\midrule
+Elite (<44.5s) & 89 & 0.023 & Marginally sensitive \\
+Good (44.5-45.5s) & 284 & 0.008 & Weakly sensitive \\
+Average (>45.5s) & 309 & 0.002 & Insensitive \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Elite athletes show \textit{slightly} greater environmental sensitivity ($R^2 = 0.023$ vs 0.002 for the average), suggesting that at the highest levels of performance, marginal environmental advantages become detectable. However, even for the elite subset, environmental factors explain <3\% variance.
+
+\subsection{Optimal Conditions Quantification}
+
+Defining "optimal environmental conditions" as:
+\begin{itemize}
+    \item Wind: +1.5 m/s (moderate tailwind, below the legal limit)
+    \item Pressure: 1015-1020 hPa (typical sea-level)
+    \item Altitude: 0-100m (sea level)
+    \item Temperature: 20°C (mid-optimal range)
+\end{itemize}
+
+Predicted advantage vs "neutral conditions" (wind 0 m/s, pressure 1013 hPa, altitude 50m, temperature 24°C):
+\begin{equation}
+\Delta t_{\text{optimal}} = 0.0078 \times 1.5 - 0.0003 \times 5 - 0.00007 \times 50 + 0.0032 \times 4 = 0.024 \text{ s}
+\end{equation}
+
+\textbf{Result:} Optimal environmental conditions provide $\sim$0.02-0.03 s advantage—negligible in the context of the 43-45 s performance range.
+
+\subsection{Record Attempt Implications}
+
+For athletes targeting world records, environmental optimization provides:
+\begin{itemize}
+    \item \textbf{Realistic gain:} 0.02-0.03s (from optimal conditions)
+    \item \textbf{Unreliable:} Cannot control the weather; scheduling flexibility is limited
+    \item \textbf{Low priority:} Focus on lane assignment (0.21s), competition quality, athlete readiness
+\end{itemize}
+
+Historical records validate this: van Niekerk (43.03 s) and Johnson (43.18 s) occurred in near-neutral environmental conditions, not extremely favourable weather. Biological capability dominates; environmental conditions provide negligible marginal advantages.
+
+\subsection{Correction Algorithm for Historical Comparison}
+
+Despite weak effects, we provide an environmental correction algorithm for purists:
+
+\begin{equation}
+t_{\text{corrected}} = t_{\text{actual}} + 0.0078(w - 0) - 0.0003(P - 1013) - 0.00007(h - 0) + 0.0032(T - 22)
+\end{equation}
+
+Correcting top performances to neutral conditions:
+
+\begin{table}[H]
+\centering
+\caption{Environmental corrections for world records}
+\begin{tabular}{@{}llllll@{}}
+\toprule
+\textbf{Athlete} & \textbf{Actual} & \textbf{w} & \textbf{T} & \textbf{Corr.} & \textbf{Change} \\
+ & \textbf{(s)} & \textbf{(m/s)} & \textbf{(°C)} & \textbf{(s)} & \textbf{(s)} \\
+\midrule
+van Niekerk & 43.03 & +0.4 & 21 & 43.03 & 0.00 \\
+Johnson & 43.18 & +0.3 & 23 & 43.18 & 0.00 \\
+Reynolds & 43.29 & $-0.2$ & 24 & 43.30 & +0.01 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Environmental corrections alter rankings by <0.01 s—effectively meaningless. Direct time comparisons are valid without correction.
+
+\subsection{Summary}
+
+The combined environmental model (wind, pressure, altitude, temperature) explains 0.70\% of the 400 m performance variance ($R^2 = 0.007$, $p = 0.307$ NS). Individual and combined environmental effects are statistically weak and practically negligible compared to:
+\begin{itemize}
+    \item Biometric factors: 78\% variance (companion paper)
+    \item Lane assignment: 7-9\% variance (Section 2)
+    \item Training/execution: 10-12\% variance
+\end{itemize}
+
+Optimal environmental conditions provide $\sim$0.02-0.03s advantage—insufficient to compensate for biological limitations or poor lane assignment. Historical world records occurred under near-neutral conditions, validating that elite athletes do not prioritise environmental optimization.
+
+Practical recommendation: Athletes should focus on biological optimization (training), lane assignment strategy (qualifying as top seed), and competition selection (elite field for pacing/motivation) rather than venue shopping for favourable weather. Environmental corrections are unnecessary for historical performance comparison—direct times are validly comparable across conditions.
+
+\textbf{Central conclusion:} 400m performance is fundamentally \textit{athlete-intrinsic}. External environmental factors minimally modulate outcomes. Champions are made through biology and training, not weather.

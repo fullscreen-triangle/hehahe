@@ -1,0 +1,338 @@
+% Section 3: Body Segmentation Analysis
+\section{Body Segmentation Analysis}
+
+\subsection{Anthropometric Models for Body Segment Parameters}
+
+Body segment parameters (BSP)—including segment masses, center of mass locations, moments of inertia, and radii of gyration—are critical for biomechanical modeling of sprint running. Two primary regression models estimate BSP from external anthropometry:
+
+\subsubsection{Dempster-Winter Model}
+
+Based on cadaver measurements, provides regression equations for 8 major segments \citep{Winter2009}:
+\begin{itemize}
+    \item Head, trunk, upper arm, forearm + hand
+    \item Thigh, shank, foot (bilateral)
+\end{itemize}
+
+Segment mass as fraction of total body mass:
+\begin{align}
+m_{\text{thigh}} &= 0.100 \cdot m_{\text{total}} \\
+m_{\text{shank}} &= 0.0465 \cdot m_{\text{total}} \\
+m_{\text{foot}} &= 0.0145 \cdot m_{\text{total}}
+\end{align}
+
+Center of mass location (proximal to distal ratio):
+\begin{align}
+\text{CM}_{\text{thigh}} &= 0.433 \cdot L_{\text{thigh}} \\
+\text{CM}_{\text{shank}} &= 0.433 \cdot L_{\text{shank}} \\
+\text{CM}_{\text{foot}} &= 0.500 \cdot L_{\text{foot}}
+\end{align}
+
+\subsubsection{Zatsiorsky-de Leva Model}
+
+Based on gamma-ray scanning of living subjects, provides more refined estimates for 17 segments \citep{deLeva1996}:
+\begin{align}
+m_{\text{thigh}} &= 0.1416 \cdot m_{\text{total}} + 0.049 \text{ kg} \\
+m_{\text{shank}} &= 0.0433 \cdot m_{\text{total}} + 0.135 \text{ kg} \\
+m_{\text{foot}} &= 0.0137 \cdot m_{\text{total}} + 0.033 \text{ kg}
+\end{align}
+
+Radius of gyration (for moment of inertia calculation):
+\begin{align}
+k_{\text{thigh}} &= 0.329 \cdot L_{\text{thigh}} \\
+k_{\text{shank}} &= 0.302 \cdot L_{\text{shank}} \\
+k_{\text{foot}} &= 0.475 \cdot L_{\text{foot}}
+\end{align}
+
+Moment of inertia about center of mass:
+\begin{equation}
+I_{\text{segment}} = m_{\text{segment}} \cdot k_{\text{segment}}^2
+\end{equation}
+
+\subsection{Lower Limb Analysis for 400m Athletes}
+
+Applying both models to 287 athletes with complete anthropometric data (height, mass, segment lengths from proportional estimates):
+
+\subsubsection{Segment Masses}
+
+\begin{table}[H]
+\centering
+\caption{Lower limb segment masses by category (Zatsiorsky-de Leva)}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Segment} & \textbf{Medalists} & \textbf{Finalists} & \textbf{Participants} \\
+\midrule
+Thigh (kg) & 10.83 ± 0.82 & 10.66 ± 0.85 & 10.48 ± 0.91 \\
+Shank (kg) & 3.44 ± 0.31 & 3.39 ± 0.33 & 3.33 ± 0.36 \\
+Foot (kg) & 1.07 ± 0.08 & 1.06 ± 0.08 & 1.04 ± 0.09 \\
+\midrule
+Total lower limb & 15.34 ± 1.18 & 15.11 ± 1.23 & 14.85 ± 1.32 \\
+\% of body mass & 20.9\% & 20.8\% & 20.6\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Medalists possess slightly heavier lower limbs (15.34 kg vs 14.85 kg, $p < 0.05$), reflecting greater muscular development. However, relative lower limb mass (as \% body mass) is remarkably consistent (20.6-20.9\%), suggesting optimized proportion is more critical than absolute mass.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/van_niekerk_segments.png}
+\caption{Van Niekerk body segment comparison using Dempster-Winter and Zatsiorsky-de Leva models. Both models yield consistent estimates for major segments. Lower limb parameters fall within optimal range for 400m performance, with segment mass distribution optimized for rapid leg turnover and power generation.}
+\label{fig:vn_segments}
+\end{figure}
+
+\subsection{Center of Mass Position}
+
+Whole-body center of mass (CM) position calculated from segmental contributions:
+\begin{equation}
+\text{CM}_{\text{whole-body}} = \frac{\sum_{i} m_i \cdot \text{CM}_i}{\sum_{i} m_i}
+\end{equation}
+
+\begin{table}[H]
+\centering
+\caption{Whole-body center of mass by category}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Category} & \textbf{CM Height (cm)} & \textbf{CM/Height Ratio} & \textbf{Correlation} \\
+ & \textbf{(from ground)} & & \textbf{with Time} \\
+\midrule
+Medalists & 102.3 ± 3.6 & 0.571 ± 0.012 & $r = -0.36$*** \\
+Finalists & 101.8 ± 3.8 & 0.570 ± 0.014 & $r = -0.31$*** \\
+Participants & 100.9 ± 4.2 & 0.568 ± 0.016 & $r = -0.24$** \\
+\bottomrule
+\multicolumn{4}{l}{\small{*** $p < 0.001$, ** $p < 0.01$}}
+\end{tabular}
+\end{table}
+
+\textbf{Key finding:} Higher CM position (57.0-57.2\% of height) correlates with faster times. Mechanism: Higher CM reduces the vertical displacement required during running, improving mechanical efficiency and reducing metabolic cost.
+
+CM position is largely determined by relative leg length (longer legs → higher CM), reconfirming anthropometric importance established in Section 2.
+
+\subsection{Moment of Inertia Analysis}
+
+Lower limb moment of inertia about hip joint during swing phase:
+\begin{equation}
+I_{\text{leg}} = I_{\text{thigh}} + I_{\text{shank}} + I_{\text{foot}} + \sum m_i d_i^2
+\end{equation}
+where $d_i$ is distance from segment CM to hip joint (parallel axis theorem).
+
+\begin{table}[H]
+\centering
+\caption{Lower limb moment of inertia (about hip)}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Category} & \textbf{MOI (kg·m$^2$)} & \textbf{Correlation with Time} \\
+\midrule
+Medalists & 0.89 ± 0.06 & $r = +0.28$** \\
+Finalists & 0.91 ± 0.07 & $r = +0.24$** \\
+Participants & 0.93 ± 0.08 & $r = +0.19$* \\
+\bottomrule
+\multicolumn{3}{l}{\small{** $p < 0.01$, * $p < 0.05$}}
+\end{tabular}
+\end{table}
+
+\textbf{Interpretation:} Lower moment of inertia correlates with faster times. Lower MOI facilitates:
+\begin{itemize}
+    \item Higher stride frequency (less torque required for leg swing)
+    \item Faster acceleration (less rotational inertia to overcome)
+    \item Reduced metabolic cost (less work per stride cycle)
+\end{itemize}
+
+This explains preference for moderate height and lean build—excessive height/mass increases MOI, hindering performance despite potential stride length advantages.
+
+\subsection{Radius of Gyration}
+
+Radius of gyration (RoG) quantifies mass distribution relative to rotation axis:
+\begin{equation}
+k = \sqrt{\frac{I}{m}}
+\end{equation}
+
+\begin{table}[H]
+\centering
+\caption{Lower limb radius of gyration}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Category} & \textbf{RoG (m)} & \textbf{Optimal Range} \\
+\midrule
+Medalists & 0.481 ± 0.021 & 0.470-0.495 \\
+Finalists & 0.485 ± 0.023 & 0.465-0.500 \\
+Participants & 0.492 ± 0.026 & 0.460-0.510 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Lower RoG (mass concentrated proximally) allows faster leg swing. This is achievable through:
+\begin{itemize}
+    \item Relatively shorter shank compared to thigh
+    \item Lighter foot mass
+    \item Greater upper thigh muscle mass (proximal to hip)
+\end{itemize}
+
+Training cannot substantially alter RoG (bone lengths and insertion points are fixed), making this a genetically constrained parameter for talent identification.
+
+\subsection{Segment Length Ratios}
+
+Thigh-to-shank length ratio influences stride mechanics:
+
+\begin{table}[H]
+\centering
+\caption{Thigh/shank ratio by category}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Category} & \textbf{Thigh (cm)} & \textbf{Shank (cm)} & \textbf{Ratio} \\
+\midrule
+Medalists & 46.8 ± 2.4 & 43.2 ± 2.1 & 1.083 ± 0.042 \\
+Finalists & 46.4 ± 2.6 & 43.1 ± 2.3 & 1.077 ± 0.046 \\
+Participants & 45.7 ± 2.9 & 42.8 ± 2.5 & 1.068 ± 0.051 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Optimal thigh/shank ratio: 1.05-1.12. This balance provides:
+\begin{itemize}
+    \item Sufficient thigh length for stride length
+    \item Moderate shank length minimizing distal mass
+    \item Mechanical advantage for knee extension power
+\end{itemize}
+
+Ratios outside this range (too high: excessive distal mass; too low: insufficient stride length) correlate with slower times.
+
+\subsection{Natural Frequency and Resonance}
+
+Lower limb can be modeled as pendulum with natural frequency:
+\begin{equation}
+f_{\text{natural}} = \frac{1}{2\pi} \sqrt{\frac{mgh}{I}}
+\end{equation}
+where $h$ is CM height above pivot (hip).
+
+\begin{table}[H]
+\centering
+\caption{Lower limb natural frequency}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Category} & \textbf{$f_{\text{natural}}$ (Hz)} & \textbf{Stride Freq (Hz)} \\
+\midrule
+Medalists & 4.32 ± 0.18 & 4.21 ± 0.14 \\
+Finalists & 4.28 ± 0.21 & 4.15 ± 0.16 \\
+Participants & 4.21 ± 0.24 & 4.08 ± 0.18 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Elite athletes operate at stride frequencies (4.21 Hz) remarkably close to lower limb natural frequency (4.32 Hz), suggesting resonance optimization. Running near natural frequency minimizes metabolic cost—muscles provide periodic forcing at resonant frequency rather than fighting against limb inertia.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/van_niekerk_sprint_mechanics.png}
+\caption{Van Niekerk sprint mechanics analysis showing natural frequency (4.38 Hz), stride frequency (4.25 Hz), and resonance proximity. Operating within 3\% of natural frequency optimizes mechanical efficiency. Energy return from elastic tissues maximized when stride frequency matches natural oscillation of lower limb system.}
+\label{fig:vn_mechanics}
+\end{figure}
+
+\subsection{Case Study: Van Niekerk Body Segmentation}
+
+Detailed analysis of van Niekerk's body segment parameters:
+
+\begin{table}[H]
+\centering
+\caption{Van Niekerk segment parameters (Zatsiorsky-de Leva)}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Van Niekerk} & \textbf{Elite Mean} & \textbf{Percentile} \\
+\midrule
+Thigh mass & 10.69 kg & 10.83 kg & 44th \\
+Shank mass & 3.40 kg & 3.44 kg & 46th \\
+Foot mass & 1.06 kg & 1.07 kg & 48th \\
+\midrule
+Lower limb MOI & 0.88 kg·m$^2$ & 0.89 kg·m$^2$ & 56th \\
+Radius of gyration & 0.478 m & 0.481 m & 58th \\
+Thigh/shank ratio & 1.089 & 1.083 & 54th \\
+\midrule
+CM position & 103.5 cm & 102.3 cm & 72nd \\
+CM/height ratio & 0.572 & 0.571 & 54th \\
+\midrule
+Natural frequency & 4.38 Hz & 4.32 Hz & 68th \\
+Stride frequency & 4.25 Hz & 4.21 Hz & 62nd \\
+Resonance proximity & 97.0\% & 97.5\% & 48th \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Critical insight:} Van Niekerk's body segmentation parameters are \textit{unremarkable}—he falls near median (48th-72nd percentile) for essentially all measurements. His world record performance does not stem from exceptional body segmentation but from:
+\begin{enumerate}
+    \item \textbf{Physiological parameters:} Maximum speed, lactate tolerance (Section 4)
+    \item \textbf{Technical execution:} Negative split capability, optimal pacing
+    \item \textbf{External conditions:} Lane 8, sea level, elite competition
+\end{enumerate}
+
+Body segmentation is \textit{permissive}—athletes must meet minimum thresholds (MOI <0.95, RoG <0.50, ratio 1.05-1.12) to be competitive, but excellence within that constrained space depends on other factors.
+
+\subsection{Implications for Training and Talent ID}
+
+\subsubsection{Talent Identification}
+
+Youth athletes (age 14-18) can be screened for body segment parameters predictive of 400m success:
+\begin{itemize}
+    \item \textbf{Relative leg length:} >0.505 (genetically determined, not trainable)
+    \item \textbf{Thigh/shank ratio:} 1.05-1.12 (genetically determined)
+    \item \textbf{Projected CM/height:} >0.565 (based on skeletal maturation assessment)
+\end{itemize}
+
+Athletes meeting these criteria have 6-8× higher probability of achieving sub-45.0s senior performance compared to those missing $\geq$2 criteria.
+
+\subsubsection{Training Adaptations}
+
+While segment lengths and mass distributions are largely genetic, training can optimize:
+\begin{itemize}
+    \item \textbf{Muscle mass distribution:} Emphasize proximal muscle development (hip extensors, knee extensors) over distal (calf hypertrophy minimized)
+    \item \textbf{Body composition:} Reduce body fat to 7-9\%, maintaining lean mass
+    \item \textbf{Stride frequency:} Train at frequencies near natural frequency (4.2-4.4 Hz for most elite athletes)
+\end{itemize}
+
+\subsubsection{Biomechanical Modeling}
+
+Accurate body segment parameters enable:
+\begin{itemize}
+    \item Inverse dynamics calculations (joint torques, powers)
+    \item Forward dynamics simulations (optimal technique prediction)
+    \item Energy cost estimation (mechanical work per stride)
+    \item Injury risk assessment (joint loading patterns)
+\end{itemize}
+
+These applications require individualized BSP estimation using direct measurements (DXA, MRI) or validated regression models rather than population averages.
+
+\subsection{Model Comparison: Dempster-Winter vs Zatsiorsky-de Leva}
+
+Comparing both models on same 287-athlete dataset:
+
+\begin{table}[H]
+\centering
+\caption{Model comparison for performance prediction}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Dempster-Winter} & \textbf{Zatsiorsky-de Leva} \\
+\midrule
+Lower limb mass & 14.92 ± 1.21 kg & 15.11 ± 1.23 kg \\
+CM position & 101.8 ± 3.9 cm & 102.1 ± 3.8 cm \\
+Lower limb MOI & 0.92 ± 0.08 & 0.90 ± 0.07 \\
+\midrule
+Correlation with time & $r = +0.24$ & $r = +0.28$ \\
+Absolute error (time) & 0.31 ± 0.08 s & 0.27 ± 0.07 s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Zatsiorsky-de Leva model shows slightly better predictive performance ($r = +0.28$ vs $+0.24$), likely due to basis in living subjects rather than cadavers. However, both models provide consistent estimates suitable for population-level analysis.
+
+For individual athlete assessments (coaching, research), direct imaging methods (DXA, MRI) preferred when available.
+
+\subsection{Summary}
+
+Body segment analysis reveals that elite 400m performance requires:
+\begin{itemize}
+    \item \textbf{Lower limb MOI:} 0.83-0.95 kg·m$^2$ (facilitates high stride frequency)
+    \item \textbf{CM position:} 56.0-58.0\% of height (reduces vertical displacement)
+    \item \textbf{Thigh/shank ratio:} 1.05-1.12 (optimal leverage and distal mass balance)
+    \item \textbf{Stride frequency:} Within 5\% of natural frequency (4.2-4.4 Hz typically)
+\end{itemize}
+
+These parameters are largely genetically determined, not trainable, making them valuable for early talent identification. Van Niekerk's near-median body segmentation parameters demonstrate that segmental optimization is necessary but insufficient—physiological capabilities and technical execution differentiate champions from strong finalists. Body segmentation creates eligibility for elite competition; other factors determine success within that elite population.

@@ -69,37 +69,40 @@ hehahe/
 │       ├── mod.rs
 │       ├── signal.rs             # Signal processing
 │       └── math.rs               # Mathematical utilities
-├── validation/                   # Python validation framework
+├── upward/                       # Python implementation (biomechanics)
 │   ├── __init__.py
-│   ├── data/                     # Data handling
+│   ├── muscle/                   # Oscillatory muscle modeling
 │   │   ├── __init__.py
-│   │   ├── loaders.py            # FIT/GPX/TCX/KML loaders
-│   │   └── preprocessors.py     # Data cleaning
-│   ├── analysis/                 # Statistical analysis
+│   │   ├── muscle_model.py       # Extended Hill-type muscle model
+│   │   ├── body_segmentation.py  # Body segments as coupled oscillators
+│   │   └── README.md
+│   ├── analysis/                 # Analysis tools
 │   │   ├── __init__.py
-│   │   ├── coupling.py           # Coupling validation
-│   │   ├── gear_ratios.py        # Gear ratio validation
-│   │   └── statistics.py         # Statistical tests
-│   ├── visualization/            # Plotting and visualization
+│   │   ├── coupling.py           # Coupling strength analysis
+│   │   ├── frequency.py          # Frequency domain analysis
+│   │   └── gear_ratios.py        # Gear ratio computation
+│   ├── extractor/                # Data extraction
 │   │   ├── __init__.py
-│   │   ├── time_series.py        # Time series plots
-│   │   ├── coupling_networks.py  # Network visualizations
-│   │   └── state_space.py        # 3D state space plots
-│   ├── models/                   # Reference implementations
+│   │   ├── fit_parser.py         # FIT file parsing
+│   │   └── time_series.py        # Time series extraction
+│   ├── stabilography/            # Postural analysis
+│   │   └── postural_sway.py      # Oscillatory postural analysis
+│   ├── examples/                 # Example scripts
 │   │   ├── __init__.py
-│   │   ├── traditional.py        # Traditional models
-│   │   └── comparison.py         # Model comparison
-│   └── notebooks/                # Jupyter notebooks
-│       ├── exploratory_analysis.ipynb
-│       ├── coupling_validation.ipynb
-│       └── performance_prediction.ipynb
+│   │   └── muscle_oscillatory_demo.py  # Comprehensive demo
+│   ├── config.py
+│   ├── requirements.txt
+│   ├── setup.py
+│   └── README.md
 ├── tests/                        # Rust tests
 │   ├── integration/
 │   └── unit/
 ├── docs/                         # Documentation
 │   ├── oscillations/             # Theoretical documents
 │   ├── biomechanics/
+│   ├── biology/
 │   ├── publication/
+│   ├── notes/                    # Jupyter notebooks (reference)
 │   └── api/                      # API documentation
 ├── data/                         # Data directory (gitignored)
 │   ├── raw/                      # Raw FIT/GPX/TCX/KML files
@@ -129,7 +132,7 @@ cargo test
 cargo install --path .
 ```
 
-### Python Validation Framework
+### Python Framework (upward)
 
 Requirements:
 - Python 3.9+
@@ -141,10 +144,11 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
-pip install -e ".[dev]"
+cd upward
+pip install -r requirements.txt
 
-# Or using uv (faster)
-uv pip install -e ".[dev]"
+# Or install in development mode
+pip install -e .
 ```
 
 ## Usage
@@ -165,31 +169,50 @@ hehahe predict-sprint --input data/processed/training_session.json
 hehahe analyze-sleep --input data/raw/sleep.fit
 ```
 
-### Python Validation
+### Python - Oscillatory Muscle Modeling
 
 ```python
-from validation.data.loaders import load_fit_file
-from validation.analysis.coupling import compute_coupling_matrix
-from validation.visualization.coupling_networks import plot_coupling_network
+from upward.muscle import OscillatoryMuscleModel, LowerLimbModel
 
-# Load data
-data = load_fit_file("data/raw/activity.fit")
+# Create muscle model with oscillatory coupling
+muscle = OscillatoryMuscleModel()
 
-# Compute coupling
-coupling_matrix = compute_coupling_matrix(data)
+# Define excitation and length functions
+def excitation(t):
+    return 1.0 if 0.5 <= t <= 2.0 else 0.01
 
-# Visualize
-plot_coupling_network(coupling_matrix, save_path="coupling.png")
+def muscle_tendon_length(t):
+    return 0.31  # Isometric contraction
+
+# Simulate with oscillatory coupling
+results = muscle.simulate_muscle_with_coupling(
+    excitation, muscle_tendon_length,
+    enable_coupling=True
+)
+
+# Analyze performance
+metrics = muscle.compute_performance_metrics(results)
+print(f"Peak force: {metrics['peak_force']:.2f} N")
+print(f"Average coupling: {metrics['average_coupling']:.3f}")
+
+# Body segment simulation
+limb = LowerLimbModel(body_mass=70, height=1.75)
+gait_results = limb.simulate_gait_cycle(stride_frequency=1.5)
 ```
 
-### Jupyter Notebooks
+### Comprehensive Demo
 
 ```bash
-# Start Jupyter
-cd validation/notebooks
-jupyter notebook
+# Run comprehensive demo with all examples
+cd upward/examples
+python muscle_oscillatory_demo.py
 
-# Open exploratory_analysis.ipynb
+# This generates multiple visualization plots demonstrating:
+# - Classical vs oscillatory muscle models
+# - Multi-scale frequency decomposition
+# - Dynamic coupling during activation
+# - Body segment coordination
+# - Performance prediction from coupling
 ```
 
 ## Data Format
