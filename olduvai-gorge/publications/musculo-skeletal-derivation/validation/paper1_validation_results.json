@@ -1,0 +1,913 @@
+{
+  "metadata": {
+    "paper": "The Musculoskeletal System as a Closed Non-Grounded Charge Circuit",
+    "timestamp": "2026-04-20T00:39:27.157616Z",
+    "description": "Numerical validation of paper 1 predictions",
+    "n_experiments": 6
+  },
+  "experiments": [
+    {
+      "name": "Hodgkin-Huxley single neuron",
+      "description": "Simulation of classic HH model, threshold and AP shape",
+      "parameters": {
+        "g_Na_mS_cm2": 120.0,
+        "g_K_mS_cm2": 36.0,
+        "g_L_mS_cm2": 0.3,
+        "E_Na_mV": 50.0,
+        "E_K_mV": -77.0,
+        "E_L_mV": -54.387,
+        "C_m_uF_cm2": 1.0,
+        "resting_V_mV": -65.0,
+        "stimulus_duration_ms": 1.0
+      },
+      "predictions": {
+        "threshold_current_uA_cm2": 7.0,
+        "peak_voltage_mV": 39.071546301825244,
+        "peak_time_ms": 4.511127781945486,
+        "spike_width_ms_at_half_max": 1.4503625906476616,
+        "current_response_sweep": [
+          {
+            "I_uA_cm2": 1.0,
+            "spike_fired": false,
+            "peak_V_mV": -64.18649767076907
+          },
+          {
+            "I_uA_cm2": 2.0,
+            "spike_fired": false,
+            "peak_V_mV": -63.35710983049305
+          },
+          {
+            "I_uA_cm2": 3.0,
+            "spike_fired": false,
+            "peak_V_mV": -62.520591693330246
+          },
+          {
+            "I_uA_cm2": 4.0,
+            "spike_fired": false,
+            "peak_V_mV": -61.67584172240003
+          },
+          {
+            "I_uA_cm2": 5.0,
+            "spike_fired": false,
+            "peak_V_mV": -60.77933536022559
+          },
+          {
+            "I_uA_cm2": 6.0,
+            "spike_fired": false,
+            "peak_V_mV": -59.885965046660466
+          },
+          {
+            "I_uA_cm2": 7.0,
+            "spike_fired": true,
+            "peak_V_mV": 34.906388939421724
+          },
+          {
+            "I_uA_cm2": 8.0,
+            "spike_fired": true,
+            "peak_V_mV": 37.87898163058592
+          },
+          {
+            "I_uA_cm2": 9.0,
+            "spike_fired": true,
+            "peak_V_mV": 38.62291095585034
+          },
+          {
+            "I_uA_cm2": 10.0,
+            "spike_fired": true,
+            "peak_V_mV": 39.0721839077572
+          },
+          {
+            "I_uA_cm2": 11.0,
+            "spike_fired": true,
+            "peak_V_mV": 39.38688623279159
+          },
+          {
+            "I_uA_cm2": 12.0,
+            "spike_fired": true,
+            "peak_V_mV": 39.62033768997177
+          },
+          {
+            "I_uA_cm2": 13.0,
+            "spike_fired": true,
+            "peak_V_mV": 39.80438555848395
+          },
+          {
+            "I_uA_cm2": 14.0,
+            "spike_fired": true,
+            "peak_V_mV": 39.95849505228407
+          },
+          {
+            "I_uA_cm2": 15.0,
+            "spike_fired": true,
+            "peak_V_mV": 40.08117767527396
+          }
+        ]
+      },
+      "literature_values": {
+        "threshold_current_uA_cm2": "~6-8 (Hodgkin & Huxley 1952)",
+        "peak_voltage_mV": "~+40 to +50 (Hodgkin & Huxley 1952)",
+        "spike_width_ms_at_half_max": "~1-2 (Hodgkin & Huxley 1952)"
+      },
+      "agreement": {
+        "threshold": "consistent with accepted range",
+        "peak": "consistent",
+        "width": "consistent"
+      }
+    },
+    {
+      "name": "Stretch reflex closed-loop latency",
+      "description": "Sum of afferent + synaptic + efferent + EC coupling delays",
+      "parameters": {
+        "afferent_velocity_m_s": 90.0,
+        "motor_velocity_m_s": 90.0,
+        "upper_limb_distance_m": 0.7,
+        "lower_limb_distance_m": 1.1
+      },
+      "predictions": {
+        "upper_limb_latency_ms": {
+          "t_mechanotransduction_ms": 3.0,
+          "t_afferent_conduction_ms": 7.777777777777778,
+          "t_spinal_synaptic_ms": 0.8,
+          "t_motor_conduction_ms": 7.777777777777778,
+          "t_NMJ_ms": 0.8,
+          "t_EC_coupling_ms": 15.0,
+          "t_total_ms": 35.15555555555556
+        },
+        "lower_limb_latency_ms": {
+          "t_mechanotransduction_ms": 3.0,
+          "t_afferent_conduction_ms": 12.222222222222221,
+          "t_spinal_synaptic_ms": 0.8,
+          "t_motor_conduction_ms": 12.222222222222221,
+          "t_NMJ_ms": 0.8,
+          "t_EC_coupling_ms": 15.0,
+          "t_total_ms": 44.044444444444444
+        }
+      },
+      "literature_values": {
+        "upper_limb_latency_ms": "30-40 (Matthews 1990)",
+        "lower_limb_latency_ms": "40-50 (Matthews 1990)"
+      },
+      "agreement": {
+        "upper": "within range",
+        "lower": "within range"
+      }
+    },
+    {
+      "name": "Muscle force-length (Gordon-Huxley-Julian)",
+      "description": "Sarcomere overlap function from filament geometry",
+      "parameters": {
+        "L_thick_um": 1.6,
+        "L_thin_um_per_side": 1.0,
+        "L_bare_zone_um": 0.15,
+        "sarcomere_length_range_um": [
+          1.0,
+          4.0
+        ]
+      },
+      "predictions": {
+        "plateau_length_um": 2.1,
+        "ascending_limb_start_um": 1.27,
+        "ascending_limb_end_um": 1.67,
+        "plateau_start_um": 2.0,
+        "plateau_end_um": 2.25,
+        "descending_limb_end_um": 3.65,
+        "force_fraction_at_1_5um": 0.5750000000000001,
+        "force_fraction_at_3_0um": 0.46428571428571425,
+        "curve_samples": [
+          {
+            "L_s_um": 1.0,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 1.05,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 1.1,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 1.15,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 1.2,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 1.25,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 1.3,
+            "force_fraction": 0.07500000000000008
+          },
+          {
+            "L_s_um": 1.35,
+            "force_fraction": 0.20000000000000023
+          },
+          {
+            "L_s_um": 1.4,
+            "force_fraction": 0.3249999999999998
+          },
+          {
+            "L_s_um": 1.45,
+            "force_fraction": 0.44999999999999996
+          },
+          {
+            "L_s_um": 1.5,
+            "force_fraction": 0.5750000000000001
+          },
+          {
+            "L_s_um": 1.55,
+            "force_fraction": 0.7000000000000002
+          },
+          {
+            "L_s_um": 1.6,
+            "force_fraction": 0.8250000000000004
+          },
+          {
+            "L_s_um": 1.65,
+            "force_fraction": 0.95
+          },
+          {
+            "L_s_um": 1.7000000000000002,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 1.75,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 1.8,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 1.85,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 1.9,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 1.9500000000000002,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 2.0,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 2.05,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 2.1,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 2.1500000000000004,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 2.2,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 2.25,
+            "force_fraction": 1.0
+          },
+          {
+            "L_s_um": 2.3,
+            "force_fraction": 0.9642857142857144
+          },
+          {
+            "L_s_um": 2.35,
+            "force_fraction": 0.9285714285714285
+          },
+          {
+            "L_s_um": 2.4000000000000004,
+            "force_fraction": 0.8928571428571426
+          },
+          {
+            "L_s_um": 2.45,
+            "force_fraction": 0.857142857142857
+          },
+          {
+            "L_s_um": 2.5,
+            "force_fraction": 0.8214285714285714
+          },
+          {
+            "L_s_um": 2.55,
+            "force_fraction": 0.7857142857142858
+          },
+          {
+            "L_s_um": 2.6,
+            "force_fraction": 0.7499999999999999
+          },
+          {
+            "L_s_um": 2.6500000000000004,
+            "force_fraction": 0.714285714285714
+          },
+          {
+            "L_s_um": 2.7,
+            "force_fraction": 0.6785714285714284
+          },
+          {
+            "L_s_um": 2.75,
+            "force_fraction": 0.6428571428571428
+          },
+          {
+            "L_s_um": 2.8,
+            "force_fraction": 0.6071428571428572
+          },
+          {
+            "L_s_um": 2.85,
+            "force_fraction": 0.5714285714285713
+          },
+          {
+            "L_s_um": 2.9000000000000004,
+            "force_fraction": 0.5357142857142855
+          },
+          {
+            "L_s_um": 2.95,
+            "force_fraction": 0.49999999999999983
+          },
+          {
+            "L_s_um": 3.0,
+            "force_fraction": 0.46428571428571425
+          },
+          {
+            "L_s_um": 3.0500000000000003,
+            "force_fraction": 0.4285714285714283
+          },
+          {
+            "L_s_um": 3.1,
+            "force_fraction": 0.39285714285714274
+          },
+          {
+            "L_s_um": 3.15,
+            "force_fraction": 0.35714285714285715
+          },
+          {
+            "L_s_um": 3.2,
+            "force_fraction": 0.3214285714285713
+          },
+          {
+            "L_s_um": 3.25,
+            "force_fraction": 0.28571428571428564
+          },
+          {
+            "L_s_um": 3.3000000000000003,
+            "force_fraction": 0.24999999999999975
+          },
+          {
+            "L_s_um": 3.35,
+            "force_fraction": 0.21428571428571416
+          },
+          {
+            "L_s_um": 3.4000000000000004,
+            "force_fraction": 0.17857142857142827
+          },
+          {
+            "L_s_um": 3.45,
+            "force_fraction": 0.14285714285714268
+          },
+          {
+            "L_s_um": 3.5,
+            "force_fraction": 0.10714285714285708
+          },
+          {
+            "L_s_um": 3.5500000000000003,
+            "force_fraction": 0.07142857142857117
+          },
+          {
+            "L_s_um": 3.6,
+            "force_fraction": 0.03571428571428559
+          },
+          {
+            "L_s_um": 3.6500000000000004,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 3.7,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 3.75,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 3.8000000000000003,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 3.85,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 3.9000000000000004,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 3.95,
+            "force_fraction": 0.0
+          },
+          {
+            "L_s_um": 4.0,
+            "force_fraction": 0.0
+          }
+        ]
+      },
+      "literature_values": {
+        "plateau_length_um": "2.0-2.25 (Gordon, Huxley, Julian 1966, frog)",
+        "descending_limb_end_um": "~3.65 (Gordon, Huxley, Julian 1966)",
+        "force_at_1_5um": "~0.58 (GHJ 1966)",
+        "force_at_3_0um": "~0.46 (GHJ 1966)"
+      },
+      "agreement": {
+        "plateau": "match",
+        "descending_end": "match",
+        "f_at_1_5": "consistent",
+        "f_at_3_0": "consistent"
+      }
+    },
+    {
+      "name": "Muscle force-velocity (Hill from Huxley 1957 kinetics)",
+      "description": "Cross-bridge kinetics yielding Hill hyperbolic curve",
+      "parameters": {
+        "f1_s_inv": 43.3,
+        "g1_s_inv": 10.0,
+        "g2_s_inv": 209.0,
+        "h_normalized": 1.0,
+        "v_max_normalized": 0.8123827392120075,
+        "F0_normalized": 1.0
+      },
+      "predictions": {
+        "F0_isometric_force": 1.0,
+        "v_max_normalized": 0.8123827392120075,
+        "hill_a_over_F0": 0.25,
+        "hill_b_over_vmax": 0.25,
+        "curve_samples": [
+          {
+            "v_normalized": 0.0,
+            "F_normalized": 1.0
+          },
+          {
+            "v_normalized": 0.019788810314138646,
+            "F_normalized": 0.889018691588785
+          },
+          {
+            "v_normalized": 0.03957762062827729,
+            "F_normalized": 0.796137339055794
+          },
+          {
+            "v_normalized": 0.059366430942415935,
+            "F_normalized": 0.7172619047619048
+          },
+          {
+            "v_normalized": 0.07915524125655458,
+            "F_normalized": 0.6494464944649446
+          },
+          {
+            "v_normalized": 0.09894405157069323,
+            "F_normalized": 0.5905172413793103
+          },
+          {
+            "v_normalized": 0.11873286188483187,
+            "F_normalized": 0.5388349514563107
+          },
+          {
+            "v_normalized": 0.13852167219897052,
+            "F_normalized": 0.49314024390243905
+          },
+          {
+            "v_normalized": 0.15831048251310917,
+            "F_normalized": 0.4524495677233429
+          },
+          {
+            "v_normalized": 0.17809929282724782,
+            "F_normalized": 0.4159836065573771
+          },
+          {
+            "v_normalized": 0.19788810314138647,
+            "F_normalized": 0.3831168831168831
+          },
+          {
+            "v_normalized": 0.21767691345552512,
+            "F_normalized": 0.3533415841584159
+          },
+          {
+            "v_normalized": 0.23746572376966374,
+            "F_normalized": 0.3262411347517731
+          },
+          {
+            "v_normalized": 0.2572545340838024,
+            "F_normalized": 0.30147058823529416
+          },
+          {
+            "v_normalized": 0.27704334439794104,
+            "F_normalized": 0.27874186550976143
+          },
+          {
+            "v_normalized": 0.2968321547120797,
+            "F_normalized": 0.2578125
+          },
+          {
+            "v_normalized": 0.31662096502621834,
+            "F_normalized": 0.2384769539078156
+          },
+          {
+            "v_normalized": 0.336409775340357,
+            "F_normalized": 0.22055984555984554
+          },
+          {
+            "v_normalized": 0.35619858565449564,
+            "F_normalized": 0.2039106145251397
+          },
+          {
+            "v_normalized": 0.3759873959686343,
+            "F_normalized": 0.18839928057553956
+          },
+          {
+            "v_normalized": 0.39577620628277294,
+            "F_normalized": 0.1739130434782608
+          },
+          {
+            "v_normalized": 0.4155650165969116,
+            "F_normalized": 0.1603535353535353
+          },
+          {
+            "v_normalized": 0.43535382691105023,
+            "F_normalized": 0.14763458401305057
+          },
+          {
+            "v_normalized": 0.4551426372251889,
+            "F_normalized": 0.13568037974683544
+          },
+          {
+            "v_normalized": 0.4749314475393275,
+            "F_normalized": 0.12442396313364057
+          },
+          {
+            "v_normalized": 0.4947202578534661,
+            "F_normalized": 0.1138059701492537
+          },
+          {
+            "v_normalized": 0.5145090681676048,
+            "F_normalized": 0.10377358490566035
+          },
+          {
+            "v_normalized": 0.5342978784817435,
+            "F_normalized": 0.09427966101694912
+          },
+          {
+            "v_normalized": 0.5540866887958821,
+            "F_normalized": 0.08528198074277854
+          },
+          {
+            "v_normalized": 0.5738754991100208,
+            "F_normalized": 0.07674262734584447
+          },
+          {
+            "v_normalized": 0.5936643094241594,
+            "F_normalized": 0.06862745098039214
+          },
+          {
+            "v_normalized": 0.6134531197382981,
+            "F_normalized": 0.06090561224489793
+          },
+          {
+            "v_normalized": 0.6332419300524367,
+            "F_normalized": 0.0535491905354919
+          },
+          {
+            "v_normalized": 0.6530307403665753,
+            "F_normalized": 0.04653284671532848
+          },
+          {
+            "v_normalized": 0.672819550680714,
+            "F_normalized": 0.03983353151010699
+          },
+          {
+            "v_normalized": 0.6926083609948526,
+            "F_normalized": 0.03343023255813954
+          },
+          {
+            "v_normalized": 0.7123971713089913,
+            "F_normalized": 0.027303754266211566
+          },
+          {
+            "v_normalized": 0.7321859816231299,
+            "F_normalized": 0.021436525612472168
+          },
+          {
+            "v_normalized": 0.7519747919372686,
+            "F_normalized": 0.015812431842966157
+          },
+          {
+            "v_normalized": 0.7717636022514072,
+            "F_normalized": 0.010416666666666685
+          }
+        ]
+      },
+      "literature_values": {
+        "hill_a_over_F0": "0.20-0.30 (Hill 1938, Zajac 1989)",
+        "hill_b_over_vmax": "0.20-0.30 (Hill 1938, Zajac 1989)"
+      },
+      "agreement": {
+        "a_over_F0": "consistent",
+        "b_over_vmax": "consistent"
+      }
+    },
+    {
+      "name": "Postural pendulum closed-loop simulation",
+      "description": "Inverted pendulum with stretch reflex feedback and supraspinal bias; compared to deafferented case",
+      "parameters": {
+        "mass_kg": 70.0,
+        "CoM_height_m": 1.0,
+        "reflex_delay_ms": 50,
+        "supraspinal_tau_s": 2.0,
+        "duration_s_intact": 60.0,
+        "duration_s_deafferented": 20.0
+      },
+      "predictions": {
+        "intact": {
+          "fell": false,
+          "fall_time_s": null,
+          "cop_rms_mm": 3.742391339575036,
+          "cop_mean_velocity_mm_s": 3.2571950163756123,
+          "power_band_supra_0_05_0_3Hz": 3.31295728471346e-06,
+          "power_band_spinal_0_3_1Hz": 1.565407488209416e-06,
+          "power_band_reflex_1_3Hz": 5.880525917983051e-09,
+          "dominant_frequency_Hz": 0.1,
+          "has_three_bands": true
+        },
+        "deafferented": {
+          "fell": true,
+          "fall_time_s": 3.948,
+          "cop_rms_mm": null,
+          "cop_mean_velocity_mm_s": null
+        }
+      },
+      "literature_values": {
+        "CoP_rms_mm": "2-5 mm (Winter 1998, Zatsiorsky 2000)",
+        "CoP_mean_velocity_mm_s": "5-20 mm/s (Winter 1998)",
+        "dominant_frequency_Hz": "0.1-2 Hz (Duarte 2008)",
+        "three_spectral_bands": "yes (Duarte 2008, Zatsiorsky 2000)",
+        "deafferented_outcome": "fall within seconds on eye closure (Cole 1991)"
+      },
+      "agreement": {
+        "intact_did_not_fall": true,
+        "intact_sway_in_range": true,
+        "intact_three_bands": true,
+        "deafferented_fell": true,
+        "deafferentation_catastrophic": true
+      }
+    },
+    {
+      "name": "Motor unit size principle (Henneman)",
+      "description": "Recruitment order with increasing synaptic drive",
+      "parameters": {
+        "N_units": 100,
+        "size_range_au": [
+          1.7288647053495456,
+          97.58661281203884
+        ],
+        "threshold_range_nA": [
+          0.17288647053495457,
+          9.758661281203885
+        ]
+      },
+      "predictions": {
+        "recruitment_ordering_smallest_first": true,
+        "recruitment_curve": [
+          {
+            "drive_nA": 0.1,
+            "units_recruited": 0,
+            "force_au": 0.0
+          },
+          {
+            "drive_nA": 0.5103448275862069,
+            "units_recruited": 3,
+            "force_au": 0.4514162783913867
+          },
+          {
+            "drive_nA": 0.9206896551724137,
+            "units_recruited": 6,
+            "force_au": 1.422738908114714
+          },
+          {
+            "drive_nA": 1.3310344827586207,
+            "units_recruited": 11,
+            "force_au": 4.169573871112325
+          },
+          {
+            "drive_nA": 1.7413793103448276,
+            "units_recruited": 18,
+            "force_au": 9.496590939245724
+          },
+          {
+            "drive_nA": 2.1517241379310343,
+            "units_recruited": 22,
+            "force_au": 13.4139973263751
+          },
+          {
+            "drive_nA": 2.5620689655172413,
+            "units_recruited": 26,
+            "force_au": 18.082224862501725
+          },
+          {
+            "drive_nA": 2.972413793103448,
+            "units_recruited": 28,
+            "force_au": 21.00229924246532
+          },
+          {
+            "drive_nA": 3.382758620689655,
+            "units_recruited": 33,
+            "force_au": 28.86167656772728
+          },
+          {
+            "drive_nA": 3.793103448275862,
+            "units_recruited": 37,
+            "force_au": 36.27677829703329
+          },
+          {
+            "drive_nA": 4.203448275862068,
+            "units_recruited": 41,
+            "force_au": 44.314683092975535
+          },
+          {
+            "drive_nA": 4.613793103448275,
+            "units_recruited": 47,
+            "force_au": 57.74556868573623
+          },
+          {
+            "drive_nA": 5.024137931034482,
+            "units_recruited": 53,
+            "force_au": 71.92472990388632
+          },
+          {
+            "drive_nA": 5.434482758620689,
+            "units_recruited": 54,
+            "force_au": 74.45490154064797
+          },
+          {
+            "drive_nA": 5.844827586206896,
+            "units_recruited": 60,
+            "force_au": 91.37888651646126
+          },
+          {
+            "drive_nA": 6.255172413793103,
+            "units_recruited": 60,
+            "force_au": 91.37888651646126
+          },
+          {
+            "drive_nA": 6.66551724137931,
+            "units_recruited": 65,
+            "force_au": 107.48099890435434
+          },
+          {
+            "drive_nA": 7.075862068965517,
+            "units_recruited": 74,
+            "force_au": 138.25905152226278
+          },
+          {
+            "drive_nA": 7.486206896551724,
+            "units_recruited": 77,
+            "force_au": 149.16187160365925
+          },
+          {
+            "drive_nA": 7.896551724137931,
+            "units_recruited": 86,
+            "force_au": 184.13407135540263
+          },
+          {
+            "drive_nA": 8.306896551724137,
+            "units_recruited": 90,
+            "force_au": 200.51650011616252
+          },
+          {
+            "drive_nA": 8.717241379310344,
+            "units_recruited": 94,
+            "force_au": 217.43234811979383
+          },
+          {
+            "drive_nA": 9.12758620689655,
+            "units_recruited": 95,
+            "force_au": 221.9032976703387
+          },
+          {
+            "drive_nA": 9.537931034482758,
+            "units_recruited": 96,
+            "force_au": 226.54078436513927
+          },
+          {
+            "drive_nA": 9.948275862068964,
+            "units_recruited": 100,
+            "force_au": 245.92563684156542
+          },
+          {
+            "drive_nA": 10.358620689655172,
+            "units_recruited": 100,
+            "force_au": 245.92563684156542
+          },
+          {
+            "drive_nA": 10.768965517241378,
+            "units_recruited": 100,
+            "force_au": 245.92563684156542
+          },
+          {
+            "drive_nA": 11.179310344827586,
+            "units_recruited": 100,
+            "force_au": 245.92563684156542
+          },
+          {
+            "drive_nA": 11.589655172413792,
+            "units_recruited": 100,
+            "force_au": 245.92563684156542
+          },
+          {
+            "drive_nA": 12.0,
+            "units_recruited": 100,
+            "force_au": 245.92563684156542
+          }
+        ]
+      },
+      "literature_values": {
+        "recruitment_order": "smallest first (Henneman 1957, 1965)",
+        "force_gradient": "smooth, continuous over orders of magnitude (Burke 1981)"
+      },
+      "agreement": {
+        "order": "match",
+        "smooth_gradient": "match"
+      }
+    }
+  ],
+  "summary": {
+    "n_experiments": 6,
+    "agreement_summary": [
+      {
+        "experiment": "Hodgkin-Huxley single neuron",
+        "passed": 3,
+        "total": 3,
+        "details": {
+          "threshold": "consistent with accepted range",
+          "peak": "consistent",
+          "width": "consistent"
+        }
+      },
+      {
+        "experiment": "Stretch reflex closed-loop latency",
+        "passed": 2,
+        "total": 2,
+        "details": {
+          "upper": "within range",
+          "lower": "within range"
+        }
+      },
+      {
+        "experiment": "Muscle force-length (Gordon-Huxley-Julian)",
+        "passed": 4,
+        "total": 4,
+        "details": {
+          "plateau": "match",
+          "descending_end": "match",
+          "f_at_1_5": "consistent",
+          "f_at_3_0": "consistent"
+        }
+      },
+      {
+        "experiment": "Muscle force-velocity (Hill from Huxley 1957 kinetics)",
+        "passed": 2,
+        "total": 2,
+        "details": {
+          "a_over_F0": "consistent",
+          "b_over_vmax": "consistent"
+        }
+      },
+      {
+        "experiment": "Postural pendulum closed-loop simulation",
+        "passed": 5,
+        "total": 5,
+        "details": {
+          "intact_did_not_fall": true,
+          "intact_sway_in_range": true,
+          "intact_three_bands": true,
+          "deafferented_fell": true,
+          "deafferentation_catastrophic": true
+        }
+      },
+      {
+        "experiment": "Motor unit size principle (Henneman)",
+        "passed": 2,
+        "total": 2,
+        "details": {
+          "order": "match",
+          "smooth_gradient": "match"
+        }
+      }
+    ]
+  }
+}
