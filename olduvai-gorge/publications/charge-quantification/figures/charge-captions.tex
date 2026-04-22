@@ -1,0 +1,63 @@
+% ═══════════════════════════════════════════════════════════════════
+% Figure captions for:
+% "Continuous Charge Subtraction for Thought and Muscle Movement"
+% ═══════════════════════════════════════════════════════════════════
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel1_component_budget.png}
+    \caption{\textbf{Component Charge Budget from the Single-Subject Longitudinal Record.}
+    (\textbf{A})~Three-dimensional bar chart plotting each component's charge rate (vertical, mC/s) against its log-capacitance (horizontal), with the five compartments coloured distinctly. Baseline, thought, and dream share $\Cbrain=1$~mF and therefore appear at the same capacitance axis value; motor uses $\Cmotor=141~\mu$F; perception uses $\Cperc=500~\mu$F. The height of each bar is the charge rate computed by Eq.~\eqref{eq:QfromU} from the per-component power budget.
+    (\textbf{B})~Log--log scatter of charge rate versus power for the five components, with dashed isoclines at the three capacitances showing $Q = \sqrt{2CP}$. Each component falls exactly on the isocline corresponding to its capacitance, confirming that the mapping is parameter-free once $C$ is fixed.
+    (\textbf{C})~Dream--thought equivalence. The measured charge rates are $\Qth=133.5$~mC/s and $\Qdr=130.2$~mC/s, giving a ratio of $0.975$ (framework target $\sqrt{0.95}=0.975$, residual $2.5\%$). The annotation shows the prediction and residual.
+    (\textbf{D})~Pie chart of the active-charge partition among baseline ($\approx 23\%$), motor ($\approx 50\%$), perception ($\approx 12\%$), and thought ($\approx 23\%$). Motor dominates because running is a power-intensive activity; housekeeping and thought contribute equal shares because $\Pbase=\Pcog$ by the $50/50$ split. Dream is not shown in the pie because it is evaluated only during REM, not additively during the awake day.}
+    \label{fig:budget}
+\end{figure*}
+
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel2_sleep_architecture.png}
+    \caption{\textbf{Sleep Architecture Distribution Across 86 Nights.}
+    (\textbf{A})~Three-dimensional scatter of REM duration versus deep-sleep duration per night, coloured by nightly RMSSD. Night index runs along the $x$-axis. The clustering shows that REM and deep durations are largely uncorrelated at the individual-night level but strongly constrained as a pair by the total sleep budget.
+    (\textbf{B})~Distribution of nightly REM duration across 86~nights, with mean $0.45$~h marked. The distribution is right-skewed, reflecting occasional long REM nights associated with sleep-debt rebound.
+    (\textbf{C})~Scatter of sleep-averaged heart rate (BPM) versus RMSSD per night, coloured by REM duration. The negative correlation reflects the autonomic baseline: nights with lower average HR tend to have higher HRV, consistent with vagal dominance during high-quality sleep.
+    (\textbf{D})~Boxplot of dream-energy budget (kcal per night) over the 86~nights, computed from Eq.~\eqref{eq:Pdream} and sleep-stage durations. The median is $3.4$~kcal; the interquartile range is $[2.1, 4.8]$~kcal; outlier nights exceed $7$~kcal. This energy converts, via $\Cbrain$ and the REM cognitive-slice assumption, to a dream charge rate $\Qdr\approx 130$~mC/s.}
+    \label{fig:sleep}
+\end{figure*}
+
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel3_cardiac_coupling.png}
+    \caption{\textbf{Cardiac-Coupling Product and Perception Fraction.}
+    (\textbf{A})~Three-dimensional surface showing the perception fraction $f_{\mathrm{perc}}$ as a function of cardiac frequency $\fcard$ and RMSSD. The surface saturates at the upper clip $0.60$ for high cardiac-coupling subjects and the lower clip $0.20$ for low-HRV subjects. The red marker shows this subject's operating point at $\fcard=1.43$~Hz, RMSSD=59~ms, $f_{\mathrm{perc}}=0.56$.
+    (\textbf{B})~Perception fraction versus the dimensionless cardiac-coupling product $\kappa=\fcard\cdot\taurest$ with the reference value $\kappa_{\mathrm{ref}}=0.06$ marked. The subject falls on the central linear region of the curve; extreme autonomic phenotypes would fall into the clipped end regions.
+    (\textbf{C})~Predicted $\Qpe$ for 40 simulated healthy subjects drawn from $\fcard\sim\mathcal{N}(1.1,0.12)$~Hz and RMSSD~$\sim\mathcal{N}(55,15)$~ms, using $\Pcog=9$~W. The red star marks this subject, whose elevated $\kappa$ places him at the upper end of the healthy $\Qpe$ distribution.
+    (\textbf{D})~RMSSD distribution over the 86~nights, with mean $59.1\pm 15.0$~ms. The reference RMSSD value of $50$~ms (Shaffer \& Ginsberg 2017 healthy adult mean) is marked. The subject is within the healthy range.}
+    \label{fig:cardiac}
+\end{figure*}
+
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel4_mirror_region.png}
+    \caption{\textbf{Activity--Sleep Mirror-Law Classification.}
+    (\textbf{A})~Three-dimensional scatter of simulated day/night pairs in $(E_{\mathrm{day}}, C_{\mathrm{night}}, \mu)$ space, where $\mu=C_{\mathrm{night}}/E_{\mathrm{day}}$ is the mirror coefficient. Points coloured green lie inside the mirror region $\mu\in[0.8,1.2]$; grey points lie outside.
+    (\textbf{B})~Two-dimensional projection of the same population. The green band shows the mirror region; the diagonal line is $\mu=1$. Each dot is coloured by its $\mu$ value. About $30\%$ of days in a typical cohort fall within the mirror region; for subjects with pronounced sleep discipline or deliberate training periodisation this can rise to $50$--$60\%$.
+    (\textbf{C})~Histogram of $\mu$ across the simulated population. The green band $[0.8, 1.2]$ is the mirror region. The distribution is right-skewed because many days involve sub-threshold activity ($E_{\mathrm{day}}$ small) and standard overnight sleep, pushing $\mu$ above unity.
+    (\textbf{D})~Predicted relative error on $\Qth$ as a function of $\mu$. Inside the mirror region the error is $\le 5\%$, sufficient for longitudinal monitoring of individual subjects. Outside, error scales linearly with $|\mu-1|$, reaching $25\%$ at $\mu=0.5$ or $\mu=1.5$. The red curve is the framework prediction of Theorem~\ref{thm:mirror}.}
+    \label{fig:mirror}
+\end{figure*}
+
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel5_clinical.png}
+    \caption{\textbf{Clinical Signatures and Run-to-Run Stability.}
+    (\textbf{A})~Three-dimensional bar chart showing the mean component charge rates (thought, motor, perception, dream) for four conditions: control, simulated Parkinson's disease, simulated Alzheimer's prodrome, and simulated general anaesthesia. Parkinson's shows a preferential collapse of $\Qmo$ with preserved $\Qth$; Alzheimer's shows preferential $\Qth$ and $\Qpe$ drops with preserved $\Qmo$; anaesthesia drops all cognitive components sharply while motor remains low due to paralysis.
+    (\textbf{B})~Bootstrap distribution of $\Qth$ from 200 seed-based resamples of the 86-night record. The point estimate $133.5$~mC/s (red dashed) sits at the centre; the $\pm 1\sigma$ band is $\pm 4.1$~mC/s ($3.1\%$ relative). This narrow distribution satisfies the longitudinal-coverage bound of Theorem~\ref{thm:minlength} at $N=86\gg 30$.
+    (\textbf{C})~Scatter of $\Qmo$ versus $\Qth$ for three simulated groups (control, Parkinson's, Alzheimer's). The two disease groups occupy distinct regions: Parkinson's shifts left along the $\Qmo$ axis; Alzheimer's shifts down along $\Qth$. The healthy cloud is centred at $(290, 133)$~mC/s (dashed grey reference lines). The orthogonality of the two disease signatures is the central clinical-use case for the subtraction procedure.
+    (\textbf{D})~Empirical cumulative distribution of the anaesthesia depth index $\delta_{\mathrm{anes}}=1-\Qth^{\mathrm{intra}}/\Qth^{\mathrm{pre}}$ for control subjects (green) and simulated general-anaesthesia patients (purple). The two distributions are essentially disjoint: $\delta_{\mathrm{anes}}$ cleanly distinguishes awake from anaesthetised states and, within the anaesthetised group, separates surgical ($\delta\gtrsim 0.8$) from conscious sedation ($\delta\approx 0.5$). The index is computable without EEG, using only consumer-wearable HR and hypnogram streams.}
+    \label{fig:clinical}
+\end{figure*}

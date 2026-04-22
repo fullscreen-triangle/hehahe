@@ -1,0 +1,311 @@
+{
+  "metadata": {
+    "paper": "Continuous Charge Subtraction for Thought and Muscle Movement",
+    "timestamp": "2026-04-22T16:25:29.332495Z",
+    "subject": "single subject, longitudinal wearable data",
+    "n_sleep_nights": 86,
+    "n_activity_days": 2,
+    "n_running_bouts": 2,
+    "mirror_day_count": 0
+  },
+  "subject_parameters": {
+    "mass_kg_mean": 83.02499999999999,
+    "mass_kg_std": 1.3620603266130824,
+    "lean_mass_kg_mean": 82.98333333333333,
+    "water_mass_kg_mean": 57.06666666666667,
+    "muscle_mass_kg_mean": 78.93333333333334,
+    "bmr_kcal_day": 1841.5,
+    "bmr_kcal_hr": 76.72916666666667,
+    "bmr_watt": 89.17634259259259,
+    "brain_total_awake_watt": 17.835268518518518,
+    "brain_baseline_watt": 8.917634259259259,
+    "brain_cognition_watt": 8.917634259259259,
+    "n_mass_measurements": 12,
+    "mass_measurement_span": [
+      "September 2021",
+      "August 2022"
+    ]
+  },
+  "sleep_architecture": {
+    "mean_REM_hr": 0.44961240310077527,
+    "mean_deep_hr": 1.5494186046511629,
+    "mean_light_hr": 3.8643410852713176,
+    "mean_awake_hr": 3.8197674418604652,
+    "mean_HR_during_sleep": 62.2977906976744,
+    "mean_rmssd": 59.05813953488372,
+    "mean_dream_energy_kcal": 3.4498385012919908
+  },
+  "activity_profile": {
+    "n_days": 2,
+    "mean_MET": 1.1620833333333334,
+    "max_MET": 17.0,
+    "mean_running_hours": 1.45
+  },
+  "running_biomechanics": {
+    "cadence_steps_per_min": {
+      "mean": 92.088,
+      "std": 3.584446400770976,
+      "min": 87.0,
+      "max": 102.0,
+      "n": 125
+    },
+    "stance_time_ms": {
+      "mean": 201.144,
+      "std": 23.068490717860154,
+      "min": 166.0,
+      "max": 246.0,
+      "n": 125
+    },
+    "speed_m_per_s": {
+      "mean": 4.632952,
+      "std": 0.4814585814958542,
+      "min": 3.4,
+      "max": 5.598,
+      "n": 125
+    },
+    "vertical_oscillation_cm": {
+      "mean": 93.6136,
+      "std": 7.250228619843653,
+      "min": 74.0,
+      "max": 120.0,
+      "n": 125
+    },
+    "step_length_m": {
+      "mean": 1502.96,
+      "std": 157.54640713135925,
+      "min": 364.0,
+      "max": 1705.0,
+      "n": 125
+    },
+    "joint_force_N": {
+      "mean": -9.719479365079367,
+      "std": 0.008091523268410457,
+      "min": -9.739,
+      "max": -9.7095,
+      "n": 63
+    },
+    "f_max_N": {
+      "mean": 1309.458196679562,
+      "std": 0.8286690034392067,
+      "min": 1307.9384277628,
+      "max": 1310.9020097349,
+      "n": 61
+    },
+    "k_leg_N_per_m": {
+      "mean": -232.39639396337702,
+      "std": 33.2171290828188,
+      "min": -271.7642404791,
+      "max": -169.2630235462,
+      "n": 61
+    },
+    "oxygen_uptake_ml_kg_min": {
+      "mean": 55.59495154187671,
+      "std": 13.928623335409318,
+      "min": 18.8910238498,
+      "max": 75.5871083002,
+      "n": 73
+    }
+  },
+  "running_bouts": {
+    "count": 2,
+    "mean_duration_s": 295.0,
+    "mean_HR_bpm": 164.69812462189958,
+    "peak_HR_bpm": 186.0
+  },
+  "hrv_parameters": {
+    "source": "sleep RMSSD + baseline ECG (doctor) + PWV monthly",
+    "rmssd_ms_mean": 59.05813953488372,
+    "rmssd_ms_std": 14.97777784241738,
+    "rmssd_n_nights": 86,
+    "baseline_hr_bpm": 86,
+    "f_cardiac_hz": 1.4333333333333333,
+    "tau_restoration_ms": 59.05813953488372,
+    "gamma_s_inv": 16.93246702106714,
+    "pulse_wave_velocity_m_s": 6.6000000000000005
+  },
+  "mirror_region": {
+    "n_pairs": 2,
+    "n_mirror": 0,
+    "fraction_mirror": 0.0,
+    "mean_coefficient": 0.0746797202423507
+  },
+  "component_power_W": {
+    "brain_total_awake": 17.835268518518518,
+    "baseline": 8.917634259259259,
+    "cognition_awake": 8.917634259259259,
+    "perception_subcomp": 5.032518266975309,
+    "thought_inclusive": 8.917634259259259,
+    "locomotion": 300.0,
+    "dream_predicted": 8.471752546296296,
+    "dream_observed": 8.917634259259259,
+    "total_waking_bmr_scaled": 103.63034145447531,
+    "kappa_cardiac_product": 0.08465,
+    "frac_perception": 0.5643333333333334
+  },
+  "component_charge_rate_mC_per_s": {
+    "baseline": 133.5487495954886,
+    "locomotion (motor)": 290.8607914449798,
+    "perception": 70.94024433969274,
+    "thought": 133.5487495954886,
+    "dream": 130.16721973136166
+  },
+  "capacitances_used_F": {
+    "C_brain": 0.001,
+    "C_motor": 0.000141,
+    "C_perception": 0.0005
+  },
+  "validation": {
+    "dream_thought_ratio": 0.9746794344808963,
+    "dream_thought_ratio_target": 1.0,
+    "dream_thought_residual_pct": 2.5320565519103666,
+    "meditative_reduction_factor": 0.1,
+    "Q_motor_bound_ok": true,
+    "Q_thought_in_expected_range": true,
+    "Q_perception_in_expected_range": true,
+    "Q_dream_in_expected_range": true,
+    "dream_thought_equiv_pass": true
+  },
+  "supporting_longitudinal": {
+    "nights_detail": [
+      {
+        "period_id": 0,
+        "bedtime_start_ms": 1641075362000,
+        "T_deep_hr": 1.5833333333333333,
+        "T_REM_hr": 0.8333333333333334,
+        "T_light_hr": 6.416666666666667,
+        "T_awake_hr": 3.5833333333333335,
+        "E_deep_kcal": 103.26467013888889,
+        "E_light_kcal": 443.11093750000003,
+        "E_REM_kcal": 60.743923611111114,
+        "E_dream_kcal": 6.394097222222221,
+        "hr_average": 62.54,
+        "hr_lowest": 50.0,
+        "rmssd": 56,
+        "breath_average": 17.0,
+        "efficiency": 68,
+        "score": 68,
+        "temperature_deviation": -0.03
+      },
+      {
+        "period_id": 2,
+        "bedtime_start_ms": 1641161158000,
+        "T_deep_hr": 1.4166666666666667,
+        "T_REM_hr": 0.75,
+        "T_light_hr": 5.5,
+        "T_awake_hr": 4.083333333333333,
+        "E_deep_kcal": 92.39470486111111,
+        "E_light_kcal": 379.80937500000005,
+        "E_REM_kcal": 54.66953125,
+        "E_dream_kcal": 5.754687500000003,
+        "hr_average": 55.1,
+        "hr_lowest": 49.0,
+        "rmssd": 80,
+        "breath_average": 16.25,
+        "efficiency": 63,
+        "score": 61,
+        "temperature_deviation": 0.1
+      },
+      {
+        "period_id": 0,
+        "bedtime_start_ms": 1641245158000,
+        "T_deep_hr": 1.1666666666666667,
+        "T_REM_hr": 0.25,
+        "T_light_hr": 5.333333333333333,
+        "T_awake_hr": 5.416666666666667,
+        "E_deep_kcal": 76.08975694444446,
+        "E_light_kcal": 368.3,
+        "E_REM_kcal": 18.223177083333333,
+        "E_dream_kcal": 1.9182291666666664,
+        "hr_average": 59.02,
+        "hr_lowest": 51.0,
+        "rmssd": 57,
+        "breath_average": 16.5,
+        "efficiency": 53,
+        "score": 52,
+        "temperature_deviation": -0.02
+      },
+      {
+        "period_id": 0,
+        "bedtime_start_ms": 1641334080000,
+        "T_deep_hr": 1.4166666666666667,
+        "T_REM_hr": 0.4166666666666667,
+        "T_light_hr": 4.166666666666667,
+        "T_awake_hr": 3.5,
+        "E_deep_kcal": 92.39470486111111,
+        "E_light_kcal": 287.73437500000006,
+        "E_REM_kcal": 30.371961805555557,
+        "E_dream_kcal": 3.1970486111111107,
+        "hr_average": 62.33,
+        "hr_lowest": 53.0,
+        "rmssd": 56,
+        "breath_average": 16.75,
+        "efficiency": 61,
+        "score": 56,
+        "temperature_deviation": 0.02
+      },
+      {
+        "period_id": 0,
+        "bedtime_start_ms": 1641421440000,
+        "T_deep_hr": 1.4166666666666667,
+        "T_REM_hr": 0.3333333333333333,
+        "T_light_hr": 4.0,
+        "T_awake_hr": 3.75,
+        "E_deep_kcal": 92.39470486111111,
+        "E_light_kcal": 276.225,
+        "E_REM_kcal": 24.297569444444445,
+        "E_dream_kcal": 2.5576388888888886,
+        "hr_average": 63.94,
+        "hr_lowest": 54.0,
+        "rmssd": 53,
+        "breath_average": 16.625,
+        "efficiency": 56,
+        "score": 42,
+        "temperature_deviation": 0.2
+      }
+    ],
+    "daily_met_detail": [
+      {
+        "day_index": 0,
+        "mean_MET": 1.0156944444444445,
+        "max_MET": 17.0,
+        "time_low_activity_hr": 14.183333333333334,
+        "time_medium_activity_hr": 8.616666666666667,
+        "time_high_activity_hr": 1.2,
+        "E_total_error_units": 64.58,
+        "E_awake_MET_integral": 24.376666666666665
+      },
+      {
+        "day_index": 1,
+        "mean_MET": 1.308472222222222,
+        "max_MET": 8.0,
+        "time_low_activity_hr": 9.916666666666666,
+        "time_medium_activity_hr": 12.383333333333333,
+        "time_high_activity_hr": 1.7,
+        "E_total_error_units": 80.98,
+        "E_awake_MET_integral": 31.40333333333333
+      }
+    ],
+    "mirror_pairs_detail": [
+      {
+        "index": 0,
+        "mean_MET": 1.0156944444444445,
+        "T_deep_hr": 1.5833333333333333,
+        "T_REM_hr": 0.8333333333333334,
+        "E_day_error": 64.58,
+        "C_night_cleanup": 5.625,
+        "mirror_coef": 0.08710126974295447,
+        "is_mirror": false
+      },
+      {
+        "index": 1,
+        "mean_MET": 1.308472222222222,
+        "T_deep_hr": 1.4166666666666667,
+        "T_REM_hr": 0.75,
+        "E_day_error": 80.98,
+        "C_night_cleanup": 5.041666666666667,
+        "mirror_coef": 0.062258170741746936,
+        "is_mirror": false
+      }
+    ]
+  }
+}
