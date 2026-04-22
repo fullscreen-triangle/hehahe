@@ -1,0 +1,63 @@
+% ═══════════════════════════════════════════════════════════════════
+% Figure captions for:
+% "The Musculoskeletal System as a Closed Non-Grounded Charge Circuit"
+% ═══════════════════════════════════════════════════════════════════
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel1_action_potential.png}
+    \caption{\textbf{Hodgkin--Huxley Action Potential Dynamics.}
+    (\textbf{A})~Three-dimensional surface of membrane potential $V(t, I)$ over stimulus current amplitudes $I \in [4, 14]\,\mu$A/cm$^2$ and post-stimulus time $t \in [0, 15]$\,ms. A $1$\,ms current pulse is applied at $t = 2$\,ms. Subthreshold stimuli ($I \lesssim 7\,\mu$A/cm$^2$) produce only passive depolarization; suprathreshold stimuli trigger the stereotyped action potential whose peak is invariant with respect to increasing amplitude, demonstrating the all-or-none response predicted by nonlinear $\mathrm{Na^+}/\mathrm{K^+}$ channel kinetics.
+    (\textbf{B})~Voltage traces at four representative stimulus amplitudes ($I = 5, 7, 10, 13\,\mu$A/cm$^2$). The $5\,\mu$A/cm$^2$ trace remains subthreshold; $7\,\mu$A/cm$^2$ is near threshold; $10$ and $13\,\mu$A/cm$^2$ each produce full action potentials peaking at $\sim +40$\,mV with spike width $\sim 1.5$\,ms at half-maximum.
+    (\textbf{C})~Peak voltage versus stimulus amplitude across the full $I$ range. The step-like transition at $I \approx 7$--$8\,\mu$A/cm$^2$ defines the action potential threshold and matches the accepted range for the canonical squid axon parameters \citep{hodgkin1952}. The dashed line marks $V = 0$.
+    (\textbf{D})~Phase portrait $V$ versus $dV/dt$ for a suprathreshold response ($I = 10\,\mu$A/cm$^2$). The closed trajectory captures the characteristic depolarization--repolarization loop, with maximum rate of rise $\sim +300$\,mV/ms during the upstroke and $\sim -80$\,mV/ms during repolarization. Zero-crossings (dashed lines) delimit the four phases of the action potential.}
+    \label{fig:action_potential}
+\end{figure*}
+
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel2_stretch_reflex.png}
+    \caption{\textbf{Stretch Reflex Closed-Loop Latency.}
+    (\textbf{A})~Three-dimensional stacked-bar decomposition of the stretch reflex latency for upper- and lower-limb reflex arcs. Six components are stacked along the latency axis: spindle mechanotransduction ($\sim$3\,ms), afferent conduction ($\sim$8\,ms upper / $\sim$12\,ms lower at $90$\,m/s), monosynaptic spinal delay ($\sim$0.8\,ms), motor axon conduction (same as afferent), neuromuscular junction delay ($\sim$0.8\,ms), and excitation--contraction coupling ($\sim$15\,ms). Total predicted latencies: upper limb $35.2$\,ms, lower limb $44.0$\,ms.
+    (\textbf{B})~Two-dimensional stacked bar of the same components, with each segment labelled by name. The additional axonal conduction in the longer lower limb accounts for the $\sim$9\,ms inter-limb difference. The invariant components (mechanotransduction, synaptic delays, EC coupling) together constitute the irreducible $\sim$20\,ms core of the reflex.
+    (\textbf{C})~Temporal profile of a simulated reflex response. A rectangular stretch of amplitude $1.0$\,a.u.\ is applied from $t = 30$ to $t = 60$\,ms (red). The reflex force response (blue) emerges after a $\sim$35\,ms delay, peaks at $\sim$0.85\,a.u., and decays exponentially with time constant $\sim$40\,ms following stretch release.
+    (\textbf{D})~Predicted stretch reflex latency as a function of limb length. Latency grows linearly with length because afferent and motor axonal conduction both scale linearly with the single-leg distance. Shaded horizontal bands mark the empirical ranges of $30$--$40$\,ms for upper-limb reflexes (blue) and $40$--$50$\,ms for lower-limb reflexes (red) \citep{matthews1990}. All six limb lengths tested fall within the appropriate empirical band.}
+    \label{fig:stretch_reflex}
+\end{figure*}
+
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel3_muscle_mechanics.png}
+    \caption{\textbf{Skeletal Muscle Mechanics from Cross-Bridge Kinetics.}
+    (\textbf{A})~Three-dimensional force surface $F(L_s, v)$ over sarcomere length $L_s \in [1.2, 3.7]\,\mu$m and normalized shortening velocity $v/v_{\max} \in [0, 0.95]$. The surface is the product of the geometric overlap function $h(L_s)$ (Gordon--Huxley--Julian) and the Hill force--velocity factor derived from Huxley 1957 cross-bridge kinetics. Force is normalized to $F_{\max}$, the isometric tetanic force at optimal overlap and zero velocity.
+    (\textbf{B})~Force--length relation at $v = 0$ (isometric). The curve exhibits the three classical regions: ascending limb for $L_s \in [1.27, 1.67]\,\mu$m, plateau (shaded green) for $L_s \in [2.0, 2.25]\,\mu$m at $F = F_{\max}$, and descending limb extending to $L_s = 3.65\,\mu$m at $F = 0$. Specific values at $L_s = 1.5\,\mu$m ($F/F_{\max} \approx 0.57$) and $L_s = 3.0\,\mu$m ($F/F_{\max} \approx 0.46$) match the Gordon--Huxley--Julian 1966 frog sartorius data to better than 3\%.
+    (\textbf{C})~Force--velocity relation at $L_s = L_{\text{opt}}$ (plateau). The hyperbolic curve is the Hill 1938 form with fitted parameters $a/F_0 = 0.25$ and $b/v_{\max} = 0.25$, consistent with the Zajac 1989 review range of $0.20$--$0.30$ for both constants.
+    (\textbf{D})~Combined length--velocity envelope evaluated at three representative velocities. The $v/v_{\max} = 0$ (blue) curve recovers panel B. At $v/v_{\max} = 0.3$ (orange), peak force drops to $\sim 35\%\,F_{\max}$; at $v/v_{\max} = 0.6$ (green), peak force drops to $\sim 15\%\,F_{\max}$. The preserved three-region shape at all velocities confirms that force--length and force--velocity factors combine multiplicatively to first order.}
+    \label{fig:muscle_mechanics}
+\end{figure*}
+
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel4_postural.png}
+    \caption{\textbf{Postural Pendulum Closed-Loop Simulation.}
+    (\textbf{A})~Three-dimensional center-of-pressure trajectory over $60$\,s of simulated quiet standing, shown as $(t, \mathrm{CoP}_{\mathrm{AP}}, \mathrm{CoP}_{\mathrm{ML}})$ where the ML component is modelled as a phase-shifted projection of the AP dynamics. The trajectory remains bounded in a $\sim \pm 10$\,mm region and never settles to a static point, demonstrating the perpetual bounded oscillation predicted for the closed ungrounded postural circuit.
+    (\textbf{B})~CoP time series for intact (blue) and deafferented (red) conditions. The intact trace exhibits continuous low-amplitude oscillation with RMS $= 3.74$\,mm. The deafferented trace, simulated by removing the proprioceptive return path to the spinal loop, diverges rapidly: the subject falls (trace saturates at $\pm 50$\,mm) at $t \approx 3.95$\,s after simulation start. The catastrophic failure of deafferented standing is a direct consequence of the circuit being unable to close.
+    (\textbf{C})~Power spectral density of the intact CoP trajectory on log--log axes. Three distinguishable spectral bands are highlighted: supraspinal slow drift ($0.05$--$0.3$\,Hz, green), postural loop oscillation ($0.3$--$1$\,Hz, orange), and reflex-band activity ($1$--$3$\,Hz, purple). The characteristic $1/f^{\alpha}$ decay between bands matches the empirical structure reported by \citet{duarte2008} and \citet{collins1993}.
+    (\textbf{D})~Phase portrait $\theta$ versus $\omega$ for the ankle angle. The intact trajectory (blue) forms a tight cloud near the origin, indicating bounded self-consistent oscillation around the equilibrium configuration. The deafferented trajectory (red) departs linearly along the unstable manifold, corresponding to monotonic forward fall once the reflex loop is severed.}
+    \label{fig:postural}
+\end{figure*}
+
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel5_motor_units.png}
+    \caption{\textbf{Motor Unit Recruitment and the Size Principle.}
+    (\textbf{A})~Three-dimensional surface of motor-unit firing rate as a function of unit rank (sorted smallest to largest) and synaptic drive current. Each unit is recruited when the drive exceeds its threshold and then its firing rate rises linearly with drive, saturating at $\sim 40$\,Hz. The progressive recruitment front moving from small-unit (low rank) to large-unit (high rank) as drive increases is the signature of Henneman's size principle.
+    (\textbf{B})~Recruitment threshold versus motor unit size across $N = 100$ simulated motor units. Threshold current scales linearly with unit size (slope $\approx 0.1$\,nA per size unit), reflecting the inverse relation between input resistance and soma surface area. Smaller motor neurons, with higher input resistances, reach firing threshold at lower synaptic currents.
+    (\textbf{C})~Total muscle force as a function of synaptic drive. The force curve is a smooth monotonically increasing function because each additional recruited unit contributes a small increment of twitch force proportional to its innervation ratio, yielding a continuous force gradient over three orders of magnitude of drive.
+    (\textbf{D})~Cumulative number of recruited motor units as drive increases. The sigmoidal shape reflects the approximately uniform distribution of thresholds across the unit population; the full pool is recruited at a drive approximately equal to the largest unit's threshold. Together, panels (B)--(D) reproduce the classical recruitment--rate coding combination that produces graded force output from a discrete pool of units.}
+    \label{fig:motor_units}
+\end{figure*}

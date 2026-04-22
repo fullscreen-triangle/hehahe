@@ -5,7 +5,13 @@
       "Bash(python validate_paper1.py)",
       "Bash(python -c ' *)",
       "Bash(python validate_paper2.py)",
-      "Bash(tasklist)"
+      "Bash(tasklist)",
+      "Bash(python -c \"import matplotlib; print\\(matplotlib.__version__\\)\")",
+      "Bash(python generate_panels.py)",
+      "Bash(pdflatex -interaction=nonstopmode -halt-on-error rambling-trembling-wearable-sensors.tex)",
+      "Bash(grep -E \"^!|Error|error|undefined.*control sequence|l\\\\.[0-9]+|Missing \\\\\\\\\\\\\\\\|Extra\")",
+      "Bash(bibtex rambling-trembling-wearable-sensors *)",
+      "Bash(pdflatex -interaction=nonstopmode rambling-trembling-wearable-sensors.tex)"
     ]
   }
 }
