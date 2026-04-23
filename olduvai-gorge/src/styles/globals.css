@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── single-theme: the site is always dark ──────────────────────── */
+html, body {
+  background: #0a0a0f;
+  color: #e8e8f0;
+  scroll-behavior: smooth;
+}
+
+/* Selection uses the bioelectric-cyan */
+::selection { background: rgba(88, 230, 217, 0.35); color: #e8e8f0; }
+
+/* Canvas scroll guard */
+canvas { touch-action: none; }
+
+/* Fine grid background for panels */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Monospace class shortcut */
+.mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }

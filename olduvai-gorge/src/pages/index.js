@@ -1,90 +1,90 @@
-import AnimatedText from "@/components/AnimatedText";
-import { HireMe } from "@/components/HireMe";
-import { LinkArrow } from "@/components/Icons";
-import Layout from "@/components/Layout";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
-import lightBulb from "../../public/images/svgs/miscellaneous_icons_1.svg";
-import profilePic from "../../public/images/profile/developer-pic-1.png";
-import TransitionEffect from "@/components/TransitionEffect";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 
+const ChargeFieldCanvas = dynamic(
+  () => import("@/components/compute/ChargeFieldCanvas"),
+  { ssr: false }
+);
 
 export default function Home() {
-  
   return (
     <>
       <Head>
-        <title>Awesome Portfolio Built with Nextjs</title>
-        <meta
-          name="description"
-          content="Explore CodeBucks's Next.js developer portfolio and 
-        discover the latest webapp projects and software engineering articles. 
-        Showcase your skills as a full-stack developer and software engineer."
-        />
+        <title>Olduvai — Closed-Circuit Charge Framework</title>
       </Head>
 
-      <TransitionEffect />
-      <article
-        className={`flex min-h-screen items-center text-dark dark:text-light sm:items-start`}
-      >
-        <Layout className="!pt-0 md:!pt-16 sm:!pt-16">
-          <div className="flex w-full items-start justify-between md:flex-col">
-            <div className="w-1/2 lg:hidden md:inline-block md:w-full">
-              <Image
-                src={profilePic}
-                alt="CodeBucks"
-                className="h-auto w-full"
-                sizes="100vw"
-                priority
-              />
-            </div>
-            <div className="flex w-1/2 flex-col items-center self-center lg:w-full lg:text-center">
-              <AnimatedText
-                text="Turning vision into reality with code and design."
-                className="!text-left !text-6xl xl:!text-5xl lg:!text-center lg:!text-6xl md:!text-5xl sm:!text-3xl"
-              />
-              <p className="my-4 text-base font-medium md:text-sm sm:!text-xs">
-              As a skilled full-stack developer, I am dedicated to turning ideas into innovative web applications. Explore my latest projects and articles, showcasing my expertise in React.js and web development.
-              </p>
-              <div className="mt-2 flex items-center self-start lg:self-center">
-                <Link
-                  // whileHover={{
-                  //   cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewport='0 0 100 100' style='font-size:24px;'><text y='50%'>👆</text></svg>"), auto`,
-                  // }}
-                  href="/dummy.pdf"
-                  target={"_blank"}
-                  className={`flex items-center rounded-lg border-2 border-solid bg-dark p-2.5 px-6 text-lg font-semibold
-            capitalize text-light hover:border-dark hover:bg-transparent hover:text-dark 
-            dark:bg-light dark:text-dark dark:hover:border-light dark:hover:bg-dark dark:hover:text-light
-            md:p-2 md:px-4 md:text-base
-             `}
-                  download
-                >
-                  Resume <LinkArrow className="ml-1 !w-6 md:!w-4" />
-                </Link>
+      {/* The charge field IS the hero. The framebuffer is the state;
+          what you observe is the computation. */}
+      <div className="fixed inset-0 -z-10">
+        <ChargeFieldCanvas
+          resolution={256}
+          seed={{ intensity: 1.1, diffuse: 0.14, relax: 0.45, decay: 0.0025 }}
+        />
+      </div>
 
-                <Link
-                  href="mailto:codebucks27@gmail.com"
-                  className="ml-4 text-lg font-medium capitalize text-dark underline 
-                  dark:text-light md:text-base"
-                >
-                  Contact
-                </Link>
-              </div>
-            </div>
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-24 pb-16 sm:px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="max-w-4xl text-center"
+        >
+          <div className="mono text-xs uppercase tracking-[0.3em] text-primary/80 mb-4">
+            rendering · computing · observation
           </div>
-        </Layout>
+          <h1 className="text-5xl sm:text-3xl md:text-4xl font-semibold leading-tight text-light mb-6">
+            The body is a <span className="text-primary">closed non-grounded circuit</span>,<br />
+            and what you see is the field that computes itself.
+          </h1>
+          <p className="mono text-sm text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
+            A theoretical framework for biomechanics, autonomous control, and
+            consciousness grounded in a single axiom: bounded phase space with
+            no external ground. Every pixel above is both the rendered output
+            and the simulation state — move your cursor to inject charge and
+            watch the circuit redistribute it.
+          </p>
 
-        <HireMe />
-        <div className="absolute right-8 bottom-8 inline-block w-24 md:hidden">
-          <Image
-            className="relative h-auto w-full"
-            src={lightBulb}
-            alt="Codebucks"
-          />
-        </div>
-      </article>
+          <div className="flex items-center justify-center gap-4 sm:flex-col">
+            <Link
+              href="/framework"
+              className="mono text-sm uppercase tracking-wider px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-dark transition-colors"
+            >
+              Read the framework →
+            </Link>
+            <Link
+              href="/tools"
+              className="mono text-sm uppercase tracking-wider px-6 py-3 border border-darkBorder text-light hover:border-light transition-colors"
+            >
+              Run the tools
+            </Link>
+          </div>
+        </motion.div>
+
+        {/* Tiny legend pinned to bottom-left */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="absolute bottom-6 left-6 mono text-[10px] uppercase tracking-widest text-muted lg:hidden"
+        >
+          <div>ρ(x,t) charge density</div>
+          <div>J = −∇φ current</div>
+          <div>R local coherence</div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="absolute bottom-6 right-6 mono text-[10px] uppercase tracking-widest text-muted lg:hidden text-right"
+        >
+          <div>closed BC · no ground</div>
+          <div>Q = √(2CP)</div>
+          <div>observation ≡ computation</div>
+        </motion.div>
+      </section>
     </>
   );
 }

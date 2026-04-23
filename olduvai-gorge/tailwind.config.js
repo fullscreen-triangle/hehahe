@@ -9,6 +9,7 @@ module.exports = {
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  // Dark is always on — site is single-theme.
   darkMode: "class",
   theme: {
     extend: {
@@ -16,10 +17,16 @@ module.exports = {
         mont: ["var(--font-mont)", ...fontFamily.sans],
       },
       colors: {
-        dark: "#1b1b1b",
-        light: "#f5f5f5",
-        primary: "#B63E96", // 240,86,199 #F056C7
-        primaryDark: "#58E6D9", // 80,230,217
+        // Charge-circuit palette: deep void, bioelectric cyan, charge-flow violet
+        dark: "#0a0a0f",        // near-black with a cold blue cast
+        darkSoft: "#14141c",    // panel background
+        darkBorder: "#2a2a38",  // subtle division
+        light: "#e8e8f0",       // primary text
+        muted: "#8a8aa0",       // secondary text
+        primary: "#58E6D9",     // bioelectric cyan (Q_motor glow)
+        primaryDark: "#58E6D9",
+        accent: "#B63E96",      // charge-redistribution violet (Q_thought glow)
+        warm: "#F0A830",        // Q_perception highlight
       },
       animation: {
         "spin-slow": "spin 8s linear infinite",
