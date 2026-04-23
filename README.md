@@ -1,4 +1,9 @@
-# Multi-Scale Oscillatory Coupling Framework for Biomechanics
+<h1 align="center">Hehahe</h1>
+<p align="center"><em>Kwira Gomo, Ushedzera kuMusha</em></p>
+
+<p align="center">
+  <img src="assets/img/kuperekedza-muchato.jpg" alt="Logo" width="300"/>
+</p>
 
 A mathematical framework for analyzing human biomechanics through multi-scale oscillatory coupling principles using consumer-grade wearable sensor data.
 
