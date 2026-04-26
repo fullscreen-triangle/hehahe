@@ -11,6 +11,10 @@ export default function MotionTool() {
   const [motionData, setMotionData] = useState(null);
   const [frameIdx, setFrameIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(true); // Required by browser autoplay policy
+  const [rate, setRate] = useState(1.0);
+  const [loop, setLoop] = useState(true);
+  const [playError, setPlayError] = useState(null);
   const [videoSize, setVideoSize] = useState({ w: 1280, h: 720 });
 
   const videoRef = useRef(null);
@@ -76,12 +80,40 @@ export default function MotionTool() {
     });
   }, [currentFrame, setAll]);
 
-  const togglePlay = () => {
+  // Keep playbackRate in sync with the slider.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v) v.playbackRate = rate;
+  }, [rate]);
+
+  const togglePlay = async () => {
     const v = videoRef.current;
     if (!v) return;
+    setPlayError(null);
     if (v.paused) {
-      v.play();
-      setPlaying(true);
+      try {
+        // play() returns a promise that rejects if the browser blocks
+        // playback (autoplay policy, codec error, no source). Await so
+        // we surface the failure rather than silently flipping state.
+        await v.play();
+        setPlaying(true);
+      } catch (err) {
+        // Fallback: re-attempt muted, which most browsers always allow.
+        if (!v.muted) {
+          v.muted = true;
+          setMuted(true);
+          try {
+            await v.play();
+            setPlaying(true);
+            return;
+          } catch (err2) {
+            setPlayError(err2.message || String(err2));
+          }
+        } else {
+          setPlayError(err.message || String(err));
+        }
+        setPlaying(false);
+      }
     } else {
       v.pause();
       setPlaying(false);
@@ -92,6 +124,12 @@ export default function MotionTool() {
     const v = videoRef.current;
     if (v) setVideoSize({ w: v.videoWidth || 1280, h: v.videoHeight || 720 });
   };
+
+  // When the video src changes, reset the play state.
+  useEffect(() => {
+    setPlaying(false);
+    setPlayError(null);
+  }, [selected.id]);
 
   return (
     <>
@@ -149,7 +187,14 @@ export default function MotionTool() {
             ref={videoRef}
             src={selected.video}
             onLoadedMetadata={onLoaded}
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
+            onEnded={() => setPlaying(false)}
             playsInline
+            muted={muted}
+            loop={loop}
+            preload="auto"
+            controls
             className="absolute inset-0 w-full h-full object-contain"
           />
           <PoseOverlay
@@ -168,13 +213,58 @@ export default function MotionTool() {
         </div>
 
         {/* Transport */}
-        <div className="flex items-center gap-3 mt-3">
+        <div className="flex items-center gap-3 mt-3 flex-wrap">
           <button
             onClick={togglePlay}
             className="mono text-xs uppercase tracking-wider px-4 py-2 border border-primary text-primary hover:bg-primary hover:text-dark transition-colors"
           >
             {playing ? "pause" : "play"}
           </button>
+          <button
+            onClick={() => {
+              const v = videoRef.current;
+              const next = !muted;
+              setMuted(next);
+              if (v) v.muted = next;
+            }}
+            className={`mono text-xs uppercase tracking-wider px-3 py-2 border transition-colors ${
+              muted
+                ? "border-darkBorder text-muted hover:text-light"
+                : "border-primary text-primary"
+            }`}
+            title="Most browsers require muted=true for autoplay"
+          >
+            {muted ? "muted" : "sound on"}
+          </button>
+          <button
+            onClick={() => {
+              const v = videoRef.current;
+              const next = !loop;
+              setLoop(next);
+              if (v) v.loop = next;
+            }}
+            className={`mono text-xs uppercase tracking-wider px-3 py-2 border transition-colors ${
+              loop
+                ? "border-primary text-primary"
+                : "border-darkBorder text-muted hover:text-light"
+            }`}
+          >
+            {loop ? "loop on" : "loop off"}
+          </button>
+          <label className="mono text-[10px] uppercase tracking-wider text-muted flex items-center gap-2">
+            speed
+            <select
+              value={rate}
+              onChange={(e) => setRate(parseFloat(e.target.value))}
+              className="bg-darkSoft border border-darkBorder text-light mono text-xs px-2 py-1.5 focus:outline-none focus:border-primary"
+            >
+              <option value={0.25}>0.25×</option>
+              <option value={0.5}>0.5×</option>
+              <option value={1}>1×</option>
+              <option value={1.5}>1.5×</option>
+              <option value={2}>2×</option>
+            </select>
+          </label>
           <input
             type="range"
             min={0}
@@ -187,12 +277,18 @@ export default function MotionTool() {
               const fps = motionData?.info?.fps ?? 30;
               if (v) v.currentTime = idx / fps;
             }}
-            className="flex-1 accent-primary"
+            className="flex-1 min-w-[200px] accent-primary"
           />
           <span className="mono text-xs text-muted w-32 text-right">
             t = {currentFrame ? currentFrame.t.toFixed(2) : "—"} s
           </span>
         </div>
+
+        {playError && (
+          <div className="mono text-[11px] text-warm border border-warm/40 bg-warm/10 px-3 py-2 mt-2">
+            playback error: {playError}
+          </div>
+        )}
 
         {/* Per-frame derived signals */}
         {currentFrame?.derived && (
