@@ -62,7 +62,6 @@ data/
 results/
 outputs/
 *.png
-*.jpg
 *.pdf
 plots/
 

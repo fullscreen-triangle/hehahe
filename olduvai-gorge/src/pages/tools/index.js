@@ -13,21 +13,28 @@ const TOOLS = [
     title: "Charge Calculator",
     status: "ready",
     blurb:
-      "Port of analyze_charge.py to the browser. Enter body and autonomic parameters; Q_thought, Q_motor, Q_perception, and Q_dream are computed entirely on the GPU — the glowing silhouette IS the calculation.",
+      "Port of analyze_charge.py to the browser. Enter body and autonomic parameters; Q_thought, Q_motor, Q_perception, and Q_dream are computed entirely on the GPU — the glowing silhouette IS the calculation, and the cross-page anatomy panel lights up with you.",
+  },
+  {
+    slug: "motion",
+    title: "Motion Analysis",
+    status: "ready",
+    blurb:
+      "Annotated sprint and skill videos paired with their per-frame pose tracks. Joint-angle and landmark deltas drive the body panel in real time — Bolt, Powell, Drogba, Beijing. The walking GLB in the panel breathes with the motion.",
   },
   {
     slug: "rambling",
     title: "Rambling / Trembling",
-    status: "planned",
+    status: "ready",
     blurb:
-      "Butterworth decomposition of a live CoP trace into supraspinal rambling and peripheral trembling. The plot is a direct texel read of the filter state; cognitive-load and aging sliders retune the shader in-place.",
+      "Live decomposition of a synthesised CoP trace into supraspinal rambling and peripheral trembling. The displayed traces are texel reads of the filter state; presets reproduce healthy, dual-task, aging, and Parkinson's signatures.",
   },
   {
     slug: "partition",
     title: "Partition Coordinates",
-    status: "planned",
+    status: "ready",
     blurb:
-      "Volumetric visualiser of (n, ℓ, m, s) orbitals computed in a 3D compute texture, raymarched through a brain GLB. C(n) = 2n² states materialise as density inside the anatomy.",
+      "Hydrogen-like orbital density |ψ_(n,ℓ,m)|² raymarched on the GPU. Each (n, ℓ, m, s) cell is a partition coordinate of the framework; C(n) = 2n² is the count of independent cells at level n.",
   },
   {
     slug: "circuit",

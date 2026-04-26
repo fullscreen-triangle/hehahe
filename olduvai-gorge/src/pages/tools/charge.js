@@ -1,8 +1,9 @@
 import Head from "next/head";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { computeCharges } from "@/lib/chargeModel";
+import { useBody } from "@/lib/bodyState";
 
 const AnatomyGlow = dynamic(
   () => import("@/components/compute/AnatomyGlow"),
@@ -93,6 +94,28 @@ export default function ChargeCalculator() {
 
   const res = useMemo(() => computeCharges(subject), [subject]);
   const Q = res.Q_mC_per_s;
+
+  // Push component charges into the global body state so the persistent
+  // anatomy panel lights up in sync with this page's computation.
+  // Normalisation matches the reference maxima used by AnatomyGlow.
+  const { setAll, setPanelOpen } = useBody();
+  useEffect(() => {
+    setAll({
+      thought:    Math.min(1, Q.thought / 300),
+      motor:      Math.min(1, Q.motor / 400),
+      perception: Math.min(1, Q.perception / 150),
+      dream:      Math.min(1, Q.dream / 200),
+      baseline:   Math.min(1, Q.baseline / 300),
+      cardiac:    0.4 + 0.4 * Math.min(1, (subject.hr_bpm - 50) / 60),
+      respiratory: 0.3,
+      visceral:   0.2,
+    });
+  }, [Q.thought, Q.motor, Q.perception, Q.dream, Q.baseline, subject.hr_bpm, setAll]);
+
+  // Auto-open the anatomy panel once so the user sees the connection.
+  useEffect(() => {
+    setPanelOpen(true);
+  }, [setPanelOpen]);
 
   return (
     <>
