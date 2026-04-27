@@ -30,3 +30,17 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# ─────────────────────────────────────────────────────────────────
+# Override parent-tree rules that exclude content the website needs.
+# The repo root .gitignore is a Python/Rust template (`lib/`, `*.png`,
+# `*.pdf` are blocked) — un-block them inside this Next.js subtree.
+# ─────────────────────────────────────────────────────────────────
+!src/lib/
+!src/lib/**
+!public/images/
+!public/images/**
+!public/papers/
+!public/papers/**
+!**/*.png
+!**/*.pdf
