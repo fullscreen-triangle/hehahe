@@ -90,7 +90,7 @@ export default function RamblingTool() {
           </div>
           <ul className="mono text-sm text-muted leading-relaxed list-disc pl-5 space-y-1">
             <li><span style={{ color: "#F0A830" }}>rambling</span> — supraspinal drift, &lt; f_c, dominant in cognitive-load conditions.</li>
-            <li><span style={{ color: "#B63E96" }}>trembling</span> — peripheral oscillation, &gt; f_c, dominant in aging and Parkinson's.</li>
+            <li><span style={{ color: "#B63E96" }}>trembling</span> — peripheral oscillation, &gt; f_c, dominant in aging and Parkinson&apos;s.</li>
             <li>raw = rambling + trembling exactly — reconstruction error is at numerical precision.</li>
           </ul>
         </div>

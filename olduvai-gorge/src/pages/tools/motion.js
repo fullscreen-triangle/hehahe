@@ -151,7 +151,7 @@ export default function MotionTool() {
           Annotated video plays alongside its pose track; per-frame
           joint and landmark deltas drive the cross-page anatomy panel
           on the right. The body lights up at the same instants that
-          the runner's joints actually fire.
+          the runner&apos;s joints actually fire.
         </p>
       </section>
 
@@ -333,7 +333,7 @@ export default function MotionTool() {
           The right-side anatomy panel reads from this page in real
           time. Open it (handle on the right edge) and swap to the 3D
           tab — the walking model glows at intensities matching the
-          motion you're scrubbing through. Rendering is computing.
+          motion you&apos;re scrubbing through. Rendering is computing.
         </motion.div>
       </section>
       <div className="h-24" />

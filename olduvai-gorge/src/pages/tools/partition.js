@@ -56,8 +56,8 @@ export default function PartitionTool() {
           Partition Coordinates
         </h1>
         <p className="mono text-sm text-muted max-w-2xl">
-          Partition cells (n, ℓ, m, s) span the framework's state
-          space. Each cell's spatial form is the probability density
+          Partition cells (n, ℓ, m, s) span the framework&apos;s state
+          space. Each cell&apos;s spatial form is the probability density
           of the corresponding hydrogen-like orbital — raymarched on
           the GPU. The display field IS the partition cell.
         </p>
@@ -130,7 +130,7 @@ export default function PartitionTool() {
         </div>
 
         <div className="mt-6 mono text-[11px] text-muted leading-relaxed max-w-2xl">
-          The framework's capacity law derives from finite phase-space
+          The framework&apos;s capacity law derives from finite phase-space
           partitioning under categorical exclusion. Each (n, ℓ, m, s)
           cell is a distinguishable state; the spatial density is the
           probability of finding the system in that cell. Higher n

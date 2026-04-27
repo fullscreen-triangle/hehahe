@@ -49,6 +49,10 @@ function Quad({ n, l, m, intensity }) {
         uAspect: { value: 1 },
       },
     });
+    // The material is constructed once and its uniforms are mutated
+    // each frame from the latest props — we deliberately do NOT
+    // recreate the material on every n/l/m/intensity change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update uniforms every frame so prop changes propagate without
