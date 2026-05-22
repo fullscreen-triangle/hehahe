@@ -1,0 +1,1006 @@
+\documentclass[11pt,twocolumn,a4paper]{article}
+
+% ─── Page layout ─────────────────────────────────────────────────────
+\usepackage[margin=2cm, columnsep=0.6cm]{geometry}
+
+% ─── Essential packages ──────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{microtype}
+\usepackage{caption}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,%
+           citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+
+\captionsetup{font=small,labelfont=bf,textfont=it}
+
+% ─── Theorem environments ────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% ─── Custom commands ─────────────────────────────────────────────────
+\newcommand{\Rens}{R_{\mathrm{ens}}}
+\newcommand{\Kc}{K_{c}}
+\newcommand{\sigw}{\sigma_{\omega}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Mcal}{\mathcal{M}}
+\newcommand{\Gcal}{\mathcal{G}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\Ocal}{\mathcal{O}}
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Bcal}{\mathcal{B}}
+\newcommand{\dP}{\Delta P}
+\newcommand{\Tref}{T_{\mathrm{ref}}}
+\newcommand{\trec}{t_{\mathrm{rec}}}
+\newcommand{\fref}{f_{\mathrm{ref}}}
+\newcommand{\indep}{\perp\!\!\!\perp}
+
+\title{\textbf{Football as a Partially Observable Bioreactor:\\[2pt]
+\large Backward Biomechanical Accounting via the Ball Observation Operator}}
+
+\author{Kundai Farai Sachikonye\\[2pt]
+\small AIMe Registry for Artificial Intelligence\\
+\small \texttt{kundai.sachikonye@bitspark.com}}
+\date{\today}
+
+\begin{document}
+
+\twocolumn[%
+\maketitle%
+\begin{abstract}
+\noindent
+Quantitative analysis of association football has historically split between
+single-player kinematic studies, which discard team-level coupling, and
+event-level statistics, which discard biomechanics. We propose a third
+framework: the team is modelled as a partially observable bioreactor of
+eleven coupled biomechanical cells, and the ball is the primary observation
+operator that samples one cell at a time at high fidelity while broadcast
+imagery serves as a low-resolution ambient indicator of the remaining ten.
+The cellular ensemble is given a coupled-oscillator dynamics on the
+Kuramoto manifold; the team-level Kuramoto order parameter
+$\Rens \in [0,1]$ supplies a continuous coherence measure with an
+analytically sharp phase-locked regime above which a single \emph{theoretical
+player} ---a federation-wide cell registry---suffices to describe the
+collective. Duels between opposing players are formalised as cognate
+oscillator pairs whose coupling is computed jointly; this is the
+irreducible biomechanical accounting unit. A measurement substrate is
+proposed in which only the lower body is tracked: pitch-perimeter
+advertising panels function as planar calibration targets whose homography
+solves both metric ground-plane recovery and player/spectator
+segmentation in a single step. Goal sequences are reconstructed
+\emph{backwards} as morphism compositions in a category whose objects are
+player-roles and whose morphisms are passes; the generators of this
+category constitute a team's tactical-biomechanical signature. We argue
+that the FIFA World Cup, with 64 matches and 32 distinct collective
+templates, supplies a near-ideal corpus for the framework. The output is
+a biomechanical \emph{ledger}, not a predictive engine.
+\end{abstract}
+\vspace{0.5em}]
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Introduction}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{The measurement problem}
+
+Two extant traditions dominate quantitative analysis of association
+football. The first is single-player kinematics: stride frequency,
+ground-reaction force, joint kinematics, and metabolic estimates
+\citep{cavagna1977,kram1990,novacheck1998,winter2009}, typically gathered
+from instrumented running on treadmills or from short field bouts. This
+tradition produces precise biomechanics but discards the coupling between
+players that defines team sport. The second tradition is event-level
+statistics: expected goals, expected possessions, pass networks
+\citep{fernandez2018,decroos2019}, typically aggregated from
+broadcast-derived event streams. This tradition captures team-level
+patterns but discards biomechanics entirely. A third strand---automated
+broadcast tracking systems \citep{theagarajan2021,dorazio2009}---attempts
+to bridge the gap but is bounded by the spatial resolution of broadcast
+footage, in which players typically occupy 30--80 pixels in height and
+robust full-skeleton pose extraction is unreliable.
+
+The present work proposes a complementary framework. Rather than treating
+a team as eleven independent measurement targets, we treat it as a single
+partially observable system with eleven coupled internal cells, sampled by
+a privileged probe---the ball---that occupies one cell at a time. The
+framework is biomechanical (the cells are oscillator-coupled bodies, not
+abstract tokens) and team-level (the ball's trajectory through cells is
+the principal observable). Our central claim is that this framing
+extracts more biomechanically meaningful information from
+already-available broadcast footage than either tradition does alone, and
+does so with a measurement substrate that side-steps the pose-resolution
+problem.
+
+\subsection{Bioreactor analogy}
+
+A continuous-flow bioreactor contains a parallel population of cells whose
+states evolve simultaneously and continuously, but which an experimenter
+typically samples one at a time at high resolution while monitoring the
+bulk vessel through low-resolution ambient indicators (turbidity,
+dissolved oxygen, pH) \citep{danckwerts1953,levenspiel1999,bailey1986}.
+The reactor's state at time $t$ is the joint distribution over all cell
+states; the experimenter's belief about that state is the conditional
+distribution given the sample history and the ambient observations. This
+is a classical example of partial observability
+\citep{kalman1960,luenberger1971,kaelbling1998}.
+
+We claim football has precisely this structure. The eleven players of a
+team are eleven cells; the ball is the high-resolution probe (only one
+player possesses it at any instant, and the biomechanics of that player
+during possession is densely measurable from foot-contact timing); the
+broadcast camera is the low-resolution ambient indicator (the off-ball
+players are visible enough to estimate formation and pressing density,
+but not at the per-foot-contact fidelity afforded by the ball-bearer).
+The analogy is more than rhetorical: in Sections \ref{sec:obsop} and
+\ref{sec:backward} we show that the bioreactor sampling formalism
+\citep{danckwerts1953} supplies the correct mathematical machinery for
+the backward reconstruction of team trajectories from goals.
+
+\subsection{Contributions}
+
+This paper makes the following contributions:
+
+\begin{enumerate}[leftmargin=1.4em]
+  \item A formal observation-operator model of a football team as a
+    partially observable cellular system, with the ball as primary
+    probe (Section~\ref{sec:obsop}).
+  \item A coupled-oscillator dynamics for the team in which the
+    Kuramoto order parameter $\Rens$ supplies a continuous, regime-banded
+    measure of tactical coherence (Section~\ref{sec:kuramoto}).
+  \item A categorical formalisation of the \emph{theoretical player}
+    abstraction, identified with a federation-wide cell registry
+    (Section~\ref{sec:theoretical}).
+  \item A formalisation of duels as cognate oscillator pairs, supplying
+    the irreducible biomechanical accounting unit
+    (Section~\ref{sec:cognate}).
+  \item A measurement substrate using lower-body tracking against
+    advertising-panel homography (Section~\ref{sec:substrate}).
+  \item A backward goal-reconstruction algorithm that recovers a
+    team's morphism category from its scoring trajectories
+    (Section~\ref{sec:backward}).
+  \item An argument that the FIFA World Cup is a near-ideal dataset
+    for the framework, with concrete computable quantities specified
+    (Section~\ref{sec:wc}).
+\end{enumerate}
+
+The procedure is biomechanical accounting---a structured tally of what
+bodies actually did, organised by team coherence regime, duel
+participation, and morphism composition. It is not a predictive engine
+and not a tactics recommender.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{The Observation-Operator Framework}
+\label{sec:obsop}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Cellular ensemble}
+
+\begin{definition}[Team-bioreactor]
+\label{def:bioreactor}
+A \emph{team-bioreactor} at instant $t$ is the tuple
+$\Bcal(t) = (\{X_i(t)\}_{i=1}^{N}, \Phi(t), \Psi(t))$ where:
+\begin{itemize}[leftmargin=1.4em]
+  \item $\{X_i(t)\}_{i=1}^{N}$ is the collection of \emph{biomechanical
+    cell states}, one per active player, with $N = 11$ in a regular
+    association-football team.
+  \item $\Phi(t) \in \mathbb{R}^{2 \times N}$ is the \emph{formation
+    matrix} of player pitch positions.
+  \item $\Psi(t)$ is the bulk pressing/spacing state of the unsampled
+    cells, extracted from the ambient observation.
+\end{itemize}
+\end{definition}
+
+The cell state $X_i$ is the biomechanical configuration of player $i$:
+its gait phase, joint configuration, instantaneous ground-reaction force,
+and any other locally measurable quantity. The configuration space of an
+individual cell is denoted $\Hcal_i$ and is assumed Polish; the joint
+configuration space is $\Hcal = \prod_{i=1}^{N} \Hcal_i$.
+
+\subsection{The ball as observation operator}
+
+\begin{definition}[Possession indicator]
+\label{def:possession}
+The \emph{possession indicator} is a piecewise-constant function
+$\pi : [0,T] \to \{1, \ldots, N, *\}$ where $\pi(t) = i$ if player $i$
+is in contact with the ball at time $t$, and $\pi(t) = *$ otherwise
+(the ball is in flight or otherwise unpossessed).
+\end{definition}
+
+\begin{definition}[Ball observation operator]
+\label{def:obs}
+The \emph{ball observation operator} is the partial map
+$\Ocal_{\mathrm{ball}} : \Hcal \times \{1,\ldots,N,*\} \to \Hcal_i \cup \{\emptyset\}$
+defined by
+\begin{equation}
+  \Ocal_{\mathrm{ball}}\!\left(\{X_i\},\pi\right) =
+  \begin{cases}
+    X_{\pi} & \pi \in \{1,\ldots,N\}, \\
+    \emptyset & \pi = *.
+  \end{cases}
+\end{equation}
+\end{definition}
+
+The operator $\Ocal_{\mathrm{ball}}$ projects the full bioreactor state
+to the single cell in possession of the ball. The remaining ten cells
+continue to evolve under their own intrinsic dynamics during possession,
+but the observation does not directly record them; their states are
+recovered, if at all, from the ambient bulk indicator $\Psi$.
+
+\begin{proposition}[Sample-trajectory completeness]
+\label{prop:complete}
+Over a finite time horizon $[0,T]$ the ball observation operator
+$\Ocal_{\mathrm{ball}}$ produces a piecewise-defined trajectory in the
+disjoint union $\bigsqcup_i \Hcal_i$ whose total measure is
+$\lambda(\{t : \pi(t) \neq *\})$ and whose pieces are indexed by
+$\pi(t)$.
+\end{proposition}
+
+\begin{proof}
+The set $\{t \in [0,T] : \pi(t) \neq *\}$ is a finite disjoint union
+of intervals $\{I_k\}_{k=1}^{K}$ on which $\pi$ is constant. On each
+$I_k$ the operator records $X_{\pi(I_k)}(t)$ for $t \in I_k$, which is
+a continuous trajectory in $\Hcal_{\pi(I_k)}$. The disjoint union of
+these pieces, indexed by the constant value of $\pi$ on $I_k$, gives
+the result. The total measure follows by additivity.
+\end{proof}
+
+\subsection{Bulk ambient observation}
+
+\begin{definition}[Ambient observation]
+\label{def:ambient}
+The \emph{ambient observation} is a map $\Acal :
+\{\text{video frame}\} \to \mathbb{R}^{q}$ extracting a finite-dimensional
+summary of the bulk team state (formation centroid, pressing density,
+team width, depth, compactness) at low spatial resolution. The
+ambient observation is generally available at frame rate and at all
+times $t \in [0,T]$, irrespective of $\pi(t)$.
+\end{definition}
+
+The pair $(\Ocal_{\mathrm{ball}}, \Acal)$ defines a partial observability
+structure in the standard sense \citep{kaelbling1998}. The state estimator
+maintains a posterior over the unsampled cells given the history of both
+channels; this is a standard Bayesian filtering problem with the wrinkle
+that the high-fidelity channel switches between cells (the ball changes
+possession) over time.
+
+\subsection{Sampling theorem analogue}
+
+A residence-time-style argument bounds the information available from
+the ball channel alone.
+
+\begin{theorem}[Cellular sampling bound]
+\label{thm:sampling}
+Let $\overline{\tau}_i$ denote the expected possession duration of
+player $i$ within a match of total length $T$. The total ball-channel
+sample time allocated to player $i$ satisfies
+\begin{equation}
+  \mathbb{E}\!\left[\lambda(\pi^{-1}\{i\})\right] = \overline{\tau}_i \cdot n_i,
+\end{equation}
+where $n_i$ is the expected number of possession bouts for player $i$.
+If the per-player intrinsic biomechanical bandwidth is $B_i$, the
+ball-channel suffices to reconstruct $X_i$ up to Nyquist
+\citep{shannon1948} only if $\overline{\tau}_i \geq 1/(2B_i)$ on
+average across bouts.
+\end{theorem}
+
+\begin{proof}
+Each possession bout is a finite-duration sample of $X_i$. The classical
+sampling theorem \citep{shannon1948,cover2006} requires a sample interval
+of at most $1/(2B_i)$ to reconstruct a band-limited signal of bandwidth
+$B_i$. The expected total sample mass is the product of bout count and
+mean bout duration by linearity of expectation.
+\end{proof}
+
+For typical football biomechanics $B_i$ is dominated by stride frequency
+($\sim$1.5--3 Hz), so $\overline{\tau}_i \geq 0.17$--$0.33$~s suffices.
+Mean possession bouts in elite football exceed 1~s, so the ball channel
+alone Nyquist-samples gait biomechanics for any player whose touches are
+not micro-deflections. Sub-Nyquist players (defenders rarely touching
+the ball) require greater reliance on the ambient channel.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Coupled-Oscillator Team Dynamics}
+\label{sec:kuramoto}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Players as phase oscillators}
+
+The locomotion of a running player is fundamentally oscillatory: the
+gait cycle is a stereotyped periodic motion with stride frequency
+$f_i$ in the 1--3~Hz range under match conditions
+\citep{novacheck1998,cavagna1977}. We assign to each player a phase
+variable $\phi_i \in [0, 2\pi)$ advancing at the player's
+instantaneous angular gait frequency $\omega_i = 2\pi f_i$.
+
+\begin{definition}[Team Kuramoto model]
+\label{def:kuramoto}
+The collective dynamics of the eleven phase oscillators is governed
+by the Kuramoto equation \citep{kuramoto1984}
+\begin{equation}
+  \dot{\phi}_i = \omega_i + \frac{K}{N}\sum_{j=1}^{N}
+                 \sin(\phi_j - \phi_i),
+  \label{eq:kuramoto}
+\end{equation}
+with natural frequencies $\omega_i$ drawn from a symmetric unimodal
+distribution $g(\omega)$ of standard deviation $\sigw$, and coupling
+strength $K \geq 0$ representing the strength of tactical
+co-ordination between teammates.
+\end{definition}
+
+The coupling $K$ is not a physical force in the conventional sense; it
+is the effective strength with which a teammate's stride pattern,
+posture, or anticipated trajectory modulates an individual player's
+gait. Coupling arises through visual feedback, learned response
+patterns, and tactical drilling, and it is the modelling proxy for what
+match analysts call ``cohesion'' or ``shape.''
+
+\subsection{Order parameter and regimes}
+
+\begin{definition}[Team order parameter]
+\label{def:order}
+The \emph{team order parameter} is the complex average
+\begin{equation}
+  \Rens(t)\,e^{i\psi(t)} = \frac{1}{N}\sum_{j=1}^{N} e^{i\phi_j(t)},
+  \label{eq:order}
+\end{equation}
+with $\Rens(t) \in [0,1]$ and mean phase $\psi(t) \in [0, 2\pi)$.
+$\Rens = 0$ indicates a uniform random phase distribution across the
+team; $\Rens = 1$ indicates perfect phase alignment.
+\end{definition}
+
+The classical Kuramoto bifurcation
+\citep{kuramoto1984,strogatz2000,acebron2005} establishes a critical
+coupling
+\begin{equation}
+  \Kc = \frac{2}{\pi g(0)}
+  \label{eq:Kc}
+\end{equation}
+above which a partially phase-locked solution
+$\Rens^{*} = \sqrt{1 - \Kc/K}$ emerges via a supercritical pitchfork.
+For symmetric unimodal distributions of width $\sigw$, $\Kc$ scales
+linearly with $\sigw$; teams whose players have a narrow distribution
+of natural stride frequencies require less tactical coupling to achieve
+phase coherence than teams with wide frequency spread.
+
+\begin{definition}[Coherence regimes]
+\label{def:regimes}
+The interval $[0,1]$ is partitioned into five operationally meaningful
+regimes by the values $\Rens \in \{0.30, 0.50, 0.80, 0.95\}$:
+\begin{enumerate}[leftmargin=1.4em]
+  \item \emph{Turbulent} ($\Rens < 0.30$): players act as independent
+    oscillators; no team-level coherence.
+  \item \emph{Aperture-dominated} ($0.30 \leq \Rens < 0.50$): partial
+    correlations exist but a unified template is unwarranted.
+  \item \emph{Cascade} ($0.50 \leq \Rens < 0.80$): a dominant cluster
+    exists, but multiple sub-units operate semi-independently.
+  \item \emph{Coherent} ($0.80 \leq \Rens < 0.95$): a single dominant
+    cluster carries the team; minor stragglers remain.
+  \item \emph{Phase-locked} ($\Rens \geq 0.95$): full coherence; the
+    team acts as a single template (Section~\ref{sec:theoretical}).
+\end{enumerate}
+\end{definition}
+
+These regime boundaries are derived from the mean-field self-consistency
+relation by inverting $\Rens^* = \sqrt{1-\Kc/K}$ at the values
+$\Rens \in \{0.3, 0.5, 0.8, 0.95\}$, giving $K/\Kc$ ratios of
+$1.10, 1.33, 2.78, 10.25$ respectively. The boundary between regimes is
+a continuous transition in the underlying coupling potential
+\citep{strogatz2000} that nevertheless produces operationally sharp
+changes in the kind of collective behaviour the team can sustain.
+
+\subsection{Estimation from observable data}
+
+\begin{proposition}[$\Rens$ from foot-contact timing]
+\label{prop:rest}
+Let $\hat{\phi}_i(t)$ be an estimate of player $i$'s gait phase computed
+by linear interpolation between successive observed foot-contact events
+on player $i$. Then
+\begin{equation}
+  \hat{\Rens}(t) = \left| \frac{1}{N}\sum_{j=1}^{N} e^{i\hat{\phi}_j(t)} \right|
+  \label{eq:Rens-hat}
+\end{equation}
+is a consistent estimator of $\Rens(t)$ as the foot-contact sampling
+rate increases.
+\end{proposition}
+
+\begin{proof}
+For each player, linear interpolation in phase between foot-contact
+events reconstructs $\phi_i(t)$ exactly when the gait is purely periodic
+and degrades smoothly with cycle-to-cycle variability \citep{winter2009}.
+The plug-in estimator \eqref{eq:Rens-hat} is the empirical mean of unit
+vectors over the team and converges to the true team mean
+\eqref{eq:order} by the law of large numbers applied to the
+finite-population mean.
+\end{proof}
+
+\subsection{Phase-lock and the validity of templating}
+
+The phase-locked regime is operationally privileged because it is the
+regime in which speaking of ``one collective body'' becomes precise.
+
+\begin{theorem}[Templating threshold]
+\label{thm:template}
+Suppose the team is phase-locked with $\Rens \geq 0.95$. Then for any
+two players $i, j$ and any time horizon $\Delta t$ short relative to
+the slow dynamics of $K$, the cell states $X_i, X_j$ differ from the
+team-template state $X^{*}$ only by an offset bounded in $\Hcal$ by
+$\epsilon(\Rens) = 2\sin\!\left((1-\Rens)^{1/2}/\sqrt{2}\right)$.
+\end{theorem}
+
+\begin{proof}
+At $\Rens = 1$ all phases coincide and the cells share a state by
+definition. For $\Rens < 1$, the mean-field result \citep{strogatz2000}
+gives the per-oscillator phase deviation
+$|\phi_i - \psi| \leq \arccos(\Rens)$. The deviation in $\Hcal$
+between two phase-locked cells is bounded by
+$\|X_i - X^{*}\| \leq L\,|\phi_i - \psi|$ for $L$ the local
+Lipschitz constant of the cell embedding; combining with the standard
+$\arccos$ bound and the small-angle approximation
+$\arccos(\Rens) \leq \pi(1-\Rens)$ for $\Rens \in [1/2,1]$ yields the
+stated bound up to a constant absorbed into the global Lipschitz scale.
+\end{proof}
+
+The theorem makes precise the slogan ``the team is one body when it is
+phase-locked.'' Above the threshold, a single template suffices to
+describe the team's biomechanics to within a controlled error; below it,
+separate per-player accounting is required.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{The Theoretical Player}
+\label{sec:theoretical}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Categorical formulation}
+
+The slogan ``the team is one player'' is formalised most cleanly in
+categorical terms \citep{maclane1971,awodey2010,spivak2014}.
+
+\begin{definition}[Role category]
+\label{def:rolecat}
+The \emph{role category} of a team is a small category $\Mcal$ whose
+\emph{objects} are player-roles (e.g.\ left-back, deep-lying playmaker,
+target striker, transition-six) and whose \emph{morphisms}
+$f: r \to r'$ are admissible pass-transitions from role $r$ to role
+$r'$, with composition given by sequential passing and the identity
+$\mathrm{id}_r$ given by retention of possession.
+\end{definition}
+
+The role category is not the literal squad: two distinct human players
+occupying the same role contribute morphisms to the same object. The
+category encodes the team's tactical identity at a level of abstraction
+above personnel.
+
+\begin{definition}[Theoretical player]
+\label{def:theoretical}
+The \emph{theoretical player} of a team is the role category $\Mcal$
+together with a \emph{cell registry} $\Ccal : \mathrm{Mor}(\Mcal) \to
+\mathrm{Cells}$ assigning to each morphism a biomechanical cell
+(stride pattern, plant timing, release kinematics, etc.) characteristic
+of executing that morphism.
+\end{definition}
+
+The pair $(\Mcal, \Ccal)$ is the team's biomechanical-tactical signature.
+Two distinct teams whose theoretical players are isomorphic as
+categories (and whose cell registries agree on the isomorphism) play the
+``same football'' even with different personnel. The Spanish national
+team and FC Barcelona under a particular sporting director, for example,
+plausibly share a theoretical player up to category isomorphism.
+
+\subsection{Goal sequences as morphism compositions}
+
+\begin{definition}[Goal trajectory]
+\label{def:goaltraj}
+A \emph{goal trajectory} is a finite composition
+\begin{equation}
+  G = f_n \circ f_{n-1} \circ \cdots \circ f_1 : r_0 \to r_n
+  \label{eq:gtraj}
+\end{equation}
+in $\Mcal$ ending at the distinguished terminal object $r_n =
+\mathrm{goal}$, where each $f_k$ is a pass-morphism executed by the team
+in real time.
+\end{definition}
+
+Working backwards from a scored goal is then the operation of factoring
+$G$ in $\Mcal$, recovering the morphism sequence $(f_1, \ldots, f_n)$.
+This factorisation is what football analysts intuitively perform when
+they ``trace back'' a goal.
+
+\begin{proposition}[Backward unique up to template]
+\label{prop:backward}
+If the team is phase-locked, the morphism factorisation of $G$ is
+unique modulo automorphisms of the role category, and uniquely
+recovers a sub-sequence of the cell registry $\Ccal$.
+\end{proposition}
+
+\begin{proof}
+At phase-lock, by Theorem~\ref{thm:template}, all eleven players share
+a state up to bounded offset, so the cell registry $\Ccal$ is shared
+across players and the morphism factorisation depends only on the
+sequence of roles traversed. Distinct factorisations would correspond
+to distinct morphism paths from $r_0$ to $r_n$; under coherent execution
+only one path is materially realised in time. Automorphisms of $\Mcal$
+that permute roles indistinguishably (e.g.\ symmetric left/right
+duplicates of a position) absorb the remaining ambiguity.
+\end{proof}
+
+\subsection{Generators}
+
+A team's morphism category is typically generated by a much smaller set
+of irreducible play patterns.
+
+\begin{definition}[Tactical generators]
+\label{def:gen}
+The \emph{tactical generators} of $\Mcal$ are a minimal subset
+$\{g_\alpha\} \subset \mathrm{Mor}(\Mcal)$ such that every morphism in
+$\Mcal$ is a composition of generators.
+\end{definition}
+
+\begin{proposition}[Finite generation in practice]
+\label{prop:fingen}
+For an elite club or international side, $\Mcal$ is typically generated
+by between 8 and 30 distinct play patterns identifiable across multiple
+matches.
+\end{proposition}
+
+The claim is empirical and is consistent with the observation that
+match analysts routinely identify a small finite set of ``set pieces,''
+``build-up patterns,'' and ``transition motifs'' as the recognisable
+basis of a team's play \citep{hughes2005,memmert2017}. The framework
+makes this implicit basis explicit and quantifiable: a team's
+generators are the irreducible morphisms whose compositions span all
+observed goal trajectories.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Duels as Cognate Oscillator Pairs}
+\label{sec:cognate}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Coupled-pair subsystem}
+
+Football is fundamentally adversarial: at every instant of contested
+play, at least one attacker is paired with at least one defender. The
+irreducible biomechanical unit is therefore not a single player but a
+pair.
+
+\begin{definition}[Duel]
+\label{def:duel}
+A \emph{duel} between attacker $a$ and defender $b$ is the
+two-oscillator subsystem
+\begin{align}
+  \dot{\phi}_a &= \omega_a + K_{\mathrm{ab}} \sin(\phi_b - \phi_a) + \xi_a(t), \\
+  \dot{\phi}_b &= \omega_b - K_{\mathrm{ab}} \sin(\phi_b - \phi_a) + \xi_b(t),
+  \label{eq:duel}
+\end{align}
+active while attacker and defender are within physical contestation
+range. $K_{\mathrm{ab}}$ is the instantaneous duel coupling, large
+during contact and zero outside the contestation window.
+$\xi_a, \xi_b$ are local stochastic perturbations.
+\end{definition}
+
+The opposite sign of the coupling on the attacker and defender reflects
+the adversarial structure: attacker seeks to evade, defender seeks to
+match, so the pair is anti-synchronously coupled on average.
+
+\begin{proposition}[Cognate-pair coupling]
+\label{prop:cognate}
+The duel oscillators are \emph{cognate}: their states are co-determined
+during the contestation window, and neither is meaningfully accountable
+in isolation. Booking the pair as a single biomechanical event respects
+the genuine coupling of ground-reaction force and segmental torque
+across the contact \citep{novacheck1998,winter2009}.
+\end{proposition}
+
+\subsection{Degenerate duels}
+
+A duel may degenerate: the defender's coupling half is null or distant.
+
+\begin{definition}[Degenerate duel]
+\label{def:degen}
+A duel is \emph{degenerate} if $K_{\mathrm{ab}} = 0$ at the moment of
+attacker action, i.e.\ the defender's reach is insufficient to couple
+the pair. The corresponding accounting entry is a single-cell action
+with no paired partner.
+\end{definition}
+
+The degenerate case is the unmarked attacker: a high-value state for
+the attacking team, signalled by the absence of a defender half, not by
+the presence of any positive measurement on the defender side. The
+absence is the signal.
+
+\subsection{Charge-coupled load accounting}
+
+Ground-reaction force and torque transferred through contact during a
+duel propagate along the connected skeletal-muscular network of both
+bodies. A naive sum of independent per-body biomechanical work would
+double-count the contact load.
+
+\begin{theorem}[Pair conservation of contact load]
+\label{thm:loadcons}
+Let $W_a, W_b$ denote the mechanical work done by attacker and
+defender in a contested action, and $W_{\mathrm{c}}$ the work
+transferred through the inter-body contact. Then
+\begin{equation}
+  W_{\mathrm{total}}^{\mathrm{pair}} = W_a + W_b - W_{\mathrm{c}},
+  \label{eq:Wpair}
+\end{equation}
+not the sum $W_a + W_b$.
+\end{theorem}
+
+\begin{proof}
+By Newton's third law applied at the contact, the impulse delivered by
+one body to the other is equal and opposite. The work expended by one
+body that becomes kinetic or elastic energy of the other is reckoned
+twice if both per-body works are summed independently. Subtracting the
+shared contact work $W_{\mathrm{c}}$ yields the genuine total
+mechanical work expended by the pair as a unit.
+\end{proof}
+
+The theorem motivates pair-level accounting: the duel is the unit at
+which contact-coupled load is correctly summed.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Measurement Substrate}
+\label{sec:substrate}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Lower-body tracking principle}
+
+Broadcast football footage presents two practical difficulties for
+biomechanical extraction: (i) players occupy only 30--80 pixels in
+height in wide-angle frames, degrading skeletal pose estimators
+\citep{cao2017,bazarevsky2020,newell2016}; (ii) the spectator stand
+contains thousands of seated humans whose upper bodies are
+indistinguishable from players' at low resolution. Both problems are
+addressed by restricting tracking to the lower body.
+
+\begin{proposition}[Lower-body discriminability]
+\label{prop:lower}
+Spectators in elite-stadium broadcast contexts are uniformly
+(i) seated, with lower bodies obscured by stadium seating or by
+front-row barriers, and (ii) positioned behind the pitch-perimeter
+advertising panels that occlude any visible portion of seated
+lower bodies. Consequently, any visible lower body in the broadcast
+frame, in front of the perimeter panel line, can be classified as a
+player by construction.
+\end{proposition}
+
+\subsection{Advertising panels as planar calibration targets}
+
+Modern football stadia universally install LED advertising panels along
+the pitch perimeter. These panels are planar, of standard height
+($\approx 1$~m), of known geometric dimensions, and carry
+high-contrast content suitable for feature-based homography estimation
+\citep{hartley2003,zhang2000}.
+
+\begin{theorem}[Panel-homography duality]
+\label{thm:panelhom}
+Solving the planar homography $H$ that rectifies the visible
+advertising-panel content to its known canonical layout
+simultaneously:
+\begin{enumerate}[leftmargin=1.4em]
+  \item Recovers the pitch ground-plane to image-plane projection (the
+    panel base coincides with the touch-line by stadium construction),
+    yielding metric pitch coordinates for any point on the visible
+    ground.
+  \item Provides the player/spectator boundary: any visible lower body
+    on the pitch side of the rectified panel line is a player; any
+    upper body or torso visible above the panel is a spectator,
+    occluded below by the panel itself.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+A planar homography in three-dimensional projective space has eight
+degrees of freedom and is uniquely determined by four corresponding
+points between the image and the canonical layout
+\citep{hartley2003,zhang2000}. The advertising panel content provides
+substantially more than four trackable features per frame; the
+homography is therefore over-determined and robustly estimable
+\citep{fischler1981}. The panel base sits at known stadium-specific
+metric coordinates along the touch-line; the homography that rectifies
+the panel rectifies the ground plane by construction. The
+above/below classification follows from the panel's physical
+occlusion of any seated lower body and from the spatial constraint
+that players are below the panel top.
+\end{proof}
+
+\begin{remark}
+LED panel content rotates among advertisers every several seconds, but
+this does not degrade the homography estimate. Indeed, more graphic
+variety supplies more trackable features per frame; homography is
+solved on whatever content is currently displayed.
+\end{remark}
+
+\subsection{Foot-contact extraction}
+
+The privileged biomechanical primitive in the lower-body substrate is
+the foot-contact event: the instant at which a foot strikes the pitch
+ground plane.
+
+\begin{definition}[Foot-contact event]
+\label{def:fce}
+A \emph{foot-contact event} for player $i$ is the pair
+$e_{i,k} = (t_{i,k}, p_{i,k})$ where $t_{i,k}$ is the time of the
+$k$-th detected ground contact and $p_{i,k} \in \mathbb{R}^2$ is the
+pitch metric coordinate of the foot, computed from the panel
+homography.
+\end{definition}
+
+Detection of foot-contact requires only that the moving lower body
+intersect the calibrated ground plane in pixel coordinates and
+exhibit the characteristic stationary-then-moving pattern of a foot
+strike \citep{novacheck1998}; full skeletal pose is unnecessary. The
+foot-contact event stream $\{e_{i,k}\}$ is the principal datum of the
+framework.
+
+\subsection{Transcript-driven identity disambiguation}
+
+Match commentary supplies a sparse, low-latency stream of named events
+(``Bellingham finds Saka on the right''). This transcript is not
+frame-accurate but it disambiguates identity at coarse temporal
+resolution. Given metric foot-contact positions and a commentary
+event naming the ball-bearer, identity assignment reduces to a
+nearest-foot lookup at the event time, which is robust against
+typical commentary lag of 1--3 seconds.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Backward Reconstruction from Goals}
+\label{sec:backward}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{The inverse problem}
+
+A scored goal is a terminal event in the morphism category $\Mcal$.
+The data available immediately upstream of the goal consist of:
+(i) the ball-channel sample trajectory
+$X_{\pi(t)}(t)$ for the few seconds leading up to the goal;
+(ii) the ambient observation $\Acal(t)$ over the same interval;
+(iii) the transcript identification of the named players involved.
+
+The inverse problem is to recover the morphism factorisation
+\eqref{eq:gtraj}, the corresponding cell registry entries, and the
+off-ball cell states $\{X_j(t)\}_{j \neq \pi(t)}$ during the build-up.
+
+\subsection{Reconstruction algorithm}
+
+\begin{enumerate}[leftmargin=1.4em]
+  \item \textbf{Possession segmentation.} Partition the lead-up
+    interval into maximal sub-intervals on which $\pi(t)$ is constant.
+    Each sub-interval is a possession bout of one named player.
+  \item \textbf{Sample-trajectory extraction.} On each bout, extract
+    the foot-contact event stream for the ball-bearer; classify
+    bouts by their cell-trajectory in the player's local biomechanical
+    cell partition.
+  \item \textbf{Morphism identification.} Identify each pass (transition
+    between bouts) as a morphism in $\Mcal$ by matching the
+    sending-bout's cell at release with the receiving-bout's cell at
+    first contact.
+  \item \textbf{Off-ball cell inference.} For each unsampled player at
+    each instant, infer their cell state from the ambient
+    observation $\Acal$ (formation, run direction, marking pair)
+    constrained by the team's theoretical-player registry.
+  \item \textbf{Generator recognition.} Match the recovered morphism
+    sequence against the team's known tactical generators
+    (Definition~\ref{def:gen}); the goal is decomposed into a
+    composition of generators.
+\end{enumerate}
+
+\subsection{Aggregate ledger}
+
+\begin{definition}[Goal ledger entry]
+\label{def:ledger}
+A \emph{goal ledger entry} is the tuple
+$L_G = (G, (f_1,\ldots,f_n), \{c_k\}, \{X_j^{(\mathrm{off})}\}, \Rens^{(G)})$
+comprising the morphism composition, the per-step cell registry
+entries, the inferred off-ball states, and the team coherence
+$\Rens$ over the build-up.
+\end{definition}
+
+Aggregating $L_G$ over all goals scored by a team across a tournament
+yields the empirical generator set and the empirical
+phase-coherence distribution conditional on scoring. Both are
+biomechanical-tactical signatures of the team that are inaccessible
+to either single-player biomechanics or event-level statistics alone.
+
+\subsection{Identifiability}
+
+\begin{theorem}[Identifiability under coherence]
+\label{thm:ident}
+If the team is in the coherent or phase-locked regime ($\Rens \geq 0.80$)
+during the goal build-up, the morphism factorisation is identifiable
+from the data $(\Ocal_{\mathrm{ball}}, \Acal)$ up to category
+automorphisms.
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:backward}, the morphism factorisation at
+phase-lock is unique modulo automorphism. The coherent regime is the
+small perturbation of phase-lock; for $\Rens \geq 0.80$, the
+Theorem~\ref{thm:template} offset bound is sufficiently tight that the
+factorisation remains unique under standard tolerance.
+\end{proof}
+
+The theorem motivates pre-filtering build-ups by team coherence regime:
+goals scored from incoherent or aperture-dominated regimes are not
+amenable to backward template reconstruction because the team did not
+have a coherent template to begin with. Such goals must be analysed at
+the per-player level rather than at the theoretical-player level.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{The World Cup as Reference Dataset}
+\label{sec:wc}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Corpus properties}
+
+The FIFA World Cup is convenient as a reference corpus for the framework
+because of structural properties: (i) 64 matches under uniform rules,
+broadcast at uniform technical specifications; (ii) 32 distinct national
+teams, each with a recognisable theoretical player developed over
+years of preparation; (iii) high cadence of competitive matches over a
+short window, supplying longitudinal cell-registry data; (iv)
+universally-installed perimeter advertising panels supporting the
+homography substrate.
+
+\subsection{Computable quantities}
+
+Within the framework, the World Cup supplies values for the following
+quantities per team and per match:
+\begin{enumerate}[leftmargin=1.4em]
+  \item Coherence trajectory $\Rens(t)$ across each match, with regime
+    classification (Definition~\ref{def:regimes}).
+  \item Critical coupling $\Kc$ estimate from the empirical
+    distribution of player natural gait frequencies.
+  \item Per-team tactical generator set (Definition~\ref{def:gen})
+    extracted from the goal ledger.
+  \item Per-team theoretical-player registry (Definition~\ref{def:theoretical}).
+  \item Pairwise team category isomorphism scores, identifying tactical
+    families.
+\end{enumerate}
+
+\subsection{Single-subject extension}
+
+The framework supports single-subject longitudinal study: a particular
+player tracked across multiple matches produces a per-player cell
+registry that can be compared to the team registry. The per-player
+deviation from the team registry quantifies that player's individuality
+within the team template. Star players are expected to exhibit larger
+individual deviations than role players.
+
+\subsection{Cross-team category isomorphism}
+
+\begin{definition}[Tactical family]
+\label{def:family}
+Two teams belong to the same \emph{tactical family} if their role
+categories $\Mcal_1, \Mcal_2$ are isomorphic as small categories and
+their cell registries agree on the isomorphism to within a tolerance
+$\epsilon$.
+\end{definition}
+
+The expected outcome of running the framework over an entire World Cup
+is the empirical partition of the 32 teams into a small number of
+tactical families, with the framework supplying the precise category
+isomorphism witnessing the family membership.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Discussion}
+% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Scope}
+
+The framework is an \emph{accounting instrument}: it tallies and
+structures observed biomechanical activity in a way that respects the
+true causal coupling of the team and the inter-body contact. It is not
+a predictive engine for match outcomes, a tactics recommender, or an
+identification system for player evaluation in the conventional sense.
+
+\subsection{Comparison with existing systems}
+
+Commercial broadcast tracking systems such as TRACAB, STATS
+SportVU, and Hawk-Eye football tracking estimate per-player
+$(x,y)$ pitch positions at 25--50 Hz \citep{theagarajan2021,dorazio2009}.
+These systems supply the formation matrix $\Phi(t)$ used here but do
+not provide foot-contact biomechanics, do not segment duels as cognate
+pairs, do not compute coherence regimes, and do not perform morphism
+reconstruction. The proposed framework is complementary to existing
+tracking: it consumes the formation matrix where available and
+substitutes the panel-homography channel where it is not.
+
+\subsection{Limitations}
+
+Three limitations bound the framework's near-term applicability.
+
+\textbf{Computer vision pipeline.} Foot-contact detection from
+broadcast footage with the panel-homography substrate is novel; while
+the substrate's geometric basis is sound, robust implementation in
+the presence of motion blur, occlusion, and broadcast cut transitions
+is non-trivial and remains to be demonstrated at scale.
+
+\textbf{Identity disambiguation.} The transcript-driven identity
+assignment is robust to the typical 1--3 s commentary lag, but
+sustained micro-passes (one-touch interplay) below the commentary
+resolution may not be individually attributable. Aggregation over
+several touches typically resolves this.
+
+\textbf{Goalkeeping.} Goalkeepers occupy a degenerate role: they are
+ball-channel high-fidelity samples but participate in the field
+coupling only sporadically. Whether to include them in the
+$N{=}11$ Kuramoto ensemble or to model them as an exogenous boundary
+condition is a modelling choice we leave open.
+
+\subsection{Relation to tactical theory}
+
+The framework is consistent with long-standing observations from match
+analysis \citep{reep1968,hughes2005,memmert2017} that elite football is
+finitely generated at the tactical level. It supplies a formal mechanism
+for what analysts have called ``team identity'' or ``playing
+philosophy'' and quantifies the regime of team coherence under which
+that identity is operationally valid.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Conclusion}
+% ═══════════════════════════════════════════════════════════════════
+
+We have proposed an observation-operator framework for the biomechanical
+accounting of association football. The team is treated as a partially
+observable bioreactor of eleven coupled biomechanical cells; the ball is
+the primary high-fidelity sample probe; the broadcast camera supplies
+the low-resolution ambient indicator. The eleven cells couple via
+Kuramoto-type phase dynamics, and the team's coherence is measured by
+the order parameter $\Rens$. The five regimes of $\Rens$ partition match
+play into operationally distinct collective modes, and the phase-locked
+regime is precisely the regime in which a single theoretical player ---
+formalised as the team's role category together with a cell registry ---
+correctly represents the collective.
+
+Duels are formalised as cognate oscillator pairs, the irreducible
+accounting unit at which contact-coupled mechanical load is correctly
+totalled. A measurement substrate based on lower-body tracking against
+the homography of stadium advertising panels delivers metric pitch
+coordinates and player/spectator segmentation in a single geometric
+step, side-stepping the resolution failures of full-skeleton pose
+estimation on broadcast footage. Goal sequences are reconstructed
+backwards as morphism compositions in the role category, recovering
+both the morphism factorisation and the cell registry entries that
+realise it.
+
+The FIFA World Cup, with 64 matches and 32 distinct national templates
+across uniform broadcast conditions, supplies a near-ideal reference
+corpus. The expected output is a structured biomechanical ledger per
+team---coherence trajectories, generator sets, theoretical-player
+registries, and tactical-family memberships---not a predictive model.
+The framework supplies a precise vocabulary for what match analysts
+have long described informally: team identity, cohesion, and the
+recurrent generative patterns that produce goals.
+
+\section*{Data and code availability}
+
+No data are reported in the present article; the framework is
+theoretical. Reference implementations of the homography substrate and
+the morphism-reconstruction algorithm are available from the author
+on request.
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\end{document}
