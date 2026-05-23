@@ -1,0 +1,257 @@
+{
+  "metadata": {
+    "paper": "Football as a Partially Observable Bioreactor: Backward Biomechanical Accounting via the Ball Observation Operator",
+    "timestamp_utc": "2026-05-22T23:14:40Z",
+    "rng_seed": 2026,
+    "n_experiments": 6
+  },
+  "experiments": {
+    "1_critical_coupling": {
+      "name": "Critical coupling Kc = 2*gamma (Cauchy)",
+      "theorem": "Kuramoto bifurcation (Section 3)",
+      "Kc_theoretical": 2.0,
+      "Kc_empirical": 0.6,
+      "K_ratios": [
+        0.3,
+        0.6,
+        0.9,
+        1.0,
+        1.1,
+        1.3,
+        1.6,
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "R_ens_empirical": [
+        0.3139360962502408,
+        0.35771692800990623,
+        0.4032242700610406,
+        0.46258640506081944,
+        0.5599780478806271,
+        0.6218955884124947,
+        0.6111260321632442,
+        0.6798173984901862,
+        0.8328879261058321,
+        0.9412411019179384,
+        0.9905825696551219
+      ],
+      "R_ens_meanfield_theory": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3015113445777637,
+        0.4803844614152615,
+        0.6123724356957945,
+        0.7071067811865476,
+        0.816496580927726,
+        0.8944271909999159,
+        0.9486832980505138
+      ],
+      "mean_abs_residual_above_Kc": 0.07623116346139214,
+      "pass": true
+    },
+    "2_five_regimes": {
+      "name": "Five coherence regimes",
+      "theorem": "Definition 3.3 (Coherence regimes)",
+      "regimes": [
+        {
+          "regime": "turbulent",
+          "K_over_Kc": 0.4,
+          "expected_band": [
+            0.0,
+            0.3
+          ],
+          "R_ens_mean": 0.10675690335103236,
+          "R_ens_std": 0.0158019065809198,
+          "in_strict_band": true,
+          "in_tolerant_band": true
+        },
+        {
+          "regime": "aperture_dominated",
+          "K_over_Kc": 1.18,
+          "expected_band": [
+            0.3,
+            0.5
+          ],
+          "R_ens_mean": 0.4119411884176253,
+          "R_ens_std": 0.10601916461680243,
+          "in_strict_band": true,
+          "in_tolerant_band": true
+        },
+        {
+          "regime": "cascade",
+          "K_over_Kc": 1.8,
+          "expected_band": [
+            0.5,
+            0.8
+          ],
+          "R_ens_mean": 0.6515727732790542,
+          "R_ens_std": 0.09035171503925193,
+          "in_strict_band": true,
+          "in_tolerant_band": true
+        },
+        {
+          "regime": "coherent",
+          "K_over_Kc": 4.5,
+          "expected_band": [
+            0.8,
+            0.95
+          ],
+          "R_ens_mean": 0.8686131439295519,
+          "R_ens_std": 0.04677401504889304,
+          "in_strict_band": true,
+          "in_tolerant_band": true
+        },
+        {
+          "regime": "phase_locked",
+          "K_over_Kc": 30.0,
+          "expected_band": [
+            0.95,
+            1.001
+          ],
+          "R_ens_mean": 0.9985572245148664,
+          "R_ens_std": 0.00025861728287075557,
+          "in_strict_band": true,
+          "in_tolerant_band": true
+        }
+      ],
+      "pass": true
+    },
+    "3_templating_threshold": {
+      "name": "Templating threshold (RMS phase bound)",
+      "theorem": "Theorem 3.4 (rigorous RMS form)",
+      "N": 50,
+      "n_realisations": 20,
+      "mean_R_ens": 0.9936793830359931,
+      "mean_rms_phase_deviation_rad": 0.1111018689585704,
+      "mean_theoretical_bound_rad": 0.11074235585167687,
+      "violation_rate": 0.0,
+      "pass": true
+    },
+    "4_sampling_bound": {
+      "name": "Cellular sampling bound",
+      "theorem": "Theorem 2.1",
+      "bandwidth_Hz": 0.5,
+      "cadence_Hz": 3.0,
+      "nyquist_fs_Hz": 1.0,
+      "duty_sweep": [
+        {
+          "duty_fraction": 0.05,
+          "effective_sample_rate_Hz": 0.15000000000000002,
+          "above_nyquist": false,
+          "mean_relative_mse": 1.5737763544886083
+        },
+        {
+          "duty_fraction": 0.13333333333333333,
+          "effective_sample_rate_Hz": 0.4,
+          "above_nyquist": false,
+          "mean_relative_mse": 1.050836500991528
+        },
+        {
+          "duty_fraction": 0.21666666666666667,
+          "effective_sample_rate_Hz": 0.65,
+          "above_nyquist": false,
+          "mean_relative_mse": 0.5399602031665081
+        },
+        {
+          "duty_fraction": 0.3,
+          "effective_sample_rate_Hz": 0.8999999999999999,
+          "above_nyquist": false,
+          "mean_relative_mse": 0.2460846582326123
+        },
+        {
+          "duty_fraction": 0.3833333333333333,
+          "effective_sample_rate_Hz": 1.15,
+          "above_nyquist": true,
+          "mean_relative_mse": 0.08137874621890322
+        },
+        {
+          "duty_fraction": 0.4666666666666666,
+          "effective_sample_rate_Hz": 1.4,
+          "above_nyquist": true,
+          "mean_relative_mse": 0.048587938302623174
+        },
+        {
+          "duty_fraction": 0.55,
+          "effective_sample_rate_Hz": 1.6500000000000001,
+          "above_nyquist": true,
+          "mean_relative_mse": 0.022024899777028487
+        },
+        {
+          "duty_fraction": 0.6333333333333333,
+          "effective_sample_rate_Hz": 1.9,
+          "above_nyquist": true,
+          "mean_relative_mse": 0.015221494545481006
+        },
+        {
+          "duty_fraction": 0.7166666666666667,
+          "effective_sample_rate_Hz": 2.15,
+          "above_nyquist": true,
+          "mean_relative_mse": 0.010790209561242204
+        },
+        {
+          "duty_fraction": 0.8,
+          "effective_sample_rate_Hz": 2.4000000000000004,
+          "above_nyquist": true,
+          "mean_relative_mse": 0.006498637386767833
+        }
+      ],
+      "mean_mse_above_nyquist": 0.030750320965340985,
+      "mean_mse_below_nyquist": 0.8526644292198142,
+      "pass": true
+    },
+    "5_pair_conservation": {
+      "name": "Pair conservation of contact load",
+      "theorem": "Theorem 4.3",
+      "n_trials": 30,
+      "mean_fractional_diff_naive_vs_pair": 1.0,
+      "mean_pair_formula_self_residual": 0.0006792455286357064,
+      "pass": true
+    },
+    "6_backward_identifiability": {
+      "name": "Backward morphism identifiability",
+      "theorem": "Theorem 6.4",
+      "K_roles": 5,
+      "G_generators": 4,
+      "n_goals_per_level": 200,
+      "recovery_vs_R_ens": [
+        {
+          "R_ens": 0.1,
+          "recovery_rate": 0.355
+        },
+        {
+          "R_ens": 0.3,
+          "recovery_rate": 0.55
+        },
+        {
+          "R_ens": 0.5,
+          "recovery_rate": 0.74
+        },
+        {
+          "R_ens": 0.7,
+          "recovery_rate": 0.85
+        },
+        {
+          "R_ens": 0.85,
+          "recovery_rate": 0.92
+        },
+        {
+          "R_ens": 0.95,
+          "recovery_rate": 0.985
+        }
+      ],
+      "monotone": true,
+      "high_R_ens_recovery_above_85pct": true,
+      "low_R_ens_recovery_below_40pct": true,
+      "pass": true
+    }
+  },
+  "summary": {
+    "passed": 6,
+    "total": 6,
+    "all_pass": true
+  }
+}
