@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "component": "Specialised football ball tracker",
+    "paper": "Football as a Partially Observable Bioreactor: Backward Biomechanical Accounting via the Ball Observation Operator",
+    "timestamp_utc": "2026-05-23T02:13:44+00:00",
+    "n_experiments": 6
+  },
+  "experiments": {
+    "1_stationary_ball": {
+      "name": "Stationary ball",
+      "n_trials": 50,
+      "mean_error_m": 0.2957016148464511,
+      "max_error_m": 0.7351060372088836,
+      "pass": true
+    },
+    "2_moving_ball": {
+      "name": "Moving ball with reaction lag",
+      "n_steps": 400,
+      "mean_error_m": 1.2139288091514002,
+      "max_error_m": 4.169111102332802,
+      "pass": true
+    },
+    "3_off_ball_robustness": {
+      "name": "Off-ball runner robustness",
+      "n_trials": 50,
+      "mean_error_naive_m": 1.925400772690528,
+      "mean_error_robust_m": 0.23412840417994876,
+      "improvement_factor": 8.223695793914368,
+      "pass": true
+    },
+    "4_homography": {
+      "name": "Billboard homography",
+      "n_correspondences": 12,
+      "dlt_reproj_error_m": 0.1790479184183396,
+      "dlt_reproj_error_px": 1.2363458104142449,
+      "ransac_inliers": 12,
+      "ransac_total": 15,
+      "pass": true
+    },
+    "5_trigger_gating": {
+      "name": "Trigger gating",
+      "pass_events_detected": 4,
+      "first_trigger_time_s": 0.2,
+      "n_active_frames": 156,
+      "pass": true
+    },
+    "6_goalkeeper_binding": {
+      "name": "Goalkeeper role binding",
+      "gk_bound_frames": 103,
+      "correct_role_rate": 1.0,
+      "n_active_frames": 119,
+      "pass": true
+    }
+  },
+  "summary": {
+    "passed": 6,
+    "total": 6,
+    "all_pass": true
+  }
+}

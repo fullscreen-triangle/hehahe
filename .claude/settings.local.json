@@ -17,7 +17,8 @@
       "Bash(npm run *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code} %{url_effective}\\\\n\" http://localhost:3001/ http://localhost:3001/framework http://localhost:3001/tools http://localhost:3001/tools/charge http://localhost:3001/tools/circuit http://localhost:3001/papers http://localhost:3001/papers/orthogonal-charge-quantification.pdf)",
       "Bash(powershell.exe -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force\")",
-      "Bash(pdflatex -interaction=nonstopmode football-observation-operator.tex)"
+      "Bash(pdflatex -interaction=nonstopmode football-observation-operator.tex)",
+      "Bash(python validate_tracker.py)"
     ]
   }
 }
