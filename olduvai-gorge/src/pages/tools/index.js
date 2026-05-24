@@ -23,6 +23,13 @@ const TOOLS = [
       "Annotated sprint and skill videos paired with their per-frame pose tracks. Joint-angle and landmark deltas drive the body panel in real time — Bolt, Powell, Drogba, Beijing. The walking GLB in the panel breathes with the motion.",
   },
   {
+    slug: "football",
+    title: "Football Observation Operator",
+    status: "ready",
+    blurb:
+      "22 synthetic players on a regulation pitch; a fragment shader evaluates the per-pixel attention density Σ wᵢ exp(−½(θᵢ/σ)²) and the brightest pixel is the inferred ball. The white dot is the JS-side algebraic inverse, the red is ground truth — the gap is reaction lag. The right-side anatomy panel's cardiac compartment binds to ΔHR_auto (Q10 autonomic residual, not raw HR) and Q_motor is thermally corrected for ambient.",
+  },
+  {
     slug: "rambling",
     title: "Rambling / Trembling",
     status: "ready",
