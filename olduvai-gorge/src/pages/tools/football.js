@@ -17,7 +17,25 @@ const AttentionFieldCanvas = dynamic(
   { ssr: false }
 );
 
+const VideoPoseTracker = dynamic(
+  () => import("@/components/football/VideoPoseTracker"),
+  { ssr: false }
+);
+
+const DualBodyPanel = dynamic(
+  () => import("@/components/football/DualBodyPanel"),
+  { ssr: false }
+);
+
+const BallStatsCard = dynamic(
+  () => import("@/components/football/BallStatsCard"),
+  { ssr: false }
+);
+
 export default function FootballTool() {
+  const [mode, setMode] = useState("synthetic");    // "synthetic" | "video"
+  const [videoUrl, setVideoUrl] = useState("");
+  const [videoSrc, setVideoSrc] = useState("");
   const [running, setRunning] = useState(true);
   const [sigmaRad, setSigmaRad] = useState(0.30);
   const [intensity, setIntensity] = useState(1.0);
@@ -40,8 +58,9 @@ export default function FootballTool() {
     setSnapshot(sceneRef.current.step(0.001));
   }, []);
 
-  // Animation loop
+  // Animation loop — synthetic mode only
   useEffect(() => {
+    if (mode !== "synthetic") return;
     if (!sceneRef.current) return;
     let raf;
     let lastT = performance.now();
@@ -81,7 +100,51 @@ export default function FootballTool() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [running]);
+  }, [running, mode]);
+
+  // Video-mode aggregated state
+  const [videoFrame, setVideoFrame] = useState(null);
+  const handleVideoFrame = useMemo(() => (info) => {
+    setVideoFrame(info);
+  }, []);
+
+  // Team-level aggregation from the per-frame player list.
+  const teamSummaries = useMemo(() => {
+    if (!videoFrame?.players) {
+      return { teamA: null, teamB: null };
+    }
+    const t0 = videoFrame.players.filter((p) => p.team === 0);
+    const t1 = videoFrame.players.filter((p) => p.team === 1);
+    const mk = (players, idx) => {
+      const valid = players.filter((p) => p.metrics?.valid);
+      const mean = (k) => valid.length === 0
+        ? 0 : valid.reduce((s, p) => s + (p.metrics[k] || 0), 0) / valid.length;
+      const meanSpeed = mean("speedMps");
+      // Minimum same-team separation (in image-normalised units).
+      let minSep = Infinity;
+      for (let i = 0; i < players.length; i++) {
+        for (let j = i + 1; j < players.length; j++) {
+          const d = Math.hypot(
+            players[i].position[0] - players[j].position[0],
+            players[i].position[1] - players[j].position[1]);
+          if (d < minSep) minSep = d;
+        }
+      }
+      return {
+        nPlayers: players.length,
+        meanSpeed,
+        meanStride: mean("strideM"),
+        meanOsc:    mean("verticalOscCm"),
+        meanGrf:    mean("grfBW"),
+        motor:      Math.min(1, meanSpeed / 9),
+        cardiac:    Math.min(1, mean("grfBW") / 3),
+        minSeparation: Number.isFinite(minSep) ? minSep : null,
+        color: videoFrame.teamColors?.[idx] ?? (idx === 0 ? "#58E6D9" : "#F0A830"),
+        label: `Team ${idx === 0 ? "A" : "B"}`,
+      };
+    };
+    return { teamA: mk(t0, 0), teamB: mk(t1, 1) };
+  }, [videoFrame]);
 
   // PCHR decomposition + body-state binding (cardiac drives off ΔHR_auto)
   const cardiacState = useMemo(() => {
@@ -134,20 +197,64 @@ export default function FootballTool() {
         </p>
       </section>
 
-      {/* Attention field shader canvas (aspect-locked to pitch ratio) */}
-      <section className="px-8 sm:px-4 max-w-6xl mx-auto">
-        <div
-          className="relative border border-darkBorder bg-black"
-          style={{ aspectRatio: `${PITCH_X} / ${PITCH_Y}` }}
-        >
-          <AttentionFieldCanvas
-            scene={snapshot}
-            focus={focus}
-            sigmaRad={sigmaRad}
-            intensity={intensity}
-          />
-          <Legend stats={stats} />
+      {/* Mode toggle */}
+      <section className="px-8 sm:px-4 max-w-6xl mx-auto mb-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          <ModeButton active={mode === "synthetic"} onClick={() => setMode("synthetic")}>
+            synthetic scene
+          </ModeButton>
+          <ModeButton active={mode === "video"} onClick={() => setMode("video")}>
+            real video
+          </ModeButton>
         </div>
+        {mode === "video" && (
+          <VideoSourceInput
+            videoUrl={videoUrl}
+            setVideoUrl={setVideoUrl}
+            setVideoSrc={setVideoSrc}
+          />
+        )}
+      </section>
+
+      {/* Viewport */}
+      <section className="px-8 sm:px-4 max-w-6xl mx-auto">
+        {mode === "synthetic" ? (
+          <div
+            className="relative border border-darkBorder bg-black"
+            style={{ aspectRatio: `${PITCH_X} / ${PITCH_Y}` }}
+          >
+            <AttentionFieldCanvas
+              scene={snapshot}
+              focus={focus}
+              sigmaRad={sigmaRad}
+              intensity={intensity}
+            />
+            <Legend stats={stats} />
+          </div>
+        ) : (
+          <DualBodyPanel
+            teamA={teamSummaries.teamA}
+            teamB={teamSummaries.teamB}
+            ballMetrics={videoFrame?.ballMetrics}
+          >
+            <div className="border border-darkBorder bg-black flex-1">
+              {videoSrc ? (
+                <VideoPoseTracker
+                  src={videoSrc}
+                  onFrameUpdate={handleVideoFrame}
+                  detectionHz={12}
+                />
+              ) : (
+                <div className="aspect-video flex items-center justify-center mono text-xs uppercase tracking-widest text-muted">
+                  pick a sample clip above, paste a direct .mp4 URL, or upload a file
+                </div>
+              )}
+            </div>
+            <div className="mt-3">
+              <BallStatsCard ballMetrics={videoFrame?.ballMetrics} />
+            </div>
+          </DualBodyPanel>
+        )}
 
         {/* Controls + readouts */}
         <div className="grid grid-cols-2 gap-6 mt-6 md:grid-cols-1">
@@ -176,6 +283,130 @@ export default function FootballTool() {
 }
 
 // ────────────────────────────────────────────────────────────────────
+
+function ModeButton({ active, onClick, children }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`mono text-xs uppercase tracking-wider px-3 py-2 border transition-colors ${
+        active
+          ? "border-primary text-primary bg-darkSoft"
+          : "border-darkBorder text-muted hover:text-light"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+const SAMPLE_CLIP_GROUPS = [
+  {
+    label: "football",
+    clips: [
+      { label: "Match 2 · 1080p", src: "/football/m2-res_1080p.mp4" },
+      { label: "Match 2 · 720p",  src: "/football/m2-res_720p.mp4"  },
+      { label: "Match 2 · 470p",  src: "/football/m2-res_470p.mp4"  },
+      { label: "Match 2 · 360p",  src: "/football/m2-res_360p.mp4"  },
+      { label: "Match 2 · 1372p", src: "/football/m2-res_1372p.mp4" },
+      { label: "Match 3 · 1080p", src: "/football/m3-res_1080p.mp4" },
+      { label: "Match 4 · 1080p", src: "/football/m4-res_1080p.mp4" },
+    ],
+  },
+  {
+    label: "sprint / single-athlete",
+    clips: [
+      { label: "Bolt 100 m",          src: "/videos/bolt-force-motion_annotated.mp4" },
+      { label: "Powell start",        src: "/videos/powell-start_annotated.mp4" },
+      { label: "Drogba header",       src: "/videos/drogba-header_annotated.mp4" },
+      { label: "Beijing bird's-eye",  src: "/videos/beijing_annotated.mp4" },
+      { label: "Struggle",            src: "/videos/struggle_annotated.mp4" },
+    ],
+  },
+];
+
+function VideoSourceInput({ videoUrl, setVideoUrl, setVideoSrc }) {
+  const inputRef = useRef(null);
+  const [warn, setWarn] = useState("");
+
+  const tryLoad = (url) => {
+    const u = url.trim();
+    if (!u) return;
+    if (/youtube\.com|youtu\.be|tiktok\.com|instagram\.com|facebook\.com\/watch/i.test(u)) {
+      setWarn("YouTube / TikTok / Instagram embeds are sandboxed: browsers cannot read their pixels (CORS + iframe). Use a direct .mp4 URL, upload a file, or pick a sample clip below.");
+      return;
+    }
+    setWarn("");
+    setVideoSrc(u);
+  };
+
+  return (
+    <div className="flex flex-col gap-2 w-full mt-2">
+      <div className="flex items-center gap-2 flex-wrap">
+        <input
+          type="text"
+          placeholder="direct .mp4 URL …"
+          value={videoUrl}
+          onChange={(e) => setVideoUrl(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") tryLoad(videoUrl); }}
+          className="flex-1 min-w-[16rem] bg-darkSoft border border-darkBorder text-light mono text-xs px-3 py-2 focus:outline-none focus:border-primary"
+        />
+        <button
+          onClick={() => tryLoad(videoUrl)}
+          className="mono text-xs uppercase tracking-wider px-3 py-2 border border-primary text-primary hover:bg-primary hover:text-dark transition-colors"
+        >
+          load
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="video/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (!f) return;
+            const url = URL.createObjectURL(f);
+            setVideoSrc(url);
+            setVideoUrl(f.name);
+            setWarn("");
+          }}
+        />
+        <button
+          onClick={() => inputRef.current?.click()}
+          className="mono text-xs uppercase tracking-wider px-3 py-2 border border-darkBorder text-muted hover:text-light"
+        >
+          upload file
+        </button>
+      </div>
+
+      {warn && (
+        <div className="mono text-[11px] text-warm border border-warm/40 bg-warm/10 px-3 py-2">
+          {warn}
+        </div>
+      )}
+
+      {SAMPLE_CLIP_GROUPS.map((group) => (
+        <div key={group.label} className="flex items-center gap-2 flex-wrap">
+          <span className="mono text-[10px] uppercase tracking-widest text-muted min-w-[10rem]">
+            {group.label} →
+          </span>
+          {group.clips.map((c) => (
+            <button
+              key={c.src}
+              onClick={() => {
+                setWarn("");
+                setVideoUrl(c.label);
+                setVideoSrc(c.src);
+              }}
+              className="mono text-[10px] uppercase tracking-wider px-2 py-1 border border-darkBorder text-muted hover:border-primary hover:text-primary transition-colors"
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function Legend({ stats }) {
   return (
@@ -295,9 +526,22 @@ function FrameworkNote() {
         </li>
         <li>
           The white dot is the JS-side algebraic inverse (weighted
-          least-squares 2×2 solve). The red dot is the ground-truth ball.
-          Divergence between them is the team&apos;s reaction lag — a measurable
-          quantity the framework exposes that direct ball tracking cannot.
+          least-squares 2×2 solve). In synthetic mode the red dot is the
+          ground-truth ball; the gap between them is the team&apos;s reaction
+          lag — a quantity the framework exposes that direct ball tracking
+          cannot.
+        </li>
+        <li>
+          In <strong>real video</strong> mode the entire pipeline runs in the
+          browser via MediaPipe BlazePose loaded from CDN: pose detection
+          per frame → torso vector per person from world-coordinate shoulders
+          and hips → same attention-focus solver. Three football match clips
+          ship at 1080p in the picker; m2 also has 360p/470p/720p/1372p
+          variants for resolution experiments. Detection is best when
+          players are at least ~50 pixels tall — m2 at 1080p gives roughly
+          that on the dominant ball-side cluster; the deep-background players
+          will partially miss. The sprint and technique clips in the second
+          row are easier targets where the pose pipeline is fully reliable.
         </li>
         <li>
           The right-side anatomy panel&apos;s <span className="text-warm">cardiac</span> compartment
