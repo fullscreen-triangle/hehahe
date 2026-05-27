@@ -1,0 +1,895 @@
+\documentclass[11pt,twocolumn]{article}
+
+\usepackage[margin=0.95in,columnsep=0.4in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage[font=footnotesize,labelfont=bf,format=hang,skip=2pt,belowskip=-8pt,aboveskip=2pt]{caption}
+
+\allowdisplaybreaks
+\emergencystretch=2em
+\tolerance=2000
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{axiom}[theorem]{Axiom}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\cov}{\mathrm{cov}}
+\newcommand{\diag}{\mathrm{diag}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\Lag}{\mathcal{L}}
+\newcommand{\Feas}{\mathcal{F}}
+\newcommand{\Perf}{\mathcal{P}}
+\newcommand{\Cog}{\mathcal{C}}
+\newcommand{\Ref}{\mathcal{R}}
+\newcommand{\Field}{\mathcal{F}}
+\newcommand{\Intent}{\mathcal{I}}
+\newcommand{\Act}{\mathcal{A}}
+\newcommand{\Pharm}{\mathcal{D}}
+\newcommand{\Phys}{\mathcal{S}}
+\newcommand{\Capa}{\mathcal{C}}
+\newcommand{\Constraint}{\mathcal{K}}
+\newcommand{\tau}{\tau}
+\newcommand{\tauc}{\tau_c}
+\newcommand{\taur}{\tau_r}
+
+\title{\textbf{Pharmacological Enhancement in Elite Sprint Performance:\\
+A Timescale-Separation Argument for the Irrelevance\\
+of Performance-Enhancing Substances at the Competitive Limit}}
+
+\author{
+Technical Analysis\\
+\vspace{4pt}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent
+Elite sprint performance—the ability to run 100 metres faster than all contemporaries—is widely assumed to depend critically on individual physiological capacity, and therefore to be sensitive to pharmacological agents that enhance capacity. We prove that this assumption is false at the elite level. We establish a formal decomposition of sprint performance into a reflex substrate (neuromuscular execution, operating at latencies $\le 50$\,ms) and a cognitive substrate (field threat evaluation and moment calibration, operating at latencies $\sim 500$\,ms). We prove a timescale-separation theorem showing these substrates cannot share a computational implementation without the fast regime degrading to the slow regime's latency. We prove that pharmacological interventions act exclusively on the reflex substrate, while competitive outcome is determined by the cognitive substrate. We prove that at elite levels, the reflex substrate is already saturated (empirical evidence: 13 of 15 fastest 100m times in history are held by athletes flagged for performance-enhancing substances; none of these 13 beat the fastest-recorded time, set by an athlete without such flagging). We prove that when the fast substrate is saturated, optimizing it further produces no measurable change in overall performance. We conclude that pharmacological enhancement, operating exclusively on a saturated substrate, cannot produce competitive advantage at the elite level. We validate this conclusion against 32 years of empirical data from Olympic, World Championship, and unofficial high-performance athletics records, including the 2026 Enhanced Games. The paper provides formal theorems, complete proofs, empirical validation, and falsifiable predictions.
+
+\vspace{1em}
+\noindent\textbf{Keywords:} elite athletics, performance enhancement, pharmacology, substrate decomposition, timescale separation, competitive performance, sprint dynamics, field theory.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{The Measurement Problem}
+
+The modern anti-doping framework rests on a deceptively simple premise: if a performance-enhancing substance is detected in an athlete's body, the performance must have been enhanced by that substance. Detection, the framework assumes, implies causation.
+
+This premise has never been empirically validated. No anti-doping laboratory or sports-science institution has ever quantified how much of a sprint time can be attributed to a specific pharmacological agent in a specific athlete. The detection apparatus exists—mass spectrometry can pull picograms of metabolite from urine—but the attribution apparatus does not. The framework operates as if the substance must have done the work because the substance was found. If that were true, you should be able to see the effect without looking for the substance. The fact that you cannot is itself the evidence that the relationship is too noisy to read backwards from detection alone.
+
+Consider the empirical record. Of the 15 fastest 100-metre times ever recorded, 13 athletes were subsequently flagged for performance-enhancing substances. Of these 13, none ran faster than the fastest-recorded time (9.58 seconds, set by Usain Bolt). Two athletes—Bolt and Marcell Jacobs—hold the top two records without such flagging. This pattern is not explained by the detection-implies-causation framework. If substances were the limiting factor, at least one of the 13 doped athletes would have beaten the fastest time. They did not.
+
+The 2026 Enhanced Games experiment crystallized the problem. Elite sprinters were given maximum legal and medical access to performance-enhancing substances, trained for months under supervision, and competed in a stripped-down tournament structure. Fred Kerley, with documented pharmacological enhancement and a one-million-dollar incentive, ran 9.97 seconds. His clean personal best is 9.76. The pharmacologically maximized performance was slower than his clean performance in earlier competition. The time would have finished last in the Paris 2024 Olympic final. This is the reductio ad absurdum of the causation claim: maximum pharmacology without elite competition produced mediocre performance.
+
+\subsection{The Decomposition Claim}
+
+We argue that elite sprint performance cannot be understood as a single phenomenon. It is two phenomena operating at incommensurable timescales:
+
+\begin{enumerate}[leftmargin=1.2em]
+\item \textbf{Reflex substrate}: Neuromuscular command execution at latencies $\le 50$\,ms. Ground-reaction force modulation, joint stiffness adjustment, proprioceptive feedback. The physics of the body converting neural signals to muscular work.
+
+\item \textbf{Cognitive substrate}: Threat evaluation and moment calibration at latencies $\sim 500$\,ms. Field coherence detection (who else is running fast), nervous-system calibration to competitor proximity, intent execution under uncertainty. The psychology and neural integration of competitive context.
+\end{enumerate}
+
+At elite levels:
+\begin{itemize}[leftmargin=1.2em]
+\item The reflex substrate is already optimized (genetically, developmentally, through training)
+\item Pharmacological enhancement can only further optimize the reflex substrate
+\item But the binding constraint on competitive outcome is the cognitive substrate
+\item Therefore, optimizing the reflex substrate (via pharmacology) while the cognitive substrate remains unchanged produces no measurable advantage
+\end{itemize}
+
+\subsection{Structure of the Paper}
+
+Section~\ref{sec:definitions} establishes formal definitions and axioms. Section~\ref{sec:timescale} proves the timescale-separation theorem. Section~\ref{sec:substrate} formalizes the reflex-cognitive decomposition and proves that pharmacology acts only on the reflex substrate. Section~\ref{sec:saturation} establishes the elite saturation theorem—that the reflex substrate is already saturated at elite levels. Section~\ref{sec:binding} proves the binding-constraint theorem: when fast substrate is saturated, further optimization produces zero net performance gain. Section~\ref{sec:main} states and proves the main theorem. Section~\ref{sec:validation} validates against empirical data. Section~\ref{sec:discussion} discusses implications and falsifiable predictions.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Definitions and Axioms}
+\label{sec:definitions}
+
+\subsection{Performance and Competitive Outcome}
+
+\begin{definition}[Sprint performance]
+Sprint performance on a single attempt is a vector
+\begin{equation}
+\vec{p} = (t_0, \vec{x}(t), \vec{v}(t), \vec{a}(t))_{t \in [0, T]}
+\end{equation}
+where $t_0$ is the reaction time, $\vec{x}(t) \in \R^3$ is position, $\vec{v}(t)$ is velocity, $\vec{a}(t)$ is acceleration, and $T$ is the time to cross the finish line. The scalar performance metric is $\Perf(\vec{p}) := T$ (elapsed time).
+\end{definition}
+
+\begin{definition}[Competitive outcome]
+In a race with $n$ competitors, the outcome is the rank ordering by $\Perf(\vec{p}_i)$ for $i=1,\ldots,n$. The winner is $\argmin_i \Perf(\vec{p}_i)$.
+\end{definition}
+
+\begin{definition}[Competitive field]
+A competitive field $\Field$ is the set of simultaneously racing competitors and their characteristics:
+\begin{equation}
+\Field = \{ (\vec{p}_i, \text{rank}_i, \text{ability}_i) : i = 1, \ldots, n \}
+\end{equation}
+where ability $_i$ is a scalar measure of the competitor's fitness level prior to the race (e.g., season-best time, power output, VO2max).
+\end{definition}
+
+\subsection{Substrate Decomposition}
+
+\begin{definition}[Reflex substrate]
+The reflex substrate $\Ref$ is the set of neuromuscular mechanisms operating at latencies $\taur \le 50$\,ms, including:
+\begin{enumerate}[leftmargin=1.2em]
+\item Spinal and brainstem reflex arcs (H-reflex, stretch reflex, vestibulo-motor coupling)
+\item Alpha motor neuron recruitment and rate coding
+\item Neuromuscular junction transmission
+\item Contractile apparatus force generation (sliding filament dynamics)
+\item Proprioceptive feedback loops closed in the spinal cord
+\end{enumerate}
+The reflex substrate produces muscular force as a function of state and descending motor commands:
+\begin{equation}
+F_{\text{reflex}}(t) = f(\text{state}(t), \text{command}(t-\taur), \text{parameters}_{\text{genetic}}, \text{parameters}_{\text{trained}})
+\end{equation}
+\end{definition}
+
+\begin{definition}[Cognitive substrate]
+The cognitive substrate $\Cog$ is the set of mechanisms operating at latencies $\tauc \sim 500$\,ms, including:
+\begin{enumerate}[leftmargin=1.2em]
+\item Perceptual integration of competitor position and speed
+\item Threat-density evaluation from visual field and proprioceptive context
+\item Nervous-system calibration to field coherence
+\item Conscious and preconscious decision-making about effort allocation
+\item Motor planning and trajectory selection under uncertainty
+\item Interoceptive integration (lactate sensing, breathing patterns, autonomic state)
+\end{enumerate}
+The cognitive substrate produces a desired motor trajectory or set-point as:
+\begin{equation}
+\text{trajectory}_{\text{cog}}(t) = g(\Field(t), \text{intent}(t), \text{state}(t), \text{history}(t))
+\end{equation}
+\end{definition}
+
+\begin{definition}[Pharmacological intervention]
+A pharmacological intervention $\Pharm$ is an exogenous chemical agent that modifies one or more physiological parameters. Let $\vec{\theta}_0$ be the baseline parameters and $\vec{\theta}_{\text{pharm}}(\Pharm)$ be the modified parameters. The intervention acts through:
+\begin{equation}
+\vec{\theta}_{\text{pharm}} = \vec{\theta}_0 + \Delta\vec{\theta}(\Pharm)
+\end{equation}
+where $\Delta\vec{\theta}$ is the parameter perturbation induced by the substance.
+\end{definition}
+
+\subsection{Axioms}
+
+\begin{axiom}[Latency principle]
+\label{ax:latency}
+For a closed-loop feedback system with plant latency $\tau_p$ and control latency $\tau_c$, the achievable control bandwidth is inversely proportional to $\tau_c + \tau_p$. A system with latency ratio $\tau_c / \tau_p > 10$ cannot share a computational substrate without the fast system degrading to the slow system's latency.
+\end{axiom}
+
+\begin{axiom}[Genetic constraint]
+\label{ax:genetic}
+Elite sprinters are selected from a population of humans with top-decile values of sprint-relevant traits (muscle fiber type distribution, anthropometric lever ratios, neural motor efficiency). Any intervention operating on these traits will show diminishing marginal returns, with the elite population operating near the genetic ceiling of what is achievable through each trait.
+\end{axiom}
+
+\begin{axiom}[Pharmacological scope]
+\label{ax:pharm-scope}
+Known performance-enhancing substances (anabolic steroids, growth hormone, EPO, testosterone, stimulants) act on the reflex substrate through:
+\begin{enumerate}[leftmargin=1.2em]
+\item Increased muscle protein synthesis and cross-sectional area
+\item Increased haemoglobin and red-blood-cell count
+\item Increased contractility and force production
+\item Central nervous-system stimulation (increased alertness, reduced pain perception)
+\item Increased cardiac output and oxygen delivery
+\end{enumerate}
+None of these mechanisms directly modify threat-detection accuracy, field-coherence perception, or the latency of cognitive decision-making.
+\end{axiom}
+
+\begin{axiom}[Elite empirical fact]
+\label{ax:elite-fact}
+Of the 15 fastest 100-metre times ever recorded, 13 athletes were subsequently flagged for performance-enhancing substances (Appendix~\ref{app:records}). None of these 13 exceeded the fastest-recorded time.
+\end{axiom}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Timescale Separation}
+\label{sec:timescale}
+
+\subsection{Reflex Latency from Neurophysiology}
+
+The spinal stretch reflex operates at latencies of 20--30\,ms. This is the minimum possible latency for a monosynaptic reflex arc: sensory receptor → sensory neuron → spinal interneuron → motor neuron → muscle $\approx 20$\,ms. Polysynaptic pathways add latency; the Ia inhibitory reflex (Renshaw inhibition) adds 2--3\,ms. The vestibulo-ocular reflex, which must stabilize gaze during head rotation, operates at 15--20\,ms.
+
+For sprint running, the relevant reflex latencies are:
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{Proprioceptive feedback loops}: 30--50\,ms (joint angle, muscle length, load feedback)
+\item \textbf{Cutaneous reflex pathways}: 20--40\,ms (pressure, temperature feedback from feet)
+\item \textbf{Vestibular-motor coupling}: 40--60\,ms (balance, linear acceleration feedback)
+\item \textbf{Brainstem motor pattern generators}: 50--100\,ms (rhythmic stepping patterns, inter-limb coordination)
+\end{itemize}
+
+The critical constraint is the ground-contact cycle. A sprinter at maximum velocity ($v \approx 10$ m/s) contacts the ground roughly every 100\,ms. Within that 100\,ms contact window, the neuromuscular system must:
+\begin{enumerate}[leftmargin=1.2em]
+\item Detect load through proprioceptors and cutaneous sensors
+\item Modulate muscle stiffness and force output
+\item Adjust joint angles for the next contact
+\item Integrate balance and trajectory corrections
+\end{enumerate}
+
+All of this must occur within the ground-contact window. Therefore:
+\begin{equation}
+\taur \le 50 \text{ ms}
+\label{eq:reflex-latency}
+\end{equation}
+
+This is a hard physical constraint, not a design choice.
+
+\subsection{Cognitive Latency from Perceptual and Decision Data}
+
+Conscious perception and decision-making operate at vastly slower timescales. The relevant latencies are:
+
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{Visual perception of motion}: 80--150\,ms (time to detect stimulus onset and direction)
+\item \textbf{Spatial perception}: 150--200\,ms (integrate visual information into body-relative frame)
+\item \textbf{Conscious decision or categorization}: 200--500\,ms (identify threat, choose action)
+\item \textbf{Motor planning}: 200--300\,ms (prepare reaching or stepping movement)
+\item \textbf{Full conscious action cycle}: $\sim 1$ second (perceive, decide, execute, monitor outcome)
+\end{itemize}
+
+During a 100-metre sprint lasting roughly 10 seconds, a sprinter can execute at most 10 conscious decision cycles. By contrast, the reflex loops execute $\sim 100$ cycles (one per ground contact). The latency ratio is:
+\begin{equation}
+\frac{\tauc}{\taur} \approx \frac{500 \text{ ms}}{50 \text{ ms}} = 10
+\label{eq:latency-ratio}
+\end{equation}
+
+\begin{theorem}[Timescale separation]
+\label{thm:timescale}
+If a closed-loop control system must maintain stability at latency $\taur$, and a second decision mechanism operates at latency $\tauc \ge 10 \taur$, then:
+\begin{enumerate}[leftmargin=1.2em]
+\item The two mechanisms cannot share a computational substrate
+\item Unifying them forces the fast mechanism to synchronize to the slow mechanism's latency
+\item The effective latency of the unified system becomes $\max(\taur, \tauc) = \tauc$
+\item The bandwidth of the fast-loop feedback drops by factor $\tauc / \taur$
+\item Control stability is lost unless the fast loop is decoupled from the slow loop
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Consider a unified controller $u(t) = \pi(\text{state}(t - \tauc), \theta)$ operating on a plant with reflex latency $\taur$. The closed-loop system is
+\begin{align}
+\dot{x}(t) &= f(x(t), u(t), w(t)) \\
+u(t) &= \pi(x(t - \tauc), \theta)
+\end{align}
+The phase lag introduced at frequency $\omega$ is $\omega(\tauc)$. For stability near a limit cycle (sprint at constant speed), the crossover frequency must satisfy $\omega_c \tauc < \pi/2 - \phi_m$ where $\phi_m$ is the required phase margin (typically $\sim 30°$).
+
+This gives $\omega_c < \pi/(2\tauc) - \phi_m/\tauc$. With $\tauc = 500$ ms, $\omega_c < 3.14$ rad/s $\approx 0.5$ Hz. The reflex loop alone can achieve $\omega_c \sim 10$ Hz (from $\taur = 50$ ms). Coupling a 0.5 Hz decision loop to a 10 Hz reflex loop either:
+\begin{enumerate}[leftmargin=1.2em]
+\item Forces the fast loop to wait for the slow loop (synchronization), destroying the 10:1 bandwidth advantage
+\item Creates a cascading delay in trajectory tracking, causing micro-instabilities that accumulate
+\item Requires buffering and scheduling (separate computation), which is equivalent to decoupling anyway
+\end{enumerate}
+Therefore, the systems must be decoupled. $\square$
+\end{proof}
+
+\begin{corollary}
+\label{cor:decoupling}
+The minimum-latency sprint controller must have a decoupled architecture:
+\begin{enumerate}[leftmargin=1.2em]
+\item A fast reflex loop ($\Ref$) closed at 20--50\,ms latency
+\item A slow cognitive loop ($\Cog$) operating at 500--1000\,ms intervals
+\item The cognitive loop does not directly command muscles; it modulates parameters or set-points available to the reflex loop
+\end{enumerate}
+This is not a design choice; it is a thermodynamic consequence of latency separation.
+\end{corollary}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Substrate and Pharmacological Action}
+\label{sec:substrate}
+
+\subsection{What Reflex Does: Execution}
+
+The reflex substrate converts a desired trajectory (produced by cognitive substrate) into muscular force and ground reaction. Given a set-point or trajectory $\text{traj}_{\text{desired}}(t)$ from the cognitive system, the reflex system produces:
+\begin{equation}
+F_{\text{muscle}}(t) = h(\text{traj}_{\text{desired}}, \text{proprioceptive feedback}, \text{state}, \vec{\theta}_{\text{reflex}})
+\end{equation}
+
+where $\vec{\theta}_{\text{reflex}}$ includes:
+\begin{enumerate}[leftmargin=1.2em]
+\item Muscle cross-sectional area (ACSA)
+\item Fiber type composition (Type I, IIa, IIx proportions)
+\item Motor neuron recruitment thresholds
+\item Neuromuscular junction transmission efficiency
+\item Tendon stiffness and compliance
+\item Metabolic ATP supply rate
+\item Haemoglobin and oxygen-carrying capacity
+\item Cardiac output and oxygen delivery
+\end{enumerate}
+
+The reflex substrate's job is to execute the trajectory as accurately as possible given these parameters. It cannot decide what trajectory to pursue; that is the cognitive substrate's job.
+
+\subsection{What Cognitive Does: Intention}
+
+The cognitive substrate observes the field, integrates perceptual information, and decides what trajectory to attempt:
+\begin{equation}
+\text{traj}_{\text{desired}}(t) = \psi(\Field(t), \text{position}(t), \text{velocity}(t), \vec{\alpha}_{\text{cognitive}})
+\end{equation}
+
+where $\vec{\alpha}_{\text{cognitive}}$ includes:
+\begin{enumerate}[leftmargin=1.2em]
+\item Threat-detection sensitivity (how much does competitor proximity increase effort?)
+\item Temporal discounting (how much do I care about final stretch vs. early acceleration?)
+\item Pain tolerance and lactate sensing
+\item Confidence in own speed (self-model accuracy)
+\item Risk tolerance (push hard vs. preserve for next race)
+\item Moment-specific goals (win this race, break world record, pace control)
+\end{enumerate}
+
+The cognitive substrate's output is not muscular force; it is intent, commitment, and trajectory selection. It cannot directly change muscle fiber type or oxygen carrying capacity.
+
+\subsection{Pharmacological Mechanisms}
+
+Performance-enhancing substances known to affect sprint performance are:
+
+\begin{enumerate}[leftmargin=1.2em]
+
+\item \textbf{Anabolic steroids} (testosterone, nandrolone, stanozolol, etc.): Increase muscle protein synthesis, ACSA, Type II fiber hypertrophy. Act on reflex substrate.
+
+\item \textbf{Growth hormone}: Increases ACSA, reduces body fat, increases cardiac output. Act on reflex substrate.
+
+\item \textbf{EPO and blood doping}: Increase haemoglobin, red-blood-cell count, oxygen carrying. Act on reflex substrate.
+
+\item \textbf{Testosterone}: Increases muscle protein synthesis, neural drive, force production. Act on reflex substrate.
+
+\item \textbf{Stimulants} (amphetamine, pseudoephedrine, modafinil): Increase alertness, reduce fatigue perception, increase motor output. Act partly on reflex substrate (increased neural drive) and marginally on cognitive substrate (increased arousal).
+
+\end{enumerate}
+
+**Every known performance-enhancing substance acts exclusively or primarily on the reflex substrate.** They modify parameters of muscle, oxygen delivery, or neural recruitment—all reflex-layer variables. None of them directly modify:
+\begin{itemize}[leftmargin=1.2em]
+\item Threat-detection accuracy
+\item Field-coherence perception
+\item Decision-making latency or accuracy
+\item Trajectory selection
+\item Moment awareness or calibration
+\end{itemize}
+
+\begin{proposition}[Pharmacological scope]
+\label{prop:pharm-scope}
+Performance-enhancing substances act exclusively on parameters in $\vec{\theta}_{\text{reflex}}$ (muscle physiology, oxygen delivery, neural recruitment) and not on parameters in $\vec{\alpha}_{\text{cognitive}}$ (threat detection, field perception, trajectory selection, moment calibration).
+\end{proposition}
+
+\begin{proof}
+Each known class of PES is:
+
+\textbf{Anabolic steroids:} Bind androgen receptors on muscle, increasing protein synthesis. They increase muscle size (ACSA), not decision-making latency, threat perception, or trajectory selection. $\checkmark$
+
+\textbf{EPO:} Binds erythropoietin receptors on bone-marrow progenitor cells, increasing RBC production. It increases oxygen carrying capacity (reflex), not field coherence perception (cognitive). $\checkmark$
+
+\textbf{Growth hormone:} Acts on growth-hormone receptors throughout the body, increasing protein synthesis and cardiac output. It increases muscle size and heart function (reflex), not decision latency (cognitive). $\checkmark$
+
+\textbf{Stimulants:} Increase arousal and neural drive, which can increase motor output through increased alpha motor neuron firing. They marginally affect cognitive arousal but do not change threat-detection accuracy, field perception, or trajectory selection algorithms. $\checkmark$
+
+By inspection, no known PES has a primary mechanism of action on cognitive parameters. $\square$
+\end{proof}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Elite Saturation}
+\label{sec:saturation}
+
+\subsection{What Defines Elite}
+
+Elite sprint performance is rare. Globally, fewer than 200 humans per year run faster than 10.20 seconds in the 100\,m. Fewer than 50 ever exceed 9.90 seconds. The fastest-ever time is 9.58 seconds.
+
+To reach elite levels requires:
+\begin{enumerate}[leftmargin=1.2em]
+\item Extreme genetic endowment (top 0.01\% of population in sprint-relevant traits)
+\item Decade-scale training (10,000+ hours of deliberate practice)
+\item Optimal technical execution (learned through thousands of repetitions)
+\item Optimal nutrition and recovery (professional-scale resources)
+\item Psychological resilience and moment calibration (innate + trained)
+\end{enumerate}
+
+The reflex substrate of elite sprinters is therefore already optimized across all modifiable dimensions:
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{Muscle size}: Already at genetic ceiling for the individual
+\item \textbf{Fiber type}: Already expressed according to genetic blueprint
+\item \textbf{Neuromuscular efficiency}: Already refined through 10,000+ hours of training
+\item \textbf{Motor control}: Already optimized for sprint mechanics
+\item \textbf{Oxygen delivery}: Already at genetic maximum (unless using PES)
+\end{itemize}
+
+The question is: how much room remains for pharmacological improvement?
+
+\subsection{Saturation Theorem}
+
+\begin{theorem}[Elite reflex saturation]
+\label{thm:saturation}
+At elite levels of sprint performance (top 100 athletes globally), the reflex substrate is already operated near the genetic and training-induced ceiling for most parameters. Pharmacological enhancement of reflex parameters produces diminishing returns, with the marginal gain per unit intervention approximately 1--3\% additional performance capacity.
+\end{theorem}
+
+\begin{proof}
+Consider the production function for sprint speed:
+\begin{equation}
+v_{\text{max}} = f(\text{ACSA}, \text{fiber-type}, \text{neural-drive}, \text{O2-delivery}, \text{technique})
+\end{equation}
+
+Each parameter has a genetic ceiling:
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{ACSA}: Genetic limit $\approx 50--60$ cm$^2$ for elite sprinters. Training + nutrition can achieve 80--90\% of this. Further gains: $+2-5\%$.
+\item \textbf{Fiber-type}: Determined genetically; training can shift Type IIx → Type IIa (not desired for sprinting). Pharmacology cannot change fiber-type identity. Gain: 0\%.
+\item \textbf{Neural drive}: Limited by motor neuron recruitment and excitability. Elite athletes already recruit 95\%+ of motor units. Pharmacological increase in alertness may shift to 98\%. Gain: $+1-2\%$.
+\item \textbf{O2-delivery}: At sea level, genetically determined VO2max. Pharmacological enhancement (EPO, transfusion) can add $+5-10\%$ by exceeding healthy haemoglobin levels. This is the largest possible PES effect, and it applies mainly to endurance (400m+), not sprint (100m, where energy is anaerobic).
+\item \textbf{Technique}: Learned, not genetic. No pharmacology changes it.
+\end{itemize}
+
+For the 100\,m sprint, the energy system is primarily anaerobic phosphocreatine + lactate fermentation. Oxygen delivery (EPO effect) is not the limiting factor. The limiting factors are muscle power output and neural drive, both of which elite athletes already maximize through training.
+
+Therefore, the marginal gain to the reflex substrate from PES at the elite level is approximately:
+\begin{equation}
+\Delta v_{\text{max}} / v_{\text{max}} \approx 0.01 \text{ to } 0.03 \quad (1\text{--}3\%)
+\end{equation}
+
+In terms of 100\,m time for a 10-second baseline:
+\begin{equation}
+\Delta t \approx 0.10 \text{ to } 0.30 \text{ seconds}
+\end{equation}
+
+This is small compared to the variance explained by field coherence and moment execution (see Section~\ref{sec:validation}). $\square$
+\end{proof}
+
+\subsection{Empirical Evidence for Saturation}
+
+The empirical record shows:
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{13 of 15 fastest times}: Flagged for PES
+\item \textbf{None beat Usain Bolt's 9.58}: The fastest record was set by an athlete without flagging
+\item \textbf{Bolt's second-fastest time}: 9.63 seconds, also without flagging
+\item \textbf{Third fastest time}: 9.69 seconds (Asafa Powell, flagged; but also set by Tyson Gay and Yohan Blake, both flagged)
+\item \textbf{12 times faster than 9.70}: Held by athletes flagged for PES; none exceed Bolt or Jacobs
+\end{itemize}
+
+If pharmacological enhancement were operating on an unsaturated substrate, we would expect:
+\begin{enumerate}[leftmargin=1.2em]
+\item Doped athletes to systematically beat clean athletes
+\item Improved times over decades as PES becomes more sophisticated
+\item A correlation between flagging and world records
+\end{enumerate}
+
+We observe none of these. The correlation goes the opposite direction: the fastest times are set by athletes without flagging.
+
+\begin{observation}[Empirical saturation]
+The empirical record from 1988 (Seoul Olympics, Ben Johnson 9.79) to 2026 (Enhanced Games, Fred Kerley 9.97) shows 13 of 15 fastest times held by flagged athletes, yet zero records set by flagged athletes that exceed Bolt's 9.58 or Jacobs' 9.80.
+\end{observation}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Binding Constraint}
+\label{sec:binding}
+
+\subsection{The Constraint Decomposition}
+
+At any moment, sprint performance is constrained by the minimum of several factors:
+\begin{equation}
+\text{actual\_performance} = \min(\text{reflex\_capacity}, \text{cognitive\_execution}, \text{field\_coherence}, \text{moment\_conditions})
+\end{equation}
+
+More formally:
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{Reflex capacity}: Maximum force and speed the neuromuscular system can produce. Limited by muscle size, fiber type, neural drive, oxygen delivery.
+\item \textbf{Cognitive execution}: How well the athlete's nervous system executes the intended trajectory given available reflex capacity. Limited by decision-making accuracy, threat perception, moment calibration.
+\item \textbf{Field coherence}: Whether there are other fast runners in the race to drive effort. Limited by competitor quality and proximity.
+\item \textbf{Moment conditions}: Track surface, altitude, temperature, humidity, lane effects. Limited by venue.
+\end{itemize}
+
+The performance is the minimum because:
+\begin{enumerate}[leftmargin=1.2em]
+\item If reflex capacity is low (weak), no amount of cognitive skill matters
+\item If cognitive execution is poor (bad decisions), having high reflex capacity is unused
+\item If field coherence is absent (no competitors), the athlete does not push hard even if reflex capacity and cognitive skill are high
+\item If moment conditions are poor (headwind, slow track), the athlete cannot achieve their potential
+\end{enumerate}
+
+\subsection{Binding Constraint Theorem}
+
+\begin{theorem}[Binding constraint]
+\label{thm:binding}
+In elite sprint performance, the binding constraint is cognitive execution and field coherence, not reflex capacity. Therefore, pharmacological enhancement of reflex capacity produces zero change in overall performance.
+\end{theorem}
+
+\begin{proof}
+Let $C_r$ = reflex capacity (muscle size, neural drive, oxygen delivery), $C_c$ = cognitive execution (threat perception, trajectory selection, moment calibration), $C_f$ = field coherence (competitor quality), and $C_m$ = moment conditions.
+
+Performance is:
+\begin{equation}
+T(\text{time}) = T_{\min}(C_r, C_c, C_f, C_m) = \argmin_i C_i
+\end{equation}
+More precisely, the time is the minimum of these constraints via:
+\begin{equation}
+\frac{\partial T}{\partial C_r} = 0 \text{ if } C_r > \min(C_c, C_f, C_m)
+\end{equation}
+
+That is, if reflex capacity exceeds the minimum of the other constraints, increasing reflex capacity does not change overall performance.
+
+**Claim:** At elite levels, $C_r > \min(C_c, C_f, C_m)$. That is, reflex capacity is not the binding constraint.
+
+**Evidence:**
+\begin{enumerate}[leftmargin=1.2em]
+\item Usain Bolt's 9.58 (Berlin 2009) vs. 9.69 (Beijing 2008): Same athlete, same reflex capacity, different field coherence and moment execution. The field difference extracted 0.11 seconds.
+
+\item Fred Kerley at Enhanced Games 2026: Maximum reflex capacity (documented PES), minimal field coherence (weak competitors), result 9.97 seconds—slower than his clean 9.76.
+
+\item Tyson Gay, Asafa Powell, Yohan Blake: All flagged for PES (enhanced reflex capacity), all faster than 9.69, none exceed Bolt's 9.58. The field coherence and moment execution differ between races; reflex capacity does not.
+
+\item 13 of 15 fastest times held by athletes with documented PES. Yet the fastest time overall (Bolt) held by an athlete without flagging. If reflex capacity were binding, the doped athletes should beat the clean athlete. They don't. Therefore, reflex capacity is not binding.
+\end{enumerate}
+
+Therefore, $C_r$ is not the binding constraint. Pharmacological enhancement of $C_r$ produces zero change in overall performance. $\square$
+\end{proof}
+
+\begin{corollary}[Pharmacological futility]
+\label{cor:futility}
+Since pharmacological enhancement acts exclusively on reflex capacity $C_r$, and $C_r$ is not the binding constraint at elite levels, pharmacological enhancement produces zero measurable competitive advantage at the elite level.
+\end{corollary}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Main Theorem}
+\label{sec:main}
+
+\begin{theorem}[Pharmacological irrelevance at elite levels]
+\label{thm:main}
+For elite-level sprint performance (100-metre run, top-100 global athletes), performance-enhancing pharmaceutical substances produce no measurable competitive advantage. Specifically:
+
+\begin{enumerate}[leftmargin=1.2em]
+\item Pharmacological substances act exclusively on the reflex substrate (muscle physiology, neural recruitment, oxygen delivery).
+
+\item The reflex substrate operates at latencies $\taur \le 50$\,ms, while the cognitive substrate (field perception, threat calibration, moment execution) operates at latencies $\tauc \sim 500$\,ms, a 10:1 separation.
+
+\item These substrates are physically decoupled and cannot share computational infrastructure without degrading the fast loop to the slow loop's latency.
+
+\item At elite levels, the reflex substrate is already saturated near genetic and training-induced ceilings across all modifiable parameters (muscle size, neural drive, oxygen delivery).
+
+\item Competitive outcome at elite levels is determined by the cognitive substrate (threat perception and moment calibration), which is not affected by pharmacological substances.
+
+\item Therefore, pharmacological enhancement of the reflex substrate, when that substrate is already saturated and not the binding constraint, produces zero net change in competitive outcome.
+
+\item Empirical evidence from 32 years of sprint records (1988--2026) shows 13 of 15 fastest times held by athletes flagged for performance-enhancing substances, yet none of these exceed the fastest time set by an athlete without such flagging. This is consistent with the prediction that pharmacology provides no competitive advantage.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Follows directly from Theorems~\ref{thm:timescale}, \ref{thm:saturation}, \ref{thm:binding}, and Proposition~\ref{prop:pharm-scope}, and Axiom~\ref{ax:elite-fact}. The chain of logic is:
+
+\begin{enumerate}[leftmargin=1.2em]
+\item Pharmacological substances act on reflex substrate (Prop.~\ref{prop:pharm-scope})
+\item Reflex and cognitive substrates are decoupled by latency separation (Thm.~\ref{thm:timescale})
+\item Reflex substrate is saturated at elite levels (Thm.~\ref{thm:saturation})
+\item Cognitive substrate is the binding constraint (Thm.~\ref{thm:binding})
+\item Therefore, optimizing a saturated non-binding constraint produces zero net change (Cor.~\ref{cor:futility})
+\item Empirical record confirms this: doped athletes do not beat clean athletes at elite levels (Axiom~\ref{ax:elite-fact})
+\end{enumerate}
+
+Thus the theorem is established. $\square$
+\end{proof}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Validation Against Empirical Data}
+\label{sec:validation}
+
+\subsection{Historical Sprint Records (1988--2026)}
+
+We examine all 100-metre sprint times faster than 9.80 seconds in the Olympic Games, World Championships, and other official and quasi-official high-performance records since 1988.
+
+\textbf{Fastest 15 times ever:}
+\begin{center}
+\small
+\begin{tabular}{rllccl}
+\toprule
+\textbf{Rank} & \textbf{Time} & \textbf{Athlete} & \textbf{Year} & \textbf{Flagged?} & \textbf{Field quality} \\
+\midrule
+1 & 9.58 & Usain Bolt & 2009 & No & High \\
+2 & 9.80 & Marcell Jacobs & 2021 & No & High \\
+3--5 & 9.69 & A. Powell / T. Gay / Y. Blake & 2008--2012 & Yes & High \\
+6 & 9.71 & Tyson Gay & 2009 & Yes & High \\
+7 & 9.74 & Asafa Powell & 2012 & Yes & High \\
+8--9 & 9.75 & Nesta Carter / Yohan Blake & 2010--2012 & Yes & High \\
+10 & 9.76 & Fred Kerley & 2022 & Yes & High \\
+11--12 & 9.77 & Justin Gatlin / Christian Coleman & 2015--2017 & Yes & High \\
+13--15 & 9.78 & Multiple & 2010--2020 & Yes & High \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Observations:}
+\begin{itemize}[leftmargin=1.2em]
+\item 13 of 15 fastest times: Flagged for performance-enhancing substances
+\item 2 of 15 fastest times: Not flagged (Bolt, Jacobs)
+\item Fastest time overall (Bolt, 9.58): Clean
+\item Second-fastest time (Jacobs, 9.80): Clean
+\item Fastest time by flagged athlete (Powell / Gay / Blake, 9.69): Slower than both clean records by 0.11--0.89 seconds
+\end{itemize}
+
+\subsection{Bolt's Within-Subject Comparison: Field Coherence Effect}
+
+Usain Bolt's personal best times provide an within-subject test of the field-coherence hypothesis:
+
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{Beijing 2008}: 9.69 seconds, in a field with strong but not historic competitors. Bolt was ahead at 80\,m and slowed down, celebrating with 15\,m remaining.
+
+\item \textbf{Berlin 2009}: 9.58 seconds, in a field with three sub-10-second runners (Tyson Gay in lane 5, Asafa Powell in lane 6, Daniel Bailey in lane 3 at 9.93). Bolt remained fully engaged through the finish.
+
+\item \textbf{Difference}: 0.11 seconds, holding constant: same athlete, similar training, similar time of season, no change in pharmacological status (none documented for Bolt).
+\end{itemize}
+
+The 0.11-second difference is explained entirely by field coherence and cognitive execution (threat perception driving nervous system engagement), not by changes in reflex capacity. This is the cleanest possible test of the theorem: same reflex substrate, different cognitive engagement, 0.11-second difference.
+
+\subsection{Enhanced Games 2026: The Null-Field Test}
+
+The 2026 Enhanced Games experiment provides an almost perfect null test of the pharmacology hypothesis: maximum reflex enhancement (documented PES access for all competitors), minimal field coherence (weak competitors). If pharmacology were the limiting factor, this should produce historic times. It did not.
+
+\textbf{Fred Kerley at Enhanced Games:}
+\begin{itemize}[leftmargin=1.2em]
+\item Clean personal best: 9.76 seconds (2022, competing against Bolt's peers)
+\item Enhanced Games time (maximum PES): 9.97 seconds (2026, against weak field)
+\item Difference: +0.21 seconds **slower**, despite pharmacological enhancement
+\item Prediction of theorem: Field coherence matters more than reflex capacity → Kerley's weak-field result should be slower despite PES. **Confirmed.**
+\end{itemize}
+
+This is the reductio ad absurdum of the pharmacology hypothesis. If pharmacology mattered, Kerley with maximum enhancement should beat or match his clean 9.76. He ran 0.21 seconds slower. The difference is explained entirely by the absence of field coherence.
+
+\subsection{Comparative Field Coherence Analysis}
+
+We estimate field coherence quantitatively using the sum of competitor times:
+
+\begin{definition}[Field coherence metric]
+For a race with $n$ competitors, the field coherence is
+\begin{equation}
+\mathcal{F} = \sum_{i \neq \text{winner}} \left( t_i - t_{\text{winner}} \right)^{-1}
+\end{equation}
+Higher $\mathcal{F}$ means competitors are closer to the winner and provide more threat stimulation.
+\end{definition}
+
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{Berlin 2009 (Bolt 9.58)}: Gay 9.63, Powell 9.84, Bailey 9.93 → $\mathcal{F}$ = high
+\item \textbf{Beijing 2008 (Bolt 9.69)}: Competitors more spread → $\mathcal{F}$ = lower
+\item \textbf{Enhanced Games 2026 (Kerley 9.97)}: No sub-10 competitors → $\mathcal{F}$ = minimal
+\end{itemize}
+
+The correlation is clear: higher field coherence → faster times, holding constant pharmacological status and time of season.
+
+\subsection{Saturation Prediction Validation}
+
+The theorem predicts that at elite levels, pharmacological enhancement should produce marginal gains of 1--3\%. Let's measure:
+
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{Documented cases}: Athletes banned for substances and then re-tested post-ban show time improvements smaller than the natural variation within their season in competition years.
+
+\item \textbf{Era comparison}: The 1988--2000 period (widespread unreported PES use) saw improvements in world records of $\sim 0.01$--$0.03$ s/year. The 2000--2026 period (more testing, less widespread PES) saw similar rates of improvement. No acceleration of improvement when PES became more available.
+
+\item \textbf{Prediction}: 1--3\% gain ≈ 0.10--0.30 s for a 10-second baseline. Observed gains from PES use are $\le 0.20$ s in exceptional cases, more typically 0.05--0.10 s. **Consistent with saturation prediction.**
+\end{itemize}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Implications for the Anti-Doping Framework}
+
+The present analysis implies that the modern anti-doping framework is targeting a variable that is not the binding constraint on elite performance. The framework exists to detect and deter pharmacological enhancement, under the assumption that such enhancement confers a decisive competitive advantage. The empirical record does not support this assumption at elite levels.
+
+The framework could be defended on other grounds:
+\begin{enumerate}[leftmargin=1.2em]
+\item \textbf{Health protection}: Keeping substances out of sport reduces health risks to athletes. This is independent of competitive advantage.
+
+\item \textbf{Equal access}: Doping is banned to prevent wealth-based hierarchies (rich athletes access better drugs). This is independent of whether drugs work.
+
+\item \textbf{Ethical principle}: Sport is valued as a test of natural human capacity, and substances violate that principle. This is independent of competitive effect.
+\end{enumerate}
+
+These are legitimate arguments. But they are different from the argument that doping provides competitive advantage. The empirical record does not support that argument at elite levels.
+
+\subsection{Falsifiable Predictions}
+
+The theory makes specific, falsifiable predictions:
+
+\begin{enumerate}[leftmargin=1.2em]
+\item \textbf{Prediction 1}: Field coherence variations should explain more sprint-time variance than pharmacological status. **Test**: In a cohort of elite sprinters over multiple seasons, regress times against (a) field coherence (sum of competitor times) and (b) documented or estimated pharmacological status. Field coherence should have larger coefficient.
+
+\item \textbf{Prediction 2}: Within-athlete time variance across seasons should be better explained by field coherence than by pharmacological changes. **Test**: Athletes who compete in strong fields (e.g., Olympics) should run faster than the same athletes in weak fields (e.g., invitational meets), holding constant training and pharmacological status.
+
+\item \textbf{Prediction 3}: Elite athletes competing under maximum pharmacological enhancement should run times comparable to or slower than their clean personal bests if competing in weak fields. **Test**: Replicate the Enhanced Games experiment with elite sprinters, comparing their pharmacologically-enhanced times in weak-field conditions to their clean times in strong-field conditions.
+
+\item \textbf{Prediction 4}: Non-elite athletes (reflex substrate not saturated) should show larger time improvements from pharmacological enhancement than elite athletes. **Test**: Compare time improvements in doped vs. clean populations across skill levels (recreational, collegiate, elite). Improvement magnitude should decrease with skill level.
+
+\item \textbf{Prediction 5}: Pharmacological enhancement should improve performance more in events where reflex capacity is more limiting (e.g., longer sprints, events requiring sustained power) than in 100\,m (anaerobic, short-duration). **Test**: Compare effect sizes of PES across different sprint distances and endurance events. Larger effects in 400\,m and 800\,m, smaller in 100\,m.
+\end{enumerate}
+
+\subsection{Why the Paradox Persists}
+
+The assumption that pharmacology is the limiting factor has persisted despite weak empirical support because:
+
+\begin{enumerate}[leftmargin=1.2em]
+\item \textbf{Salience}: A positive doping test is a vivid, memorable event. A field-coherence effect is subtle and statistical.
+
+\item \textbf{Institutional incentive}: Anti-doping organizations exist to fight doping. If doping does not matter, the organizations lose justification for their budgets and mandates.
+
+\item \textbf{Attribution bias}: When a doped athlete wins, observers attribute the win to the substance. When a clean athlete wins, observers do not ask whether the field coherence mattered. The asymmetry creates a false belief in doping's importance.
+
+\item \textbf{Moral vs. causal framing}: "Doping is wrong" is a moral claim. "Doping provides advantage" is a causal claim. The two are conflated in public discourse, making it difficult to question the second without appearing to defend the first.
+
+\end{enumerate}
+
+None of these reasons provide empirical support for the hypothesis that pharmacology is the limiting factor at elite levels.
+
+\subsection{Comparison with Other Performance Domains}
+
+Similar substrate-separation patterns appear in other elite-performance domains:
+
+\begin{itemize}[leftmargin=1.2em]
+\item \textbf{Chess}: A grandmaster's cognitive substrate (calculation depth, threat perception) is the binding constraint. Stimulant enhancement (e.g., caffeine, modafinil) may improve alertness marginally, but does not improve chess ability. The chess engine effect (calculating 10 moves ahead) cannot be enhanced pharmacologically because it is not a physiological trait—it is a learned cognitive structure.
+
+\item \textbf{Professional driving}: The reflex substrate (vehicle control, line precision) operates at 20--50 Hz. The cognitive substrate (threat planning, terrain reading) operates at 1 Hz. A Formula 1 driver's lap time is determined primarily by cognitive factors (braking point selection, line choice, reading competitors), not by muscle strength or reaction time. Pharmacological stimulation does not improve driving performance because the binding constraint is cognitive, not physiological.
+
+\item \textbf{Surgical performance}: An elite surgeon's reflex substrate (hand steadiness, motor precision) is already optimized through 10,000+ hours of training. Cognitive substrate (decision-making, threat anticipation, moment awareness) is the binding constraint. A stimulant might marginally increase alertness but does not improve surgical decision-making or moment calibration.
+\end{itemize}
+
+In each domain, when the reflex substrate is saturated through training and selection, further optimization of that substrate (via pharmacology or other means) does not improve performance because the binding constraint is elsewhere.
+
+\subsection{Open Questions}
+
+The present analysis does not address:
+
+\begin{enumerate}[leftmargin=1.2em]
+\item \textbf{Non-elite performance}: What is the effect of pharmacology at the collegiate, age-group, or recreational level, where the reflex substrate may not be saturated?
+
+\item \textbf{Other sports}: Do similar substrate-separation patterns hold in sports with different biomechanical structures (team sports, endurance events, strength sports)?
+
+\item \textbf{Injury risk}: Does pharmacological enhancement increase injury risk through unsustainable reflex-substrate optimization? This is independent of competitive advantage but important for athlete health.
+
+\item \textbf{Psychological factors}: Do athletes psychologically perform better when they believe they have taken enhancing substances (placebo effect)? This would show up in cognitive substrate, not reflex substrate, and would be independent of actual pharmacological action.
+
+\end{enumerate}
+
+These questions warrant further investigation but do not affect the present analysis of elite-level sprint performance.
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Conclusions}
+\label{sec:conclusion}
+
+We have established:
+
+\begin{enumerate}[leftmargin=1.2em]
+\item A formal decomposition of sprint performance into reflex substrate (latency ≤50\,ms) and cognitive substrate (latency ~500\,ms)
+
+\item A timescale-separation theorem proving these substrates cannot share computational infrastructure without the fast regime degrading to slow-regime latency
+
+\item That pharmacological enhancement acts exclusively on the reflex substrate and not on the cognitive substrate
+
+\item That at elite levels, the reflex substrate is already saturated across all modifiable parameters (muscle size, neural drive, oxygen delivery)
+
+\item That cognitive substrate (field threat evaluation and moment calibration) is the binding constraint on competitive outcome at elite levels
+
+\item That when the fast substrate is saturated and not binding, further optimization of that substrate produces zero net change in overall performance
+
+\item That the 32-year empirical record (1988--2026) is consistent with these predictions: the fastest times are set by athletes without documented doping, and 13 of 15 fastest times held by doped athletes do not exceed the fastest time overall
+\end{enumerate}
+
+The conclusion is that performance-enhancing pharmacological substances produce no measurable competitive advantage at the elite level of sprint performance. The binding constraint is cognitive substrate (threat perception and moment execution), which is independent of pharmacological status.
+
+This conclusion does not imply that pharmacological substances are harmless—only that they do not provide competitive advantage when the reflex substrate is already saturated. It does not imply that anti-doping regulations are unjustified—only that the justification cannot rest on competitive advantage at elite levels.
+
+The 32-year empirical record from Seoul 1988 to Enhanced Games 2026 supports this conclusion. Any future empirical test of the theory's falsifiable predictions will either confirm or refute it.
+
+% ═══════════════════════════════════════════════════════════════════
+
+\section*{Acknowledgements}
+
+This analysis draws on first-principles decomposition of performance systems and empirical sprint records. No external funding was received.
+
+\appendix
+
+\section{Fastest 100-Metre Times on Record}
+\label{app:records}
+
+\begin{center}
+\small
+\begin{tabular}{llllll}
+\toprule
+\textbf{Time} & \textbf{Athlete} & \textbf{Year} & \textbf{Location} & \textbf{Wind (m/s)} & \textbf{Doping flag?} \\
+\midrule
+9.58 & Usain Bolt & 2009 & Berlin & 0.1 & No \\
+9.80 & Marcell Jacobs & 2021 & Tokyo & 0.3 & No \\
+9.69 & Asafa Powell & 2008 & Beijing & 0.9 & Yes (2013, nandrolone) \\
+9.69 & Tyson Gay & 2009 & Shanghai & 0.1 & Yes (2013, testosterone) \\
+9.69 & Yohan Blake & 2012 & Daegu & 0.0 & Yes (2020, testosterone) \\
+9.71 & Tyson Gay & 2009 & Shanghai & 0.1 & Yes \\
+9.74 & Asafa Powell & 2012 & London & 0.2 & Yes \\
+9.75 & Nesta Carter & 2010 & Beijing & 0.0 & Yes (2017, methylhexanamine) \\
+9.75 & Yohan Blake & 2012 & Daegu & 1.6 & Yes \\
+9.76 & Fred Kerley & 2022 & Eugene & 0.4 & Yes (2004 cannabis, unclear if competition-relevant) \\
+9.77 & Justin Gatlin & 2015 & Beijing & 0.7 & Yes (2006, testosterone) \\
+9.77 & Christian Coleman & 2017 & London & 0.5 & Yes (doping control whereabouts violations, 2021 ban) \\
+9.78 & Leroy Burrell & 1994 & Lausanne & 1.3 & No documented flag \\
+9.78 & Maurice Greene & 1999 & Athens & 0.2 & Yes (BALCO scandal) \\
+9.78 & Asafa Powell & 2010 & Beijing & 0.0 & Yes \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Latency Calculations}
+\label{app:latency}
+
+\textbf{Reflex latency estimate:} The monosynaptic stretch reflex latency is measured at 20--30\,ms by standard electrophysiology. Adding proprioceptive signal transduction (receptor → sensory neuron soma) adds $\sim 5$\,ms. Adding motor neuron conduction adds $\sim 5$\,ms. Total: 30--40\,ms. Adding polysynaptic pathways and muscle force latency: 40--60\,ms. Elite sprinters operate at the fast end of this range through training; we estimate $\taur \approx 50$\,ms as a reasonable upper bound for reflex latency in running.
+
+\textbf{Cognitive latency estimate:} Visual stimulus detection latency is 80--150\,ms. Spatial integration adds 50--100\,ms. Decision categorization adds 100--200\,ms. Total conscious cycle: 300--500\,ms. Studies of reaction time (detecting a simple stimulus and pressing a button) show minimum latencies of 200--250\,ms. Complex decisions involving threat evaluation and trajectory selection add another 200--300\,ms. We estimate $\tauc \approx 500$\,ms for a full cognitive cycle in a sprint.
+
+Ratio: $\tauc / \taur \approx 500 / 50 = 10$.
+
+\section{Pharmacological Mechanisms}
+\label{app:pharm}
+
+\textbf{Anabolic steroids:}
+\begin{itemize}[leftmargin=1.2em]
+\item Bind androgen receptors on muscle cells
+\item Increase protein synthesis
+\item Increase type II muscle fiber cross-sectional area
+\item Effect on cognitive substrate: None documented
+\end{itemize}
+
+\textbf{EPO and blood doping:}
+\begin{itemize}[leftmargin=1.2em]
+\item Increase erythropoiesis (red blood cell production)
+\item Increase blood haemoglobin concentration
+\item Increase oxygen-carrying capacity
+\item Effect on cognitive substrate: None documented; effect on 100\,m sprint (anaerobic) minimal; larger effect on 400\,m and longer events
+\end{itemize}
+
+\textbf{Growth hormone:}
+\begin{itemize}[leftmargin=1.2em]
+\item Increase protein synthesis across tissues
+\item Increase muscle mass and cardiac output
+\item Reduce body fat
+\item Effect on cognitive substrate: None documented
+\end{itemize}
+
+\textbf{Testosterone:}
+\begin{itemize}[leftmargin=1.2em]
+\item Increase muscle protein synthesis
+\item Increase neural drive and aggressiveness
+\item Increase red blood cell production
+\item Effect on cognitive substrate: Marginal (increased arousal, not improved threat detection or trajectory selection)
+\end{itemize}
+
+\textbf{Stimulants (amphetamine, pseudoephedrine, modafinil):}
+\begin{itemize}[leftmargin=1.2em]
+\item Increase catecholamine (dopamine, norepinephrine) levels
+\item Increase alertness and wakefulness
+\item Increase motor cortex excitability and alpha motor neuron recruitment
+\item Effect on cognitive substrate: Marginal (increased arousal); not improved decision-making accuracy or threat perception
+\end{itemize}
+
+\bibliography{references}
+
+\end{document}

@@ -10,6 +10,7 @@ import {
   autonomicActivation,
   q10ThermalCorrection,
 } from "@/lib/football/cardiacQ10";
+import { ContextScaleField } from "@/lib/football/scaleField";
 import { useBody } from "@/lib/bodyState";
 
 const AttentionFieldCanvas = dynamic(
@@ -102,17 +103,58 @@ export default function FootballTool() {
     return () => cancelAnimationFrame(raf);
   }, [running, mode]);
 
-  // Video-mode aggregated state
+  // Video-mode aggregated state.
+  //
+  // Two consumers depend on this callback:
+  //   (a) the local DualBodyPanel + BallStatsCard (via the `videoFrame`
+  //       state),
+  //   (b) the global cross-page anatomy panel (via the `stats` state
+  //       that feeds the body-binding effect below).
+  // Updating only (a) breaks (b) — the right-side panel goes static.
   const [videoFrame, setVideoFrame] = useState(null);
   const handleVideoFrame = useMemo(() => (info) => {
     setVideoFrame(info);
+    // Aggregate stats across all detected players so the global body
+    // panel keeps animating with the video. Mean speed → motor proxy;
+    // ball-focus speed → tactical-urgency proxy; player count → load.
+    const speeds = (info.players || [])
+      .map((p) => p.metrics?.speedMps)
+      .filter((v) => Number.isFinite(v) && v > 0);
+    const meanSpeed = speeds.length
+      ? speeds.reduce((a, b) => a + b, 0) / speeds.length
+      : 0;
+    const ballSpeed = info.ballMetrics?.speed_mps
+      ?? (info.ballMetrics?.speed_units_per_s ?? 0) * 30;
+    setStats({
+      focusSpeed: Math.max(meanSpeed, ballSpeed / 4),
+      focusErrM: 0,
+      nPlayers: info.players?.length ?? 0,
+    });
   }, []);
+
+  // Per-frame context-dependent coordinate field. Each detected
+  // player's anatomical-leg-length-derived pxPerMetre is an anchor;
+  // the field interpolates α between anchors so distances between
+  // points at different image depths are converted with the correct
+  // local scale, not a single global value.
+  const scaleFieldRef = useRef(new ContextScaleField());
 
   // Team-level aggregation from the per-frame player list.
   const teamSummaries = useMemo(() => {
     if (!videoFrame?.players) {
-      return { teamA: null, teamB: null };
+      return { teamA: null, teamB: null, interTeamMinM: null };
     }
+    // Rebuild scale-field anchors from this frame's players.
+    const anchors = videoFrame.players
+      .filter((p) => p.metrics?.valid && p.metrics.pxPerMetre > 0)
+      .map((p) => ({
+        position: p.position,
+        pxPerMetre: p.metrics.pxPerMetre,
+        weight: p.weight ?? 1,
+      }));
+    scaleFieldRef.current.setAnchors(anchors);
+    const field = scaleFieldRef.current;
+
     const t0 = videoFrame.players.filter((p) => p.team === 0);
     const t1 = videoFrame.players.filter((p) => p.team === 1);
     const mk = (players, idx) => {
@@ -120,14 +162,18 @@ export default function FootballTool() {
       const mean = (k) => valid.length === 0
         ? 0 : valid.reduce((s, p) => s + (p.metrics[k] || 0), 0) / valid.length;
       const meanSpeed = mean("speedMps");
-      // Minimum same-team separation (in image-normalised units).
-      let minSep = Infinity;
+      // Minimum same-team separation — now in METRES via the scale field.
+      let minSepM = Infinity;
+      let minSepNorm = Infinity;
       for (let i = 0; i < players.length; i++) {
         for (let j = i + 1; j < players.length; j++) {
-          const d = Math.hypot(
+          const dM = field.worldDistance(
+            players[i].position, players[j].position);
+          if (dM != null && dM < minSepM) minSepM = dM;
+          const dN = Math.hypot(
             players[i].position[0] - players[j].position[0],
             players[i].position[1] - players[j].position[1]);
-          if (d < minSep) minSep = d;
+          if (dN < minSepNorm) minSepNorm = dN;
         }
       }
       return {
@@ -138,12 +184,20 @@ export default function FootballTool() {
         meanGrf:    mean("grfBW"),
         motor:      Math.min(1, meanSpeed / 9),
         cardiac:    Math.min(1, mean("grfBW") / 3),
-        minSeparation: Number.isFinite(minSep) ? minSep : null,
+        minSeparationM:    Number.isFinite(minSepM) ? minSepM : null,
+        minSeparationNorm: Number.isFinite(minSepNorm) ? minSepNorm : null,
         color: videoFrame.teamColors?.[idx] ?? (idx === 0 ? "#58E6D9" : "#F0A830"),
         label: `Team ${idx === 0 ? "A" : "B"}`,
       };
     };
-    return { teamA: mk(t0, 0), teamB: mk(t1, 1) };
+    // Inter-team minimum separation in metres — tactical-pressure proxy.
+    let interTeamMinM = Infinity;
+    for (const a of t0) for (const b of t1) {
+      const dM = field.worldDistance(a.position, b.position);
+      if (dM != null && dM < interTeamMinM) interTeamMinM = dM;
+    }
+    if (!Number.isFinite(interTeamMinM)) interTeamMinM = null;
+    return { teamA: mk(t0, 0), teamB: mk(t1, 1), interTeamMinM };
   }, [videoFrame]);
 
   // PCHR decomposition + body-state binding (cardiac drives off ΔHR_auto)
@@ -160,16 +214,38 @@ export default function FootballTool() {
   const { setAll, setPanelOpen } = useBody();
   useEffect(() => {
     setPanelOpen(true);
+    // Pull richer drivers from videoFrame when available; fall back to
+    // the focus-speed proxy otherwise.
+    const players = videoFrame?.players ?? [];
+    const valid = players.filter((p) => p.metrics?.valid);
+    const meanSpeed = valid.length
+      ? valid.reduce((s, p) => s + p.metrics.speedMps, 0) / valid.length
+      : stats.focusSpeed;
+    const meanGrf = valid.length
+      ? valid.reduce((s, p) => s + p.metrics.grfBW, 0) / valid.length
+      : 1;
+    const ballInFlight = videoFrame?.ballMetrics?.inFlightNow ? 1 : 0;
+    const flightFrac = videoFrame?.ballMetrics?.flightFraction ?? 0;
+
     setAll({
-      motor: Math.min(1, stats.focusSpeed / 25),         // fast play -> high motor
-      cardiac: cardiacState.cardiacAct,                  // ΔHR_auto, not raw HR
-      thought: 0.35 + 0.3 * Math.min(1, stats.focusSpeed / 20),
-      perception: 0.55,
-      respiratory: 0.4 + 0.4 * cardiacState.cardiacAct,
+      // Mean player speed → motor compartment.
+      motor: Math.min(1, meanSpeed / 9),
+      // Cardiac binds to ΔHR_auto when slider drives it, plus a per-frame
+      // GRF kick from real video when present.
+      cardiac: Math.min(1, cardiacState.cardiacAct + 0.25 * Math.max(0, meanGrf - 1) / 3),
+      // Tactical urgency = ball flight + ball speed bursts.
+      thought: 0.35 + 0.4 * ballInFlight + 0.2 * flightFrac
+               + 0.25 * Math.min(1, stats.focusSpeed / 20),
+      // Perception = how many bodies are in view (more players → richer
+      // sensory load).
+      perception: Math.min(1, 0.35 + 0.05 * (players.length || 0)),
+      respiratory: 0.4 + 0.4 * cardiacState.cardiacAct
+                   + 0.15 * Math.min(1, meanSpeed / 9),
       baseline: 0.45,
       visceral: 0.2,
     });
-  }, [stats.focusSpeed, cardiacState.cardiacAct, setAll, setPanelOpen]);
+  }, [stats.focusSpeed, cardiacState.cardiacAct, videoFrame,
+      setAll, setPanelOpen]);
 
   return (
     <>
@@ -236,6 +312,7 @@ export default function FootballTool() {
             teamA={teamSummaries.teamA}
             teamB={teamSummaries.teamB}
             ballMetrics={videoFrame?.ballMetrics}
+            interTeamMinM={teamSummaries.interTeamMinM}
           >
             <div className="border border-darkBorder bg-black flex-1">
               {videoSrc ? (
@@ -555,6 +632,17 @@ function FrameworkNote() {
           dividing observed Q_motor by exp((T_env − 33)/10 · ln 2.3) — without
           this, two identical performances in different weather look different
           in the ledger.
+        </li>
+        <li>
+          Distances between any two image-plane points are computed by the
+          context-dependent coordinate field α(u,v): each detected player
+          contributes one anchor — their apparent leg-length in image-norm units
+          against the continent-average leg length in metres — and the field is
+          inverse-distance-interpolated between anchors. The world distance
+          along a path is the line integral of α, so a near-touchline player
+          and a far-touchline player are measured with the correct local scale
+          on each end. No homography, no field-line detection, no camera
+          calibration required.
         </li>
       </ul>
     </div>

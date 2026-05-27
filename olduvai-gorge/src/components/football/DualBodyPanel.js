@@ -27,9 +27,10 @@ const METRICS = [
 const SMOOTH = 0.20;
 
 export default function DualBodyPanel({
-  teamA,        // {nPlayers, meanSpeed, meanStride, meanOsc, meanGrf, motor, cardiac, color, label}
+  teamA,        // {nPlayers, meanSpeed, meanStride, meanOsc, meanGrf, motor, cardiac, color, label, minSeparationM}
   teamB,
   ballMetrics,  // {speed_mps, accel_mps2, curvature_per_m, flightFraction, ...}
+  interTeamMinM,  // inter-team minimum separation in metres (from scale field)
   children,     // video viewport
 }) {
   return (
@@ -39,6 +40,14 @@ export default function DualBodyPanel({
       </div>
       <div className="col-span-8 md:col-span-1 flex flex-col">
         {children}
+        {Number.isFinite(interTeamMinM) && (
+          <div className="mt-2 mono text-[10px] uppercase tracking-widest text-muted
+                          border border-darkBorder bg-darkSoft/60 px-3 py-2
+                          flex justify-between">
+            <span>inter-team min sep</span>
+            <span className="text-primary">{interTeamMinM.toFixed(2)} m</span>
+          </div>
+        )}
       </div>
       <div className="col-span-2 md:col-span-1">
         <BodyCard team={teamB} side="right" />
@@ -74,8 +83,8 @@ function BodyCard({ team, side }) {
         <Row k="stride"  v={(t.meanStride ?? 0).toFixed(2) + " m"} />
         <Row k="osc"     v={(t.meanOsc ?? 0).toFixed(1) + " cm"} />
         <Row k="GRF"     v={(t.meanGrf ?? 0).toFixed(1) + " BW"} />
-        {Number.isFinite(t.minSeparation) && (
-          <Row k="min sep" v={(t.minSeparation ?? 0).toFixed(2) + " norm"} />
+        {Number.isFinite(t.minSeparationM) && (
+          <Row k="min sep" v={t.minSeparationM.toFixed(2) + " m"} />
         )}
       </div>
     </div>
