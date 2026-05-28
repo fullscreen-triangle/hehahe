@@ -1,19 +1,24 @@
 /**
- * DualBodyPanel — two opposing team anatomy displays, one on each
- * side of the screen, each rendered as a compact body silhouette
- * surrounded by circular bar charts that update continuously with
- * the live metric stream.
+ * DualBodyPanel — fullscreen video viewport with team-anatomy panels
+ * and a ball-stats readout overlaid on top with transparent
+ * backgrounds. The video (passed as `children`) fills the entire
+ * container; the analytic overlays sit above it.
  *
- * Circular bars are arc segments around the body, one per metric.
- * Bar fill = normalised value in [0, 1]. The bars animate smoothly
- * via internal exponential smoothing.
+ * Layout (absolute positioning, z-stack):
+ *   • z-0   video viewport (children)
+ *   • z-10  Team A body silhouette + rosette (top-left)
+ *   • z-10  Team B body silhouette + rosette (top-right)
+ *   • z-10  ball stats card (bottom-centre, narrow)
+ *   • z-10  inter-team min-sep readout (top-centre)
  *
- * Layout: takes the parent's full width and renders two side panels
- * (Team 0 left, Team 1 right) and the video viewport in the middle.
- * The parent passes the video element as `children`.
+ * All overlay panels use `bg-transparent` so the live frame remains
+ * visible underneath; numbers are kept legible with a thin border and
+ * a subtle backdrop blur on the chips. Overlays are
+ * `pointer-events-none` so video controls underneath stay clickable.
  */
 
 import { useEffect, useRef, useState } from "react";
+import BallStatsCard from "./BallStatsCard";
 
 const METRICS = [
   { key: "motor",      label: "MOTOR",   max: 1.0, color: "#58E6D9", unit: "" },
@@ -27,30 +32,58 @@ const METRICS = [
 const SMOOTH = 0.20;
 
 export default function DualBodyPanel({
-  teamA,        // {nPlayers, meanSpeed, meanStride, meanOsc, meanGrf, motor, cardiac, color, label, minSeparationM}
+  teamA,
   teamB,
-  ballMetrics,  // {speed_mps, accel_mps2, curvature_per_m, flightFraction, ...}
-  interTeamMinM,  // inter-team minimum separation in metres (from scale field)
-  children,     // video viewport
+  ballMetrics,
+  interTeamMinM,
+  children,
 }) {
   return (
-    <div className="grid grid-cols-12 gap-4 items-stretch md:grid-cols-1">
-      <div className="col-span-2 md:col-span-1">
-        <BodyCard team={teamA} side="left" />
-      </div>
-      <div className="col-span-8 md:col-span-1 flex flex-col">
+    <div className="relative w-full bg-black overflow-hidden"
+         style={{ height: "70vh", minHeight: "32rem" }}>
+      {/* Fullscreen video viewport */}
+      <div className="absolute inset-0 z-0">
         {children}
-        {Number.isFinite(interTeamMinM) && (
-          <div className="mt-2 mono text-[10px] uppercase tracking-widest text-muted
-                          border border-darkBorder bg-darkSoft/60 px-3 py-2
-                          flex justify-between">
-            <span>inter-team min sep</span>
-            <span className="text-primary">{interTeamMinM.toFixed(2)} m</span>
-          </div>
-        )}
       </div>
-      <div className="col-span-2 md:col-span-1">
-        <BodyCard team={teamB} side="right" />
+
+      {/* Team A — top-left overlay, semi-transparent card */}
+      <div className="absolute top-3 left-3 z-10
+                      w-[20vw] min-w-[200px] max-w-[260px]
+                      pointer-events-none">
+        <div className="border border-darkBorder bg-dark/65 backdrop-blur-sm p-3">
+          <BodyCard team={teamA} side="left" />
+        </div>
+      </div>
+
+      {/* Team B — top-right overlay, semi-transparent card */}
+      <div className="absolute top-3 right-3 z-10
+                      w-[20vw] min-w-[200px] max-w-[260px]
+                      pointer-events-none">
+        <div className="border border-darkBorder bg-dark/65 backdrop-blur-sm p-3">
+          <BodyCard team={teamB} side="right" />
+        </div>
+      </div>
+
+      {/* Inter-team minimum separation — top-centre chip */}
+      {Number.isFinite(interTeamMinM) && (
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10
+                        mono text-[10px] uppercase tracking-widest
+                        bg-dark/65 backdrop-blur-sm border border-darkBorder
+                        px-3 py-1.5 text-light pointer-events-none">
+          inter-team min sep
+          <span className="text-primary ml-2">
+            {interTeamMinM.toFixed(2)} m
+          </span>
+        </div>
+      )}
+
+      {/* Ball stats — bottom-centre overlay, semi-transparent card */}
+      <div className="absolute bottom-14 left-1/2 -translate-x-1/2 z-10
+                      w-[58vw] min-w-[360px] max-w-[680px]
+                      pointer-events-none">
+        <div className="border border-darkBorder bg-dark/65 backdrop-blur-sm">
+          <BallStatsCard ballMetrics={ballMetrics} />
+        </div>
       </div>
     </div>
   );
@@ -61,7 +94,7 @@ export default function DualBodyPanel({
 function BodyCard({ team, side }) {
   const t = team ?? emptyTeam();
   return (
-    <div className="border border-darkBorder bg-darkSoft/60 p-3 h-full flex flex-col">
+    <div className="flex flex-col">
       <div className="mono text-[10px] uppercase tracking-widest mb-2"
            style={{ color: t.color || "#cfcfe2" }}>
         {t.label || `Team ${side === "left" ? "A" : "B"}`}
@@ -152,7 +185,7 @@ function CircularRosette({ values, bodyColor }) {
           key={`bg-${m.key}`}
           cx={CX} cy={CY} r={rings[i]}
           start={startAngle} end={endAngle}
-          color="rgba(255,255,255,0.07)"
+          color="rgba(255,255,255,0.10)"
           width={4}
         />
       ))}

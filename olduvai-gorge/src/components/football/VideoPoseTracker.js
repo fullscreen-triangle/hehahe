@@ -35,6 +35,7 @@ export default function VideoPoseTracker({
   detectionHz = 12,
   continent = "South America",
   className = "",
+  fill = false,    // when true, fills parent (no fixed aspect ratio)
 }) {
   const videoRef = useRef(null);
   const overlayRef = useRef(null);
@@ -90,17 +91,24 @@ export default function VideoPoseTracker({
     const tick = () => {
       raf = requestAnimationFrame(tick);
       const now = performance.now();
+
+      // Resize the overlay canvas every frame so it tracks the video's
+      // displayed size — without this, the canvas is sized only when
+      // detection runs, which means layout reflows before the first
+      // detection leave skeletons drawn at the wrong scale (or invisible).
+      const r = video.getBoundingClientRect();
+      const wantW = Math.max(1, Math.round(r.width));
+      const wantH = Math.max(1, Math.round(r.height));
+      if (canvas.width !== wantW || canvas.height !== wantH) {
+        canvas.width = wantW;
+        canvas.height = wantH;
+      }
+
       const minDelta = 1000 / Math.max(1, detectionHz);
       if (now - lastDetectRef.current < minDelta) return;
       if (video.readyState < 2 || video.paused || video.ended) return;
       lastDetectRef.current = now;
 
-      const r = video.getBoundingClientRect();
-      if (canvas.width !== Math.round(r.width)
-          || canvas.height !== Math.round(r.height)) {
-        canvas.width = Math.max(1, Math.round(r.width));
-        canvas.height = Math.max(1, Math.round(r.height));
-      }
       const W = canvas.width, H = canvas.height;
 
       // Mirror the current video frame into the sample canvas so the
@@ -214,18 +222,29 @@ export default function VideoPoseTracker({
   }, [src]);
 
   return (
-    <div className={`relative w-full ${className}`}
-         style={{ aspectRatio: "16 / 9", background: "#000" }}>
+    <div className={`relative w-full ${fill ? "h-full" : ""} ${className}`}
+         style={{
+           ...(fill ? {} : { aspectRatio: "16 / 9" }),
+           background: "#000",
+         }}>
       <video
         ref={videoRef}
         src={src || undefined}
         playsInline
         muted={muted}
         loop
+        autoPlay
         controls
         preload="auto"
         crossOrigin="anonymous"
         className="absolute inset-0 w-full h-full object-contain"
+        onLoadedMetadata={(e) => {
+          // Some browsers reject autoplay on the first load even when
+          // muted — retry explicitly so detection can start without a
+          // user click.
+          const v = e.currentTarget;
+          if (v.paused) v.play().catch(() => {});
+        }}
       />
       <canvas
         ref={overlayRef}

@@ -28,11 +28,6 @@ const DualBodyPanel = dynamic(
   { ssr: false }
 );
 
-const BallStatsCard = dynamic(
-  () => import("@/components/football/BallStatsCard"),
-  { ssr: false }
-);
-
 export default function FootballTool() {
   const [mode, setMode] = useState("synthetic");    // "synthetic" | "video"
   const [videoUrl, setVideoUrl] = useState("");
@@ -292,9 +287,11 @@ export default function FootballTool() {
         )}
       </section>
 
-      {/* Viewport */}
-      <section className="px-8 sm:px-4 max-w-6xl mx-auto">
-        {mode === "synthetic" ? (
+      {/* Viewport — synthetic stays inside the page column; video mode
+          breaks out to the full viewport width with anatomy & ball
+          panels overlaid on top of the live frame. */}
+      {mode === "synthetic" ? (
+        <section className="px-8 sm:px-4 max-w-6xl mx-auto">
           <div
             className="relative border border-darkBorder bg-black"
             style={{ aspectRatio: `${PITCH_X} / ${PITCH_Y}` }}
@@ -307,34 +304,34 @@ export default function FootballTool() {
             />
             <Legend stats={stats} />
           </div>
-        ) : (
+        </section>
+      ) : (
+        <section className="w-full">
           <DualBodyPanel
             teamA={teamSummaries.teamA}
             teamB={teamSummaries.teamB}
             ballMetrics={videoFrame?.ballMetrics}
             interTeamMinM={teamSummaries.interTeamMinM}
           >
-            <div className="border border-darkBorder bg-black flex-1">
-              {videoSrc ? (
-                <VideoPoseTracker
-                  src={videoSrc}
-                  onFrameUpdate={handleVideoFrame}
-                  detectionHz={12}
-                />
-              ) : (
-                <div className="aspect-video flex items-center justify-center mono text-xs uppercase tracking-widest text-muted">
-                  pick a sample clip above, paste a direct .mp4 URL, or upload a file
-                </div>
-              )}
-            </div>
-            <div className="mt-3">
-              <BallStatsCard ballMetrics={videoFrame?.ballMetrics} />
-            </div>
+            {videoSrc ? (
+              <VideoPoseTracker
+                src={videoSrc}
+                onFrameUpdate={handleVideoFrame}
+                detectionHz={12}
+                fill
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center mono text-xs uppercase tracking-widest text-muted">
+                pick a sample clip above, paste a direct .mp4 URL, or upload a file
+              </div>
+            )}
           </DualBodyPanel>
-        )}
+        </section>
+      )}
 
-        {/* Controls + readouts */}
-        <div className="grid grid-cols-2 gap-6 mt-6 md:grid-cols-1">
+      {/* Controls + readouts */}
+      <section className="px-8 sm:px-4 max-w-6xl mx-auto mt-6">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-1">
           <ControlsCard
             running={running}
             setRunning={setRunning}
