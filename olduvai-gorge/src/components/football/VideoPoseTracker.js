@@ -198,8 +198,15 @@ export default function VideoPoseTracker({
         : null;
       const ballMetrics = ballRef.current.snapshot({ pxPerMetre });
 
+      // The video frame is letterboxed inside the canvas by
+      // object-contain. Skeletons + ball must be drawn to the content
+      // rect, not the full canvas, otherwise they stretch to fill the
+      // black bars and detach from the players.
+      const contentRect = videoContentRect(video, W, H);
+
       // Draw everything.
-      drawOverlay(ctx, W, H, players, focus, teamCxRef.current.teamColors());
+      drawOverlay(ctx, W, H, contentRect, players, focus,
+                  teamCxRef.current.teamColors());
 
       onFrameUpdate?.({
         players,
@@ -336,14 +343,19 @@ const POSE_EDGES = [
   [24, 26], [26, 28], [28, 30], [28, 32], [30, 32],
 ];
 
-function drawOverlay(ctx, W, H, players, focus, teamColors) {
+function drawOverlay(ctx, W, H, content, players, focus, teamColors) {
   ctx.clearRect(0, 0, W, H);
+
+  // Map a normalised (u, v) ∈ [0, 1]² in video-content space to canvas
+  // pixel space, honouring the object-contain letterbox.
+  const cx = (u) => content.x + u * content.w;
+  const cy = (v) => content.y + v * content.h;
 
   // 1. Attention rays as faint streaks.
   for (const p of players) {
-    const px = p.position[0] * W;
-    const py = p.position[1] * H;
-    const reach = 0.40 * Math.max(W, H);
+    const px = cx(p.position[0]);
+    const py = cy(p.position[1]);
+    const reach = 0.40 * Math.max(content.w, content.h);
     const ex = px + p.facing[0] * reach;
     const ey = py + p.facing[1] * reach;
     const grad = ctx.createLinearGradient(px, py, ex, ey);
@@ -363,17 +375,19 @@ function drawOverlay(ctx, W, H, players, focus, teamColors) {
     const teamCol = teamColors[p.team] ?? "#cfcfe2";
     const bbox = p.bbox;
     if (bbox) {
+      const bx = cx(bbox.xmin);
+      const by = cy(bbox.ymin);
+      const bw = (bbox.xmax - bbox.xmin) * content.w;
+      const bh = (bbox.ymax - bbox.ymin) * content.h;
       ctx.strokeStyle = withAlpha(teamCol, 0.85);
       ctx.lineWidth = 2;
-      ctx.strokeRect(bbox.xmin * W, bbox.ymin * H,
-                     (bbox.xmax - bbox.xmin) * W,
-                     (bbox.ymax - bbox.ymin) * H);
+      ctx.strokeRect(bx, by, bw, bh);
       // Id badge
       ctx.fillStyle = withAlpha(teamCol, 0.85);
-      ctx.fillRect(bbox.xmin * W, bbox.ymin * H - 18, 26, 16);
+      ctx.fillRect(bx, by - 18, 26, 16);
       ctx.fillStyle = "#0a0a0f";
       ctx.font = "11px ui-monospace, Menlo, monospace";
-      ctx.fillText(`#${p.id}`, bbox.xmin * W + 3, bbox.ymin * H - 5);
+      ctx.fillText(`#${p.id}`, bx + 3, by - 5);
     }
 
     // Skeleton
@@ -387,8 +401,8 @@ function drawOverlay(ctx, W, H, players, focus, teamColors) {
         const av = (la.visibility ?? 1), bv = (lb.visibility ?? 1);
         if (av < 0.3 || bv < 0.3) continue;
         ctx.beginPath();
-        ctx.moveTo(la.x * W, la.y * H);
-        ctx.lineTo(lb.x * W, lb.y * H);
+        ctx.moveTo(cx(la.x), cy(la.y));
+        ctx.lineTo(cx(lb.x), cy(lb.y));
         ctx.stroke();
       }
       // Keypoints
@@ -397,14 +411,14 @@ function drawOverlay(ctx, W, H, players, focus, teamColors) {
         const k = lm[i];
         if (!k || (k.visibility ?? 1) < 0.3) continue;
         ctx.beginPath();
-        ctx.arc(k.x * W, k.y * H, 2.6, 0, Math.PI * 2);
+        ctx.arc(cx(k.x), cy(k.y), 2.6, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
     // Facing arrow at the hip
-    const px = p.position[0] * W;
-    const py = p.position[1] * H;
+    const px = cx(p.position[0]);
+    const py = cy(p.position[1]);
     drawArrow(ctx, px, py, p.facing[0], p.facing[1], teamCol, 22);
 
     // Speed label
@@ -416,10 +430,10 @@ function drawOverlay(ctx, W, H, players, focus, teamColors) {
     }
   }
 
-  // 3. Focus dot.
+  // 3. Focus dot — the "tracked ball" pseudo-location.
   if (focus) {
-    const fx = focus[0] * W;
-    const fy = focus[1] * H;
+    const fx = cx(focus[0]);
+    const fy = cy(focus[1]);
     ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
     ctx.beginPath();
     ctx.arc(fx, fy, 8, 0, Math.PI * 2);
@@ -430,6 +444,28 @@ function drawOverlay(ctx, W, H, players, focus, teamColors) {
     ctx.arc(fx, fy, 14, 0, Math.PI * 2);
     ctx.stroke();
   }
+}
+
+/**
+ * The object-contain letterboxed rectangle of the video content
+ * within the canvas — i.e. where the actual frame pixels live. If we
+ * don't have intrinsic dimensions yet, fall back to the whole canvas.
+ */
+function videoContentRect(video, W, H) {
+  const vw = video.videoWidth, vh = video.videoHeight;
+  if (!vw || !vh) return { x: 0, y: 0, w: W, h: H };
+  const videoAspect = vw / vh;
+  const elementAspect = W / H;
+  if (videoAspect > elementAspect) {
+    // Pillarbox not needed; letterboxed top/bottom.
+    const w = W;
+    const h = W / videoAspect;
+    return { x: 0, y: (H - h) / 2, w, h };
+  }
+  // Letterbox left/right (pillarbox).
+  const h = H;
+  const w = H * videoAspect;
+  return { x: (W - w) / 2, y: 0, w, h };
 }
 
 function drawArrow(ctx, px, py, fx, fy, color, length) {
