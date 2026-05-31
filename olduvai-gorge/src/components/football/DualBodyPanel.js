@@ -46,19 +46,14 @@ export default function DualBodyPanel({
         {children}
       </div>
 
-      {/* Team A — top-left overlay, semi-transparent card */}
+      {/* Both teams stacked on the left so the rosettes sit one above
+          the other for direct cross-team comparison. */}
       <div className="absolute top-3 left-3 z-10
                       w-[20vw] min-w-[200px] max-w-[260px]
-                      pointer-events-none">
+                      flex flex-col gap-3 pointer-events-none">
         <div className="border border-darkBorder bg-dark/65 backdrop-blur-sm p-3">
           <BodyCard team={teamA} side="left" />
         </div>
-      </div>
-
-      {/* Team B — top-right overlay, semi-transparent card */}
-      <div className="absolute top-3 right-3 z-10
-                      w-[20vw] min-w-[200px] max-w-[260px]
-                      pointer-events-none">
         <div className="border border-darkBorder bg-dark/65 backdrop-blur-sm p-3">
           <BodyCard team={teamB} side="right" />
         </div>

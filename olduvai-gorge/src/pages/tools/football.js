@@ -377,6 +377,7 @@ const SAMPLE_CLIP_GROUPS = [
   {
     label: "football",
     clips: [
+      { label: "Bonucci",         src: "/football/bonucci.mp4"      },
       { label: "Match 2 · 1080p", src: "/football/m2-res_1080p.mp4" },
       { label: "Match 2 · 720p",  src: "/football/m2-res_720p.mp4"  },
       { label: "Match 2 · 470p",  src: "/football/m2-res_470p.mp4"  },
