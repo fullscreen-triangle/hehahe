@@ -1,0 +1,105 @@
+======================================================================
+VALIDATION REPORT
+======================================================================
+
+Timestamp: 2026-06-01T04:31:22.837630
+Tests Run: 11
+Tests Passed: 8
+Tests Failed: 3
+
+----------------------------------------------------------------------
+INDIVIDUAL TEST RESULTS
+----------------------------------------------------------------------
+
+✓ PASS - Charge Conservation
+    n_compartments: 5
+    Q_total: 1
+    max_deviation: 2.22045e-16
+
+✓ PASS - Exponential Decay
+    tau_nominal: 0.3
+    r_squared: 1
+    max_relative_error: 1.02205e-08
+    mean_relative_error: 3.39774e-10
+
+✗ FAIL - Sensation Integral
+    predicted_integral: 5.24851
+    measured_integral: 0.0518372
+    relative_error: 0.990123
+
+✓ PASS - Pain/Pleasure Categorization
+    tau_critical: 0.05
+    n_timescales_tested: 50
+    category_counts:
+      pain: 20
+      neutral: 2
+      pleasure: 28
+    transition_sharpness: 2
+
+✓ PASS - Receptor Diversity Advantage
+    monolithic_coverage: 0.1
+    diverse_coverage: 0.8
+    coverage_improvement: 7
+    efficiency_improvement: 64
+    receptor_types_diverse: 8
+
+✓ PASS - Logarithmic Spacing
+    n_receptor_types: 8
+    mean_log_error: 0
+    max_log_error: 0
+    optimal_ratio: 1.9307
+
+✓ PASS - Frequency Matching
+    test_cases: [{'tau1': 0.05, 'tau2': 0.06, 'expected_match': True, 'predicted_match': True, 'correct': True, 'matching_score': 0.09090909090909087}, {'tau1': 0.05, 'tau2': 0.5, 'expected_match': False, 'predicted_match': False, 'correct': True, 'matching_score': 0.8181818181818181}]
+
+✓ PASS - Arrhenius Temperature Scaling
+    temperature_range_C: [5.0, 45.0]
+    E_a_fitted: 12000
+    E_a_expected: 12000
+    E_a_error_percent: 0
+    r_squared: 1
+
+✗ FAIL - Thermal Sensation
+    warm_cold_crossover_C: 5
+    pain_threshold_C: 34.4966
+    receptor_sensitivities:
+      TRPV1_warm: {'temperature_range_C': [5.0, 40.0], 'tau_range': [0.03741849200329396, 0.0772565185042809], 'sensation_rate_range': [12.943891588184735, 26.724754164651255], 'mean_Q10': 0.8626326288836736, 'Q10_range': [0.8501019811955653, 0.8741672429909414]}
+      TRPM8_cold: {'temperature_range_C': [5.0, 40.0], 'tau_range': [0.08567655870813623, 0.12611925656217324], 'sensation_rate_range': [7.929003288304576, 11.671803992578376], 'mean_Q10': 0.924208848561902, 'Q10_range': [0.9170321218710642, 0.9307872275596543]}
+      TRPA1_cold: {'temperature_range_C': [5.0, 40.0], 'tau_range': [0.014124384375118947, 0.03371228193324559], 'sensation_rate_range': [29.662779932255, 70.7995459088162], 'mean_Q10': 0.8375188806811688, 'Q10_range': [0.8229344323289947, 0.8509684018450618]}
+
+✓ PASS - Multi-Timescale Dynamics
+    n_timescales: 3
+    timescales: [0.1, 0.5, 2.0]
+    effective_timescale: 0.6
+    amplitude_weighted: 0.6
+
+✗ FAIL - Receptor Adaptation
+    n_adaptation_steps: 5
+    initial_spacing:
+      n_receptor_types: 6
+      tau_range: [0.01, 1.0]
+      optimal_ratio: 2.51188643150958
+      actual_taus: [0.01, 0.0251188643150958, 0.06309573444801933, 0.15848931924611134, 0.39810717055349726, 1.0]
+      expected_taus: [0.01, 0.0251188643150958, 0.06309573444801933, 0.15848931924611134, 0.39810717055349726, 1.0]
+      log_error: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      mean_log_error: 0.0
+      max_log_error: 0.0
+    final_spacing:
+      n_receptor_types: 6
+      tau_range: [0.31694728232498476, 0.4159472823249848]
+      optimal_ratio: 1.0558695165363485
+      actual_taus: [0.31694728232498476, 0.3184591687564944, 0.3222568557697867, 0.33179621424959593, 0.39810717055349726, 0.4159472823249848]
+      expected_taus: [0.31694728232498476, 0.33465497375599124, 0.35335198534622286, 0.37309358993467523, 0.39393814842713626, 0.4159472823249847]
+      log_error: [0.0, -0.021543526847564942, -0.040005370379073535, -0.05094636108151496, 0.004571960675553821, 1.1102230246251565e-16]
+      mean_log_error: 0.01951120316395123
+      max_log_error: 0.05094636108151496
+    adaptation_history: [{'replaced_receptor': 'Type_6', 'old_tau': 1.0, 'new_tau': 0.4159472823249848, 'tau_change': -0.5840527176750152, 'stimulus_mode': 0.35105253591664975, 'population_spacing': {'n_receptor_types': 6, 'tau_range': [0.01, 0.4159472823249848], 'optimal_ratio': 2.1076944804688034, 'actual_taus': [0.01, 0.0251188643150958, 0.06309573444801933, 0.15848931924611134, 0.39810717055349726, 0.4159472823249848], 'expected_taus': [0.01, 0.021076944804688035, 0.04442376022998659, 0.09363171423841227, 0.19734704729713382, 0.41594728232498485], 'log_error': [0.0, 0.07619234178146228, 0.15238468356292478, 0.22857702534438706, 0.3047693671258494, -1.1102230246251565e-16], 'mean_log_error': 0.12698723630243727, 'max_log_error': 0.3047693671258494}}, {'replaced_receptor': 'Type_1', 'old_tau': 0.01, 'new_tau': 0.31694728232498476, 'tau_change': 0.30694728232498475, 'stimulus_mode': 0.35105253591664975, 'population_spacing': {'n_receptor_types': 6, 'tau_range': [0.0251188643150958, 0.4159472823249848], 'optimal_ratio': 1.7531039094070169, 'actual_taus': [0.0251188643150958, 0.06309573444801933, 0.15848931924611134, 0.31694728232498476, 0.39810717055349726, 0.4159472823249848], 'expected_taus': [0.0251188643150958, 0.044035979230658856, 0.07719964734383425, 0.13533900356331885, 0.23726333624210444, 0.41594728232498485], 'log_error': [0.0, 0.15619234178146235, 0.3123846835629245, 0.36956405759586525, 0.22476936712584933, -1.1102230246251565e-16], 'mean_log_error': 0.17715174167768355, 'max_log_error': 0.36956405759586525}}, {'replaced_receptor': 'Type_2', 'old_tau': 0.0251188643150958, 'new_tau': 0.3184591687564944, 'tau_change': 0.2933403044413986, 'stimulus_mode': 0.35105253591664975, 'population_spacing': {'n_receptor_types': 6, 'tau_range': [0.06309573444801933, 0.4159472823249848], 'optimal_ratio': 1.4581683188232155, 'actual_taus': [0.06309573444801933, 0.15848931924611134, 0.31694728232498476, 0.3184591687564944, 0.39810717055349726, 0.4159472823249848], 'expected_taus': [0.06309573444801933, 0.0920042010249844, 0.13415761113327465, 0.1956243782835458, 0.28525327080255475, 0.4159472823249847], 'log_error': [0.0, 0.2361923417814622, 0.37337171581440304, 0.21163078251654238, 0.14476936712584948, 1.1102230246251565e-16], 'mean_log_error': 0.16099403453970954, 'max_log_error': 0.37337171581440304}}, {'replaced_receptor': 'Type_3', 'old_tau': 0.06309573444801933, 'new_tau': 0.3222568557697867, 'tau_change': 0.2591611213217674, 'stimulus_mode': 0.35105253591664975, 'population_spacing': {'n_receptor_types': 6, 'tau_range': [0.15848931924611134, 0.4159472823249848], 'optimal_ratio': 1.2128515797668398, 'actual_taus': [0.15848931924611134, 0.31694728232498476, 0.3184591687564944, 0.3222568557697867, 0.39810717055349726, 0.4159472823249848], 'expected_taus': [0.15848931924611134, 0.19222402122381715, 0.23313920781044115, 0.2827632564984831, 0.34294986234420133, 0.41594728232498485], 'log_error': [0.0, 0.21717937403294058, 0.13543844073508, 0.0567791907532757, 0.06476936712584941, -1.1102230246251565e-16], 'mean_log_error': 0.0790277287745243, 'max_log_error': 0.21717937403294058}}, {'replaced_receptor': 'Type_4', 'old_tau': 0.15848931924611134, 'new_tau': 0.33179621424959593, 'tau_change': 0.1733068950034846, 'stimulus_mode': 0.35105253591664975, 'population_spacing': {'n_receptor_types': 6, 'tau_range': [0.31694728232498476, 0.4159472823249848], 'optimal_ratio': 1.0558695165363485, 'actual_taus': [0.31694728232498476, 0.3184591687564944, 0.3222568557697867, 0.33179621424959593, 0.39810717055349726, 0.4159472823249848], 'expected_taus': [0.31694728232498476, 0.33465497375599124, 0.35335198534622286, 0.37309358993467523, 0.39393814842713626, 0.4159472823249847], 'log_error': [0.0, -0.021543526847564942, -0.040005370379073535, -0.05094636108151496, 0.004571960675553821, 1.1102230246251565e-16], 'mean_log_error': 0.01951120316395123, 'max_log_error': 0.05094636108151496}}]
+
+----------------------------------------------------------------------
+SUMMARY
+----------------------------------------------------------------------
+Pass Rate: 72.7%
+
+✗ 3 test(s) failed
+
+======================================================================

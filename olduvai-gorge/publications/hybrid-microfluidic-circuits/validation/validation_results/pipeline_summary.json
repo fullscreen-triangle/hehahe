@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-06-01T04:31:48.336938",
+  "validation": {
+    "total_tests": 11,
+    "tests_passed": 8,
+    "pass_rate": 0.7272727272727273,
+    "results_file": "validation_results\\validation_results.json"
+  },
+  "figures": {
+    "total_panels": 6,
+    "charts_per_panel": 4,
+    "total_charts": 24,
+    "3d_charts_per_panel": 1,
+    "output_directory": "publication_figures",
+    "panels": {
+      "Panel_1_Charge_Dynamics": {
+        "pdf": "publication_figures\\Panel_1_Charge_Dynamics.pdf",
+        "png": "publication_figures\\Panel_1_Charge_Dynamics.png"
+      },
+      "Panel_2_Sensation_Categorization": {
+        "pdf": "publication_figures\\Panel_2_Sensation_Categorization.pdf",
+        "png": "publication_figures\\Panel_2_Sensation_Categorization.png"
+      },
+      "Panel_3_Receptor_Diversity": {
+        "pdf": "publication_figures\\Panel_3_Receptor_Diversity.pdf",
+        "png": "publication_figures\\Panel_3_Receptor_Diversity.png"
+      },
+      "Panel_4_Temperature_Effects": {
+        "pdf": "publication_figures\\Panel_4_Temperature_Effects.pdf",
+        "png": "publication_figures\\Panel_4_Temperature_Effects.png"
+      },
+      "Panel_5_Multimodal_Coupling": {
+        "pdf": "publication_figures\\Panel_5_Multimodal_Coupling.pdf",
+        "png": "publication_figures\\Panel_5_Multimodal_Coupling.png"
+      },
+      "Panel_6_Adaptation_Learning": {
+        "pdf": "publication_figures\\Panel_6_Adaptation_Learning.pdf",
+        "png": "publication_figures\\Panel_6_Adaptation_Learning.png"
+      }
+    }
+  }
+}
