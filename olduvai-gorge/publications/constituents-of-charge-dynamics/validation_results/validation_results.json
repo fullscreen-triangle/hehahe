@@ -1,0 +1,236 @@
+{
+  "metadata": {
+    "timestamp": "2026-06-04T13:31:46.801292",
+    "total_experiments": 26,
+    "passed": 20,
+    "failed": 6,
+    "max_relative_error": 1000000000000.0,
+    "machine_epsilon": 2.220446049250313e-16
+  },
+  "experiment_clusters": {
+    "three_curve_intersection": {
+      "experiments": [
+        {
+          "name": "perception_decay_to_category",
+          "predicted": 0.035673993347252395,
+          "measured": 0.035673993347252395,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "thought_decay_to_committed_state",
+          "predicted": 0.006737946999085467,
+          "measured": 0.006737946999085467,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "memory_trajectory_history_integral",
+          "predicted": 0.9375,
+          "measured": 0.9375,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "intersection_point_convergence",
+          "predicted": 0.0,
+          "measured": 0.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "poincare_deviation_strictly_positive",
+          "predicted": 0.001,
+          "measured": 9.999999999998899e-05,
+          "relative_error": 0.899999999999111,
+          "passed": false
+        }
+      ],
+      "passed": 4,
+      "failed": 1
+    },
+    "sufficiency_principle": {
+      "experiments": [
+        {
+          "name": "receiver_floor_positivity",
+          "predicted": 0.1,
+          "measured": 0.1,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "cell_truth_indistinguishability",
+          "predicted": 0.0,
+          "measured": 0.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "path_independent_convergence_to_cell",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "unbounded_internal_variation",
+          "predicted": 0.39,
+          "measured": 0.39,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 4,
+      "failed": 0
+    },
+    "closure_requirement": {
+      "experiments": [
+        {
+          "name": "closed_loop_enables_stability",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "open_loop_topology_fails",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "hierarchical_closure_timescales",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 3,
+      "failed": 0
+    },
+    "operational_equivalence": {
+      "experiments": [
+        {
+          "name": "all_modalities_have_positive_floors",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "representational_invariance_vision",
+          "predicted": 0.0,
+          "measured": 5.551115123125783e-17,
+          "relative_error": 0.05551115123125782,
+          "passed": false
+        },
+        {
+          "name": "modality_composition_law",
+          "predicted": 0.26982,
+          "measured": 0.267,
+          "relative_error": 0.010451412052479351,
+          "passed": false
+        },
+        {
+          "name": "all_modalities_reach_consciousness_cell",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 2,
+      "failed": 2
+    },
+    "sentiment_modulation": {
+      "experiments": [
+        {
+          "name": "sentiment_specializes_thought_trajectories",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "emotion_reshapes_variance_landscape",
+          "predicted": 1.0,
+          "measured": 0.0,
+          "relative_error": 1.0,
+          "passed": false
+        },
+        {
+          "name": "sentiment_stabilizes_thought_without_perception",
+          "predicted": 1.0,
+          "measured": 0.0,
+          "relative_error": 1.0,
+          "passed": false
+        }
+      ],
+      "passed": 1,
+      "failed": 2
+    },
+    "incompleteness_principle": {
+      "experiments": [
+        {
+          "name": "perception_is_incomplete",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "awareness_emerges_despite_incompleteness",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "imagination_cannot_be_complete",
+          "predicted": 0.0,
+          "measured": 0.001,
+          "relative_error": 1000000000000.0,
+          "passed": false
+        },
+        {
+          "name": "incomplete_sources_converge_to_sufficiency",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 3,
+      "failed": 1
+    },
+    "trajectory_history": {
+      "experiments": [
+        {
+          "name": "trajectory_history_validates_coherence",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "memory_absence_isolates_moments",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "trajectory_history_stores_geometry_not_content",
+          "predicted": 100.0,
+          "measured": 100.0,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 3,
+      "failed": 0
+    }
+  }
+}
