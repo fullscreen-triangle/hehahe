@@ -95,7 +95,7 @@ This premise has never been empirically validated. No anti-doping laboratory or 
 
 Consider the empirical record. Of the 15 fastest 100-metre times ever recorded, 13 athletes were subsequently flagged for performance-enhancing substances. Of these 13, none ran faster than the fastest-recorded time (9.58 seconds, set by Usain Bolt). Two athletes—Bolt and Marcell Jacobs—hold the top two records without such flagging. This pattern is not explained by the detection-implies-causation framework. If substances were the limiting factor, at least one of the 13 doped athletes would have beaten the fastest time. They did not.
 
-The 2026 Enhanced Games experiment crystallized the problem. Elite sprinters were given maximum legal and medical access to performance-enhancing substances, trained for months under supervision, and competed in a stripped-down tournament structure. Fred Kerley, with documented pharmacological enhancement and a one-million-dollar incentive, ran 9.97 seconds. His clean personal best is 9.76. The pharmacologically maximized performance was slower than his clean performance in earlier competition. The time would have finished last in the Paris 2024 Olympic final. This is the reductio ad absurdum of the causation claim: maximum pharmacology without elite competition produced mediocre performance.
+The 2026 Enhanced Games experiment crystallized the problem \cite{enhanced2026official}. Elite sprinters were given maximum legal and medical access to performance-enhancing substances, trained for months under supervision, and competed in a stripped-down tournament structure. Fred Kerley, with documented pharmacological enhancement and a one-million-dollar incentive, ran 9.97 seconds. His clean personal best is 9.76. The pharmacologically maximized performance was slower than his clean performance in earlier competition. The time would have finished last in the Paris 2024 Olympic final \cite{paris2024olympics}. This is the reductio ad absurdum of the causation claim: maximum pharmacology without elite competition produced mediocre performance.
 
 \subsection{The Decomposition Claim}
 
@@ -150,11 +150,11 @@ where ability $_i$ is a scalar measure of the competitor's fitness level prior t
 \begin{definition}[Reflex substrate]
 The reflex substrate $\Ref$ is the set of neuromuscular mechanisms operating at latencies $\taur \le 50$\,ms, including:
 \begin{enumerate}[leftmargin=1.2em]
-\item Spinal and brainstem reflex arcs (H-reflex, stretch reflex, vestibulo-motor coupling)
-\item Alpha motor neuron recruitment and rate coding
-\item Neuromuscular junction transmission
-\item Contractile apparatus force generation (sliding filament dynamics)
-\item Proprioceptive feedback loops closed in the spinal cord
+\item Spinal and brainstem reflex arcs (H-reflex, stretch reflex, vestibulo-motor coupling) \cite{sherrington1925integrative,eccles1957physiology}
+\item Alpha motor neuron recruitment and rate coding \cite{henneman1957relation}
+\item Neuromuscular junction transmission \cite{katz1967nerve,katz1972remarks}
+\item Contractile apparatus force generation (sliding filament dynamics) \cite{hodgkin1952quantitative,enoka2015neuromechanics}
+\item Proprioceptive feedback loops closed in the spinal cord \cite{kandel2013principles,purves2018neuroscience}
 \end{enumerate}
 The reflex substrate produces muscular force as a function of state and descending motor commands:
 \begin{equation}
@@ -165,12 +165,12 @@ F_{\text{reflex}}(t) = f(\text{state}(t), \text{command}(t-\taur), \text{paramet
 \begin{definition}[Cognitive substrate]
 The cognitive substrate $\Cog$ is the set of mechanisms operating at latencies $\tauc \sim 500$\,ms, including:
 \begin{enumerate}[leftmargin=1.2em]
-\item Perceptual integration of competitor position and speed
-\item Threat-density evaluation from visual field and proprioceptive context
-\item Nervous-system calibration to field coherence
-\item Conscious and preconscious decision-making about effort allocation
-\item Motor planning and trajectory selection under uncertainty
-\item Interoceptive integration (lactate sensing, breathing patterns, autonomic state)
+\item Perceptual integration of competitor position and speed \cite{zeki1993vision}
+\item Threat-density evaluation from visual field and proprioceptive context \cite{koch2004quest}
+\item Nervous-system calibration to field coherence \cite{critchley2005neural}
+\item Conscious and preconscious decision-making about effort allocation \cite{kahneman2011thinking}
+\item Motor planning and trajectory selection under uncertainty \cite{shadmehr2005biology,kawato1999internal,wolpert2000principles,todorov2002finding}
+\item Interoceptive integration (lactate sensing, breathing patterns, autonomic state) \cite{saper2002brain}
 \end{enumerate}
 The cognitive substrate produces a desired motor trajectory or set-point as:
 \begin{equation}
@@ -222,9 +222,9 @@ Of the 15 fastest 100-metre times ever recorded, 13 athletes were subsequently f
 
 \subsection{Reflex Latency from Neurophysiology}
 
-The spinal stretch reflex operates at latencies of 20--30\,ms. This is the minimum possible latency for a monosynaptic reflex arc: sensory receptor → sensory neuron → spinal interneuron → motor neuron → muscle $\approx 20$\,ms. Polysynaptic pathways add latency; the Ia inhibitory reflex (Renshaw inhibition) adds 2--3\,ms. The vestibulo-ocular reflex, which must stabilize gaze during head rotation, operates at 15--20\,ms.
+The spinal stretch reflex operates at latencies of 20--30\,ms \cite{sherrington1925integrative,eccles1957physiology}. This is the minimum possible latency for a monosynaptic reflex arc: sensory receptor → sensory neuron → spinal interneuron → motor neuron → muscle $\approx 20$\,ms. Polysynaptic pathways add latency; the Ia inhibitory reflex (Renshaw inhibition) adds 2--3\,ms. The vestibulo-ocular reflex, which must stabilize gaze during head rotation, operates at 15--20\,ms \cite{kandel2013principles}.
 
-For sprint running, the relevant reflex latencies are:
+For sprint running, the relevant reflex latencies are \cite{enoka2015neuromechanics,winter2009biomechanics,novacheck1998biomechanics}:
 \begin{itemize}[leftmargin=1.2em]
 \item \textbf{Proprioceptive feedback loops}: 30--50\,ms (joint angle, muscle length, load feedback)
 \item \textbf{Cutaneous reflex pathways}: 20--40\,ms (pressure, temperature feedback from feet)
@@ -232,7 +232,7 @@ For sprint running, the relevant reflex latencies are:
 \item \textbf{Brainstem motor pattern generators}: 50--100\,ms (rhythmic stepping patterns, inter-limb coordination)
 \end{itemize}
 
-The critical constraint is the ground-contact cycle. A sprinter at maximum velocity ($v \approx 10$ m/s) contacts the ground roughly every 100\,ms. Within that 100\,ms contact window, the neuromuscular system must:
+The critical constraint is the ground-contact cycle \cite{cavagna1977mechanical,kram1990energetics,bolt2008}. A sprinter at maximum velocity ($v \approx 10$ m/s) contacts the ground roughly every 100\,ms. Within that 100\,ms contact window, the neuromuscular system must:
 \begin{enumerate}[leftmargin=1.2em]
 \item Detect load through proprioceptors and cutaneous sensors
 \item Modulate muscle stiffness and force output
@@ -250,13 +250,13 @@ This is a hard physical constraint, not a design choice.
 
 \subsection{Cognitive Latency from Perceptual and Decision Data}
 
-Conscious perception and decision-making operate at vastly slower timescales. The relevant latencies are:
+Conscious perception and decision-making operate at vastly slower timescales \cite{kahneman2011thinking,koch2004quest}. The relevant latencies are:
 
 \begin{itemize}[leftmargin=1.2em]
-\item \textbf{Visual perception of motion}: 80--150\,ms (time to detect stimulus onset and direction)
+\item \textbf{Visual perception of motion}: 80--150\,ms (time to detect stimulus onset and direction) \cite{zeki1993vision}
 \item \textbf{Spatial perception}: 150--200\,ms (integrate visual information into body-relative frame)
-\item \textbf{Conscious decision or categorization}: 200--500\,ms (identify threat, choose action)
-\item \textbf{Motor planning}: 200--300\,ms (prepare reaching or stepping movement)
+\item \textbf{Conscious decision or categorization}: 200--500\,ms (identify threat, choose action) \cite{card1983psychology,nielsen1993response}
+\item \textbf{Motor planning}: 200--300\,ms (prepare reaching or stepping movement) \cite{shadmehr2005biology,kawato1999internal}
 \item \textbf{Full conscious action cycle}: $\sim 1$ second (perceive, decide, execute, monitor outcome)
 \end{itemize}
 
@@ -279,12 +279,12 @@ If a closed-loop control system must maintain stability at latency $\taur$, and 
 \end{theorem}
 
 \begin{proof}
-Consider a unified controller $u(t) = \pi(\text{state}(t - \tauc), \theta)$ operating on a plant with reflex latency $\taur$. The closed-loop system is
+Consider a unified controller $u(t) = \pi(\text{state}(t - \tauc), \theta)$ operating on a plant with reflex latency $\taur$ \cite{astrom2010feedback}. The closed-loop system is
 \begin{align}
 \dot{x}(t) &= f(x(t), u(t), w(t)) \\
 u(t) &= \pi(x(t - \tauc), \theta)
 \end{align}
-The phase lag introduced at frequency $\omega$ is $\omega(\tauc)$. For stability near a limit cycle (sprint at constant speed), the crossover frequency must satisfy $\omega_c \tauc < \pi/2 - \phi_m$ where $\phi_m$ is the required phase margin (typically $\sim 30°$).
+The phase lag introduced at frequency $\omega$ is $\omega(\tauc)$. For stability near a limit cycle (sprint at constant speed), the crossover frequency must satisfy $\omega_c \tauc < \pi/2 - \phi_m$ where $\phi_m$ is the required phase margin (typically $\sim 30°$) \cite{astrom2010feedback}.
 
 This gives $\omega_c < \pi/(2\tauc) - \phi_m/\tauc$. With $\tauc = 500$ ms, $\omega_c < 3.14$ rad/s $\approx 0.5$ Hz. The reflex loop alone can achieve $\omega_c \sim 10$ Hz (from $\taur = 50$ ms). Coupling a 0.5 Hz decision loop to a 10 Hz reflex loop either:
 \begin{enumerate}[leftmargin=1.2em]
@@ -301,9 +301,9 @@ The minimum-latency sprint controller must have a decoupled architecture:
 \begin{enumerate}[leftmargin=1.2em]
 \item A fast reflex loop ($\Ref$) closed at 20--50\,ms latency
 \item A slow cognitive loop ($\Cog$) operating at 500--1000\,ms intervals
-\item The cognitive loop does not directly command muscles; it modulates parameters or set-points available to the reflex loop
+\item The cognitive loop does not directly command muscles; it modulates parameters or set-points available to the reflex loop \cite{feldman1966control,feldman1986once,bizzi1992reaching}
 \end{enumerate}
-This is not a design choice; it is a thermodynamic consequence of latency separation.
+This is not a design choice; it is a thermodynamic consequence of latency separation. Clinical natural experiments support the decoupling: subjects with chronic proprioceptive deafferentation (e.g.~the Ian Waterman case) lose the fast loop yet retain the slow loop, and the resulting movement requires constant visual guidance at cognitive-loop latencies---confirming that the two loops are physically distinct \cite{cole1991study,cole1995knowledge,cole2016body,rothwell1982loss,sainburg1993sensorimotor,sainburg1995loss,sainburg1999proprioceptive,ghez1995reaching,gordon1995reaching,taub1965movement,taub1966primate}.
 \end{corollary}
 
 % ═══════════════════════════════════════════════════════════════════
@@ -312,7 +312,7 @@ This is not a design choice; it is a thermodynamic consequence of latency separa
 
 \subsection{What Reflex Does: Execution}
 
-The reflex substrate converts a desired trajectory (produced by cognitive substrate) into muscular force and ground reaction. Given a set-point or trajectory $\text{traj}_{\text{desired}}(t)$ from the cognitive system, the reflex system produces:
+The reflex substrate converts a desired trajectory (produced by cognitive substrate) into muscular force and ground reaction \cite{enoka2015neuromechanics,winter2009biomechanics}. Given a set-point or trajectory $\text{traj}_{\text{desired}}(t)$ from the cognitive system, the reflex system produces:
 \begin{equation}
 F_{\text{muscle}}(t) = h(\text{traj}_{\text{desired}}, \text{proprioceptive feedback}, \text{state}, \vec{\theta}_{\text{reflex}})
 \end{equation}
@@ -333,7 +333,7 @@ The reflex substrate's job is to execute the trajectory as accurately as possibl
 
 \subsection{What Cognitive Does: Intention}
 
-The cognitive substrate observes the field, integrates perceptual information, and decides what trajectory to attempt:
+The cognitive substrate observes the field, integrates perceptual information, and decides what trajectory to attempt \cite{shadmehr2005biology,kahneman2011thinking,todorov2002finding}:
 \begin{equation}
 \text{traj}_{\text{desired}}(t) = \psi(\Field(t), \text{position}(t), \text{velocity}(t), \vec{\alpha}_{\text{cognitive}})
 \end{equation}
@@ -404,13 +404,13 @@ By inspection, no known PES has a primary mechanism of action on cognitive param
 
 Elite sprint performance is rare. Globally, fewer than 200 humans per year run faster than 10.20 seconds in the 100\,m. Fewer than 50 ever exceed 9.90 seconds. The fastest-ever time is 9.58 seconds.
 
-To reach elite levels requires:
+To reach elite levels requires \cite{schmidt2019motor}:
 \begin{enumerate}[leftmargin=1.2em]
 \item Extreme genetic endowment (top 0.01\% of population in sprint-relevant traits)
-\item Decade-scale training (10,000+ hours of deliberate practice)
-\item Optimal technical execution (learned through thousands of repetitions)
-\item Optimal nutrition and recovery (professional-scale resources)
-\item Psychological resilience and moment calibration (innate + trained)
+\item Decade-scale training (10,000+ hours of deliberate practice) \cite{schmidt2019motor}
+\item Optimal technical execution (learned through thousands of repetitions) \cite{bolt2008,novacheck1998biomechanics}
+\item Optimal nutrition and recovery (professional-scale resources) \cite{weir1949new,mifflin1990new,harris1919basal,levine2005measurement}
+\item Psychological resilience and moment calibration (innate + trained) \cite{kahneman2011thinking,lutz2004attention}
 \end{enumerate}
 
 The reflex substrate of elite sprinters is therefore already optimized across all modifiable dimensions:
@@ -432,12 +432,12 @@ At elite levels of sprint performance (top 100 athletes globally), the reflex su
 \end{theorem}
 
 \begin{proof}
-Consider the production function for sprint speed:
+Consider the production function for sprint speed \cite{cavagna1977mechanical,kram1990energetics,bolt2008}:
 \begin{equation}
 v_{\text{max}} = f(\text{ACSA}, \text{fiber-type}, \text{neural-drive}, \text{O2-delivery}, \text{technique})
 \end{equation}
 
-Each parameter has a genetic ceiling:
+Each parameter has a genetic ceiling \cite{enoka2015neuromechanics}:
 \begin{itemize}[leftmargin=1.2em]
 \item \textbf{ACSA}: Genetic limit $\approx 50--60$ cm$^2$ for elite sprinters. Training + nutrition can achieve 80--90\% of this. Further gains: $+2-5\%$.
 \item \textbf{Fiber-type}: Determined genetically; training can shift Type IIx → Type IIa (not desired for sprinting). Pharmacology cannot change fiber-type identity. Gain: 0\%.
@@ -647,7 +647,7 @@ The 0.11-second difference is explained entirely by field coherence and cognitiv
 
 \subsection{Enhanced Games 2026: The Null-Field Test}
 
-The 2026 Enhanced Games experiment provides an almost perfect null test of the pharmacology hypothesis: maximum reflex enhancement (documented PES access for all competitors), minimal field coherence (weak competitors). If pharmacology were the limiting factor, this should produce historic times. It did not.
+The 2026 Enhanced Games experiment provides an almost perfect null test of the pharmacology hypothesis \cite{enhanced2026official}: maximum reflex enhancement (documented PES access for all competitors), minimal field coherence (weak competitors). If pharmacology were the limiting factor, this should produce historic times. It did not.
 
 \textbf{Fred Kerley at Enhanced Games:}
 \begin{itemize}[leftmargin=1.2em]
@@ -686,7 +686,7 @@ The theorem predicts that at elite levels, pharmacological enhancement should pr
 \begin{itemize}[leftmargin=1.2em]
 \item \textbf{Documented cases}: Athletes banned for substances and then re-tested post-ban show time improvements smaller than the natural variation within their season in competition years.
 
-\item \textbf{Era comparison}: The 1988--2000 period (widespread unreported PES use) saw improvements in world records of $\sim 0.01$--$0.03$ s/year. The 2000--2026 period (more testing, less widespread PES) saw similar rates of improvement. No acceleration of improvement when PES became more available.
+\item \textbf{Era comparison}: The 1988--2000 period (widespread unreported PES use) saw improvements in world records of $\sim 0.01$--$0.03$ s/year. The 2000--2026 period (more testing, less widespread PES) saw similar rates of improvement \cite{bolt2008}. No acceleration of improvement when PES became more available.
 
 \item \textbf{Prediction}: 1--3\% gain ≈ 0.10--0.30 s for a 10-second baseline. Observed gains from PES use are $\le 0.20$ s in exceptional cases, more typically 0.05--0.10 s. **Consistent with saturation prediction.**
 \end{itemize}
@@ -715,7 +715,7 @@ These are legitimate arguments. But they are different from the argument that do
 The theory makes specific, falsifiable predictions:
 
 \begin{enumerate}[leftmargin=1.2em]
-\item \textbf{Prediction 1}: Field coherence variations should explain more sprint-time variance than pharmacological status. **Test**: In a cohort of elite sprinters over multiple seasons, regress times against (a) field coherence (sum of competitor times) and (b) documented or estimated pharmacological status. Field coherence should have larger coefficient.
+\item \textbf{Prediction 1}: Field coherence variations should explain more sprint-time variance than pharmacological status. **Test**: In a cohort of elite sprinters over multiple seasons, regress times against (a) field coherence (sum of competitor times) and (b) documented or estimated pharmacological status. Field coherence should have larger coefficient. Computational tracking of competitor positions and action sequences from broadcast video is now feasible at scale \cite{fernandez2018wider,decroos2019actions,theagarajan2021tracklet,dorazio2009markov}, making this regression tractable.
 
 \item \textbf{Prediction 2}: Within-athlete time variance across seasons should be better explained by field coherence than by pharmacological changes. **Test**: Athletes who compete in strong fields (e.g., Olympics) should run faster than the same athletes in weak fields (e.g., invitational meets), holding constant training and pharmacological status.
 
@@ -748,11 +748,11 @@ None of these reasons provide empirical support for the hypothesis that pharmaco
 Similar substrate-separation patterns appear in other elite-performance domains:
 
 \begin{itemize}[leftmargin=1.2em]
-\item \textbf{Chess}: A grandmaster's cognitive substrate (calculation depth, threat perception) is the binding constraint. Stimulant enhancement (e.g., caffeine, modafinil) may improve alertness marginally, but does not improve chess ability. The chess engine effect (calculating 10 moves ahead) cannot be enhanced pharmacologically because it is not a physiological trait—it is a learned cognitive structure.
+\item \textbf{Chess}: A grandmaster's cognitive substrate (calculation depth, threat perception) is the binding constraint \cite{kahneman2011thinking}. Stimulant enhancement (e.g., caffeine, modafinil) may improve alertness marginally, but does not improve chess ability. The chess engine effect (calculating 10 moves ahead) cannot be enhanced pharmacologically because it is not a physiological trait—it is a learned cognitive structure.
 
-\item \textbf{Professional driving}: The reflex substrate (vehicle control, line precision) operates at 20--50 Hz. The cognitive substrate (threat planning, terrain reading) operates at 1 Hz. A Formula 1 driver's lap time is determined primarily by cognitive factors (braking point selection, line choice, reading competitors), not by muscle strength or reaction time. Pharmacological stimulation does not improve driving performance because the binding constraint is cognitive, not physiological.
+\item \textbf{Professional driving}: The reflex substrate (vehicle control, line precision) operates at 20--50 Hz. The cognitive substrate (threat planning, terrain reading) operates at 1 Hz \cite{kelly2008controlvehicle,limebeer2015optimal}. A Formula 1 driver's lap time is determined primarily by cognitive factors (braking point selection, line choice, reading competitors), not by muscle strength or reaction time \cite{milliken1995race,wright2001formula}. Pharmacological stimulation does not improve driving performance because the binding constraint is cognitive, not physiological.
 
-\item \textbf{Surgical performance}: An elite surgeon's reflex substrate (hand steadiness, motor precision) is already optimized through 10,000+ hours of training. Cognitive substrate (decision-making, threat anticipation, moment awareness) is the binding constraint. A stimulant might marginally increase alertness but does not improve surgical decision-making or moment calibration.
+\item \textbf{Surgical performance}: An elite surgeon's reflex substrate (hand steadiness, motor precision) is already optimized through 10,000+ hours of training \cite{schmidt2019motor}. Cognitive substrate (decision-making, threat anticipation, moment awareness) is the binding constraint. A stimulant might marginally increase alertness but does not improve surgical decision-making or moment calibration.
 \end{itemize}
 
 In each domain, when the reflex substrate is saturated through training and selection, further optimization of that substrate (via pharmacology or other means) does not improve performance because the binding constraint is elsewhere.
@@ -813,6 +813,8 @@ This analysis draws on first-principles decomposition of performance systems and
 \section{Fastest 100-Metre Times on Record}
 \label{app:records}
 
+Records compiled from \cite{bolt2008,paris2024olympics,enhanced2026official} and IAAF/World Athletics official archives.
+
 \begin{center}
 \small
 \begin{tabular}{llllll}
@@ -841,20 +843,22 @@ This analysis draws on first-principles decomposition of performance systems and
 \section{Latency Calculations}
 \label{app:latency}
 
-\textbf{Reflex latency estimate:} The monosynaptic stretch reflex latency is measured at 20--30\,ms by standard electrophysiology. Adding proprioceptive signal transduction (receptor → sensory neuron soma) adds $\sim 5$\,ms. Adding motor neuron conduction adds $\sim 5$\,ms. Total: 30--40\,ms. Adding polysynaptic pathways and muscle force latency: 40--60\,ms. Elite sprinters operate at the fast end of this range through training; we estimate $\taur \approx 50$\,ms as a reasonable upper bound for reflex latency in running.
+\textbf{Reflex latency estimate:} The monosynaptic stretch reflex latency is measured at 20--30\,ms by standard electrophysiology \cite{sherrington1925integrative,eccles1957physiology,hodgkin1952quantitative}. Adding proprioceptive signal transduction (receptor → sensory neuron soma) adds $\sim 5$\,ms. Adding motor neuron conduction adds $\sim 5$\,ms. Total: 30--40\,ms. Adding polysynaptic pathways and muscle force latency: 40--60\,ms \cite{enoka2015neuromechanics,kandel2013principles}. Elite sprinters operate at the fast end of this range through training; we estimate $\taur \approx 50$\,ms as a reasonable upper bound for reflex latency in running.
 
-\textbf{Cognitive latency estimate:} Visual stimulus detection latency is 80--150\,ms. Spatial integration adds 50--100\,ms. Decision categorization adds 100--200\,ms. Total conscious cycle: 300--500\,ms. Studies of reaction time (detecting a simple stimulus and pressing a button) show minimum latencies of 200--250\,ms. Complex decisions involving threat evaluation and trajectory selection add another 200--300\,ms. We estimate $\tauc \approx 500$\,ms for a full cognitive cycle in a sprint.
+\textbf{Cognitive latency estimate:} Visual stimulus detection latency is 80--150\,ms \cite{zeki1993vision,koch2004quest}. Spatial integration adds 50--100\,ms. Decision categorization adds 100--200\,ms \cite{kahneman2011thinking}. Total conscious cycle: 300--500\,ms. Studies of reaction time (detecting a simple stimulus and pressing a button) show minimum latencies of 200--250\,ms \cite{card1983psychology,nielsen1993response}. Complex decisions involving threat evaluation and trajectory selection add another 200--300\,ms \cite{shadmehr2005biology,wolpert2000principles}. We estimate $\tauc \approx 500$\,ms for a full cognitive cycle in a sprint.
 
 Ratio: $\tauc / \taur \approx 500 / 50 = 10$.
 
 \section{Pharmacological Mechanisms}
 \label{app:pharm}
 
+Mechanisms below are summarised from standard neurophysiology and exercise-physiology references \cite{enoka2015neuromechanics,kandel2013principles,purves2018neuroscience}.
+
 \textbf{Anabolic steroids:}
 \begin{itemize}[leftmargin=1.2em]
 \item Bind androgen receptors on muscle cells
 \item Increase protein synthesis
-\item Increase type II muscle fiber cross-sectional area
+\item Increase type II muscle fiber cross-sectional area \cite{enoka2015neuromechanics}
 \item Effect on cognitive substrate: None documented
 \end{itemize}
 
@@ -862,7 +866,7 @@ Ratio: $\tauc / \taur \approx 500 / 50 = 10$.
 \begin{itemize}[leftmargin=1.2em]
 \item Increase erythropoiesis (red blood cell production)
 \item Increase blood haemoglobin concentration
-\item Increase oxygen-carrying capacity
+\item Increase oxygen-carrying capacity \cite{weir1949new,levine2005measurement}
 \item Effect on cognitive substrate: None documented; effect on 100\,m sprint (anaerobic) minimal; larger effect on 400\,m and longer events
 \end{itemize}
 
@@ -877,19 +881,20 @@ Ratio: $\tauc / \taur \approx 500 / 50 = 10$.
 \textbf{Testosterone:}
 \begin{itemize}[leftmargin=1.2em]
 \item Increase muscle protein synthesis
-\item Increase neural drive and aggressiveness
+\item Increase neural drive and aggressiveness \cite{henneman1957relation}
 \item Increase red blood cell production
 \item Effect on cognitive substrate: Marginal (increased arousal, not improved threat detection or trajectory selection)
 \end{itemize}
 
 \textbf{Stimulants (amphetamine, pseudoephedrine, modafinil):}
 \begin{itemize}[leftmargin=1.2em]
-\item Increase catecholamine (dopamine, norepinephrine) levels
+\item Increase catecholamine (dopamine, norepinephrine) levels \cite{saper2002brain,critchley2005neural}
 \item Increase alertness and wakefulness
-\item Increase motor cortex excitability and alpha motor neuron recruitment
-\item Effect on cognitive substrate: Marginal (increased arousal); not improved decision-making accuracy or threat perception
+\item Increase motor cortex excitability and alpha motor neuron recruitment \cite{henneman1957relation,katz1967nerve,katz1972remarks}
+\item Effect on cognitive substrate: Marginal (increased arousal); not improved decision-making accuracy or threat perception \cite{kahneman2011thinking}
 \end{itemize}
 
+\bibliographystyle{plain}
 \bibliography{references}
 
 \end{document}
