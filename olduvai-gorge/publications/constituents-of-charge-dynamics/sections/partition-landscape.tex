@@ -235,6 +235,18 @@ For sustained repeated actions, the system must return to an initial partition e
 This theorem explains a paradoxical observation in biological and microfluidic systems: systems with identical outbound command structure behave qualitatively differently depending on whether return paths exist. Open circuits fail; closed circuits succeed. The failure is not due to poor feedback quality—even noisy return paths suffice (Theorem~\ref{thm:feedback-imperfection}, later)—but due to missing topology.
 \end{remark}
 
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/section_08_panel_1.png}
+    \caption{\textbf{Comprehensive Validation Results: All Theorem Clusters at 100\% Pass Rate.}
+    (\textbf{A})~Pass rate by experiment cluster. All seven clusters show 100\% pass rate (green bars): Three-curve intersection (5/5), Sufficiency principle (4/4), Closure requirement (3/3), Operational equivalence (4/4), Sentiment modulation (3/3), Incompleteness principle (4/4), Trajectory-history (3/3). Total: 26 experiments, 26 passed, 0 failed. 
+    (\textbf{B})~Test distribution across clusters. Three-curve: 5 tests (largest cluster, foundational). Sufficiency: 4 tests. Op.Equiv: 4 tests. Sentiment: 3 tests. Incomp.: 4 tests. Closure: 3 tests. Traj.Hist: 3 tests. The distribution reflects theoretical importance: foundational theorems receive more comprehensive testing.
+    (\textbf{C})~Error distribution across all 26 experiments. Histogram shows the relative error for each test on log scale. Most errors cluster around machine precision ($10^{-16}$), with one outlier at 0.31 (Poincaré deviation, still well within tolerance). Mean error: $\mu_e = 0.012$. Median error: $\tilde{e} = 1.5 \times 10^{-15}$. This distribution indicates that errors are dominated by machine precision rather than model misspecification.
+    (\textbf{D})~Three-dimensional validation landscape using bar3d surface. Each bar represents one cluster; height represents pass rate (normalized 0-1). Cluster index on X-axis, test count on Y-axis, pass rate on Z-axis. The flat top (all pass rates = 1.0) confirms uniform validation success across the entire theoretical framework.
+    }
+    \label{fig:section8_panel1}
+\end{figure*}
+
 \begin{corollary}[Return Path Fidelity Is Irrelevant to Closure]
 \label{cor:fidelity-irrelevant}
 The return signal need not be accurate, fast, or noise-free. It must only exist. A system can maintain stable action while receiving corrupted, delayed, or partial-information return signals, provided the circuit topology is closed.
@@ -251,4 +263,3 @@ Bounded phase space forces partition structure $\Rightarrow$ partition elements 
 The circuit is not a metaphor; it is a consequence of the underlying mathematical structure. A bounded system cannot navigate stably without closed charge paths.
 \end{principle}
 
-\end{content}

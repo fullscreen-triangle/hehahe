@@ -1,0 +1,530 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf-8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{booktabs}
+
+\doublespacing
+
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{hypothesis}{Hypothesis}
+\newtheorem{prediction}{Prediction}
+
+\title{Memory as Trajectory-History, Not Content: \\
+A Test of Consciousness Structure via Time-Slice Rearrangement Under Emotional Context Variation}
+
+\author{Anonymous}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+A fundamental question in consciousness science remains unanswered: Is memory the storage of experienced content, or the integrated reference geometry of how consciousness navigated through time? Here we propose a direct empirical test based on a unified theory of consciousness positing that memory is trajectory-history---the encoded path through consciousness moments, sensitive to emotional field modulation.
+
+We present the \textit{Time-Slice Rearrangement Experiment}, in which participants watch an identical video repeatedly in two emotional contexts (relaxed and stressful), then rearrange the same video (played backwards) in a neutral emotional context. Under the trajectory-history hypothesis, participants should not simply recall the original sequence but instead construct a novel rearrangement reflecting the structure of consciousness in the neutral emotional field---a field fundamentally incoherent with the ones under which their prior trajectory-histories were built.
+
+We predict three critical findings: (1) Rearrangements in the neutral context differ significantly from both the learned sequence and the relaxed/stressful context patterns, (2) Reuse patterns (repeated time-slices) vary across emotional contexts, revealing distinct ``attractor landscapes'' of consciousness, and (3) Attractor signatures correlate with emotional field frequency, not content familiarity.
+
+This experiment simultaneously tests six major theorems from charge-circulation theory of consciousness: sufficiency principle, trajectory-history identity, sentiment modulation, three-curve intersection, path-independence, and topological closure necessity. We detail the experimental protocol, prediction mappings, analysis methods, and implications for personal identity, memory function, and the nature of consciousness itself.
+
+\textbf{Keywords}: consciousness, memory, trajectory-history, emotional modulation, personal identity, attractor landscapes, time-slice sampling
+
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{The Memory Problem}
+
+Consciousness science faces a persistent puzzle: What is memory? Two competing frameworks dominate the field.
+
+\textbf{Content-Storage View}: Memory is the recording and retrieval of experienced information. Under this view, when you watch a video, your brain encodes the visual content, narrative structure, and semantic meaning. Emotional context during encoding may affect \textit{how well} the content is stored (enhancing or impairing retention), but the fundamental structure of memory---what is stored---remains independent of emotional state. A person who watches a video 10 times, whether relaxed or stressed, should converge on the same learned narrative and make similar semantic judgments about the content.
+
+\textbf{Trajectory-History View}: Memory is the integrated reference geometry of consciousness's path through time. Under this framework, consciousness is not a static experience but a \textit{trajectory}---a sequence of convergence moments where perception, thought, and memory intersect. Memory does not store ``what I experienced'' but rather ``how my consciousness navigated to that experience.'' Crucially, this trajectory is shaped by the emotional field present during consciousness. Different emotional contexts produce different trajectory geometries through identical content. Memory in one emotional field is fundamentally incoherent in another field, because the attractors of consciousness (the timepoints where convergence naturally occurs) shift with emotional modulation.
+
+The distinction is subtle but crucial:
+\begin{itemize}
+  \item Content-storage predicts that emotional context affects \textit{encoding strength} but not \textit{memory structure}.
+  \item Trajectory-history predicts that emotional context affects \textit{which consciousness moments are stable}, hence which timepoints consciousness naturally converges to.
+\end{itemize}
+
+To our knowledge, no direct empirical test of this distinction exists in the literature.
+
+\subsection{Theoretical Foundation: Charge-Circulation Consciousness Framework}
+
+Our prediction rests on a unified mathematical framework of consciousness developed from first principles \cite{constituentpaper}. We provide a brief summary here; detailed derivations appear elsewhere.
+
+\textbf{Core Claim}: Consciousness emerges from the convergence of three independent trajectories in a bounded charge-circulation system:
+
+\begin{equation}
+\text{Awareness}(t) = \text{Perception}(t) \cap \text{Thought}(t) \cap \text{Memory}(t)
+\end{equation}
+
+where:
+\begin{itemize}
+  \item $\text{Perception}(t)$ = trajectory of sensory acquisition, decaying over $\tau_P \approx 100$--$500$ ms to a categorical state
+  \item $\text{Thought}(t)$ = trajectory of internal deliberation, decaying over $\tau_T \approx 1$--$5$ s to a committed hypothesis
+  \item $\text{Memory}(t)$ = trajectory of integrated history, decaying over $\tau_M \approx 0.5$--$2$ s as reference validation
+\end{itemize}
+
+The intersection point $I(t) = (\text{Perc}, \text{Thought}, \text{Mem})$ exists in \textit{none of the individual trajectory spaces} but represents a point in the unified consciousness space. Successive intersection points form a stream of unique moments---conscious experience.
+
+\textbf{Sentiment Modulation}: The framework further posits that emotional state acts as a \textit{charge field} oscillating at a specific frequency. This field modulates the probability landscape in which thought-trajectories are stable:
+
+\begin{equation}
+V_{\text{thought}}(x; \text{sentiment}) = \sum_{i} V_i(x) + F_{\text{sentiment}}(x) \sin(2\pi f_{\text{emotion}} \cdot t)
+\end{equation}
+
+Relaxed emotional state corresponds to low-frequency sentiment oscillation ($f \approx 1$--$3$ Hz), while stressful state corresponds to high-frequency oscillation ($f \approx 8$--$16$ Hz). Different oscillation frequencies reshape the energy landscape, causing consciousness to stabilize at different timepoints.
+
+\textbf{Memory as Trajectory-History}: Under this framework, memory is \textit{not a storage depot of content} but an \textit{integral of past intersection points}:
+
+\begin{equation}
+M(t) = \int_0^t I(\tau) \cdot w(\tau) d\tau
+\end{equation}
+
+where $w(\tau)$ is a weighting function decaying into the past. Memory stores the \textit{geometry of the trajectory path}, not its content. The geometry encodes: which timepoints converged, in what order, with what divergence. This geometry is tied to the emotional field present during consciousness.
+
+\textbf{Topological Closure Hypothesis}: The framework predicts that consciousness requires topological closure: inbound and outbound paths must form a complete circuit. This means emotional trajectory-histories built in one field cannot be applied to another field---the circuit topology is broken. This closure requirement is \textit{not} about accuracy or precision but about the fundamental existence of coherent navigation.
+
+\subsection{Experimental Logic}
+
+If the trajectory-history framework is correct, we predict:
+
+\begin{hypothesis}[Memory is Emotional-Field-Dependent]
+Participants who build trajectory-histories in a relaxed emotional field and separately in a stressful field cannot apply either trajectory-history when placed in a neutral emotional field. Consequently, they must construct a \textit{novel} rearrangement of time-slices from the video.
+\end{hypothesis}
+
+\begin{hypothesis}[Attractor Landscapes Vary by Context]
+Each emotional context creates a distinct attractor landscape---a set of timepoints where consciousness naturally converges. High-emotion-frequency contexts (stress) create different attractors than low-frequency contexts (relaxation). Participants will \textit{reuse} different time-slices across contexts, revealing these distinct landscapes.
+\end{hypothesis}
+
+\begin{hypothesis}[Path-Independence Within Context]
+Within a single emotional context, multiple participants will converge on similar attractor landscapes (reuse patterns) despite potentially different narrative reconstructions. This is predicted by the sufficiency principle: many paths lead to the same consciousness moments.
+\end{hypothesis}
+
+These hypotheses make sharp, falsifiable predictions distinguishable from content-based alternatives.
+
+\section{Methods}
+
+\subsection{Participants}
+
+Target sample: $N = 20$ healthy adults (ages 18--40, no psychiatric or neurological disorders, normal vision and hearing). A subset of $n = 5$ participants will complete additional within-subject conditions (see Secondary Analysis section).
+
+Sample size justification: Expected effect size (Cohen's $d$) between trajectory-history and content-based predictions is very large ($d \approx 3.2$, based on predicted rearrangement similarity of $0.50 \pm 0.15$ vs. $0.90 \pm 0.10$). With $n = 20$, statistical power exceeds $0.99$ at $\alpha = 0.05$ (two-tailed $t$-test).
+
+\subsection{Stimuli}
+
+\textbf{Video Content}: A 5-minute narrative video with clear story arc, temporally segmented into 30 equal time-slices (10 seconds each). Video criteria:
+\begin{itemize}
+  \item Simple, clear narrative progression (e.g., ``A barista prepares beverages for customers'')
+  \item Visually distinct scenes (color, location, characters change between slices)
+  \item No explicit emotional manipulation (neutral tone, no music, minimal dialogue)
+  \item Repeatable without habituation effects (sufficient complexity to remain engaging after 20 viewings)
+  \item Sufficient ambiguity to allow multiple coherent rearrangements
+\end{itemize}
+
+The video remains \textit{identical} across all three experimental conditions. Only the emotional context and presentation mode (backward vs. forward) change.
+
+\subsection{Experimental Conditions}
+
+\subsubsection{Phase 1: Relaxed Context (Baseline Trajectory-History Formation)}
+
+\textbf{Environment}:
+\begin{itemize}
+  \item Comfortable seating, warm lighting (2700K color temperature)
+  \item Soft instrumental music (60 bpm, no lyrics)
+  \item No time constraints or performance pressure
+  \item Instruction: ``Watch the video naturally. Enjoy it. There are no time limits or memory tests.''
+\end{itemize}
+
+\textbf{Procedure}:
+\begin{itemize}
+  \item Single video viewing
+  \item 5-minute break
+  \item Repeat full video viewing 9 more times (10 viewings total)
+  \item Participant remains passive (no explicit memory instruction or motor task)
+  \item Total duration: approximately 50 minutes
+\end{itemize}
+
+\textbf{Theoretical Purpose}: Build trajectory-history $T_{\text{relax}}$ under low-frequency emotional field ($f_{\text{emotion}} \approx 1$--$3$ Hz). This trajectory-history reflects consciousness's natural attractor landscape under relaxed conditions.
+
+\subsubsection{Phase 2: Stressful Context (Alternative Trajectory-History Formation)}
+
+\textbf{Environment}:
+\begin{itemize}
+  \item Hard-backed chair, bright clinical lighting (5000K)
+  \item Ambient noise background (coffee shop, $\approx 70$ dB)
+  \item Visible countdown timer: ``You have 5 minutes for each watch''
+  \item Instruction: ``Watch efficiently. You must extract key information quickly.''
+\end{itemize}
+
+\textbf{Procedure}:
+\begin{itemize}
+  \item Single video viewing (under time pressure)
+  \item 2-minute pressured break: ``Hurry, next watch starting soon''
+  \item Repeat 9 more times (10 viewings total)
+  \item Participant experiences high arousal, time pressure
+  \item Total duration: approximately 25 minutes (compressed due to pressure)
+\end{itemize}
+
+\textbf{Theoretical Purpose}: Build trajectory-history $T_{\text{stress}}$ under high-frequency emotional field ($f_{\text{emotion}} \approx 8$--$16$ Hz). Different emotional frequency creates different consciousness attractor landscape.
+
+\textbf{Temporal Separation}: At least 3 days elapse between Phase 1 (relaxed) and Phase 2 (stressful) to minimize carryover of trajectory-history from one condition to the other.
+
+\subsubsection{Phase 3: Neutral Context---The Critical Test}
+
+\textbf{Environment}:
+\begin{itemize}
+  \item Neutral seating, neutral lighting (4000K daylight)
+  \item Silent room, no ambient sound
+  \item No time pressure, no performance demand
+  \item Instruction: ``The video will play backwards. You'll see 30 scenes in random order. Rearrange them into an order that makes sense to you.''
+\end{itemize}
+
+\textbf{Procedure}:
+\begin{itemize}
+  \item Video presented in reverse temporal order (plays backward)
+  \item 30 time-slices displayed as clickable/draggable tiles on screen
+  \item Participants arrange slices into a new sequence via drag-and-drop
+  \item \textbf{Reuse Allowed}: Slices can appear multiple times in the arrangement
+  \item No time limit (typically 10--15 minutes to complete)
+  \item Emotional context is truly neutral (not relaxed, not stressful)
+\end{itemize}
+
+\textbf{Theoretical Purpose}: Test whether participants can apply $T_{\text{relax}}$ or $T_{\text{stress}}$ to construct their rearrangement. Under trajectory-history hypothesis, they cannot: the neutral emotional field is incoherent with both prior trajectory-histories (neither low-frequency nor high-frequency stabilization applies). Participants must construct a \textit{novel} rearrangement $S_{\text{neutral}}$ reflecting the attractor landscape of the neutral field.
+
+\textbf{Critical Innovation}: The backward presentation prevents passive sequential recall and forces active reconstruction. Reuse is not only permitted but expected and informative---each reused time-slice reveals an ``attractor point'' where consciousness naturally converges.
+
+\subsection{Primary Measurements}
+
+\subsubsection{Sequence Similarity: Normalized Edit Distance}
+
+For each rearrangement sequence $S$, compute the edit distance (Levenshtein distance accounting for reuse) relative to the original video sequence $S_{\text{original}}$.
+
+\begin{equation}
+D_{\text{edit}}(S_A, S_B) = \frac{\text{number of transpositions and insertions}}{|S_B|}
+\end{equation}
+
+Normalized similarity:
+\begin{equation}
+\text{Similarity}(S_A, S_B) = 1 - D_{\text{edit}}(S_A, S_B)
+\end{equation}
+
+Range: 0 (completely different) to 1 (identical).
+
+\textbf{Primary Hypothesis Test}:
+\begin{equation}
+H_0: \mu[\text{Similarity}(S_{\text{neutral}}, S_{\text{original}})] > 0.80 \quad \text{(content-based)}
+\end{equation}
+\begin{equation}
+H_1: \mu[\text{Similarity}(S_{\text{neutral}}, S_{\text{original}})] < 0.70 \quad \text{(trajectory-history)}
+\end{equation}
+
+Expected group mean under trajectory-history: $0.50 \pm 0.15$ (moderate rearrangement, some narrative constraints remain).
+Expected group mean under content-based: $0.90 \pm 0.10$ (high similarity to learned sequence).
+
+\subsubsection{Attractor Reuse Signature}
+
+For each context ($\text{relax}$, $\text{stress}$, $\text{neutral}$), compute the reuse count vector:
+
+\begin{equation}
+R_c = [r_{c,0}, r_{c,1}, \ldots, r_{c,29}]
+\end{equation}
+
+where $r_{c,i}$ = number of times time-slice $i$ appears in the rearrangement under context $c$.
+
+\textbf{Attractor Landscape Correlation}:
+\begin{equation}
+\rho_{\text{corr}}(R_{\text{relax}}, R_{\text{stress}}) = \text{Pearson correlation of reuse vectors}
+\end{equation}
+
+\begin{equation}
+\rho_{\text{corr}}(R_{\text{relax}}, R_{\text{neutral}}) = \text{Pearson correlation of reuse vectors}
+\end{equation}
+
+\begin{equation}
+\rho_{\text{corr}}(R_{\text{stress}}, R_{\text{neutral}}) = \text{Pearson correlation of reuse vectors}
+\end{equation}
+
+\textbf{Trajectory-History Prediction}:
+$$\rho_{\text{relax-stress}} \approx 0.40 \text{ (different emotion fields, different attractors)}$$
+$$\rho_{\text{relax-neutral}} \approx 0.50 \text{ (neutral field is distinct)}$$
+$$\rho_{\text{stress-neutral}} \approx 0.50 \text{ (neutral field is distinct)}$$
+
+\textbf{Content-Based Prediction}:
+$$\rho_{\text{relax-stress}} \approx 0.85 \text{ (same content, similar reuse patterns)}$$
+$$\rho_{\text{relax-neutral}} \approx 0.85 \text{ (same content, similar reuse patterns)}$$
+$$\rho_{\text{stress-neutral}} \approx 0.85 \text{ (same content, similar reuse patterns)}$$
+
+\subsection{Secondary Analysis: Within-Subject Replication}
+
+A subset of $n = 5$ participants complete an additional task:
+
+After Phase 1 (relaxed), immediately rearrange the backward video in ``Relaxed Rearrangement Context'' (same environment as Phase 1).
+
+After Phase 2 (stressful), immediately rearrange the backward video in ``Stressful Rearrangement Context'' (same environment as Phase 2).
+
+Then, after a 1-week washout period, complete Phase 3 in neutral context as before.
+
+\textbf{Prediction}: Rearrangements should show three distinct patterns:
+\begin{itemize}
+  \item $S_{\text{relax-arrange}}$ (rearrangement in relaxed context immediately after relaxed viewing) should reflect relaxed attractor landscape
+  \item $S_{\text{stress-arrange}}$ (rearrangement in stressful context immediately after stressful viewing) should reflect stressful attractor landscape
+  \item $S_{\text{neutral-arrange}}$ (rearrangement in neutral context after washout) should be novel, not matching either prior pattern
+\end{itemize}
+
+This tests whether trajectory-histories are \textit{context-specific} (apply in the emotional context where built) and \textit{context-dependent} (cannot transfer to different emotional fields).
+
+\subsection{Statistical Analysis Plan}
+
+\subsubsection{Primary Analysis: Between-Context Similarity}
+
+One-sample $t$-tests comparing observed similarities to theoretical predictions:
+
+Test $H_0: \mu[\text{Similarity}(S_{\text{neutral}}, S_{\text{original}})] = 0.80$ vs. $H_1: \mu[\text{Similarity}(S_{\text{neutral}}, S_{\text{original}})] = 0.50$
+
+Effect size estimation (Cohen's $d$) for group means.
+
+Repeated-measures ANOVA testing whether similarity differs significantly across contexts: $F[\text{Similarity across 3 contexts}]$.
+
+\subsubsection{Secondary Analysis: Attractor Correlation Structure}
+
+Compare correlations between contexts:
+
+$H_0: \rho_{\text{relax-neutral}} = \rho_{\text{relax-stress}}$ (equal correlations under both hypotheses)
+
+$H_1: \rho_{\text{relax-neutral}} < \rho_{\text{relax-stress}}$ (neutral context is more dissimilar, supporting trajectory-history)
+
+Fisher $z$-transformation of correlations for hypothesis testing.
+
+\subsubsection{Sensitivity Analysis}
+
+Report results across multiple distance metrics (edit distance, Hamming distance, longest common subsequence) to ensure robustness.
+
+Test whether any individual slices show consistently high reuse across contexts (content-predicted) vs. context-dependent reuse patterns (trajectory-history-predicted).
+
+\section{Expected Results}
+
+\subsection{Scenario A: Trajectory-History Hypothesis Supported}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Metric & Relaxed & Stressful & Neutral & Prediction \\
+\midrule
+Similarity to Original & -- & -- & 0.45--0.55 & Moderate \\
+Similarity(Neutral, Relaxed) & -- & -- & 0.25--0.35 & Low \\
+Similarity(Neutral, Stressful) & -- & -- & 0.25--0.35 & Low \\
+Correlation(R$_{\text{relax}}$, R$_{\text{stress}}$) & & & 0.35--0.50 & Low \\
+Correlation(R$_{\text{neutral}}$, R$_{\text{relax}}$) & & & 0.25--0.40 & Very Low \\
+Correlation(R$_{\text{neutral}}$, R$_{\text{stress}}$) & & & 0.25--0.40 & Very Low \\
+\bottomrule
+\end{tabular}
+\caption{Expected results if trajectory-history hypothesis is correct.}
+\end{table}
+
+\textbf{Interpretation}:
+\begin{itemize}
+  \item Participants do not simply recall the original sequence (Similarity = 0.50, not 0.90)
+  \item Neutral context rearrangement is \textit{novel}, not converging on prior patterns
+  \item Reuse patterns differ across contexts, revealing distinct attractor landscapes
+  \item Memory is NOT transferred content but rather trajectory-geometry specific to emotional fields
+  \item Consciousness organizes information differently under different emotional modulation
+\end{itemize}
+
+\subsection{Scenario B: Content-Based Hypothesis Supported}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Metric & Relaxed & Stressful & Neutral & Prediction \\
+\midrule
+Similarity to Original & -- & -- & 0.85--0.95 & Very High \\
+Similarity(Neutral, Relaxed) & -- & -- & 0.85--0.95 & Very High \\
+Similarity(Neutral, Stressful) & -- & -- & 0.85--0.95 & Very High \\
+Correlation(R$_{\text{relax}}$, R$_{\text{stress}}$) & & & 0.80--0.95 & Very High \\
+Correlation(R$_{\text{neutral}}$, R$_{\text{relax}}$) & & & 0.80--0.95 & Very High \\
+Correlation(R$_{\text{neutral}}$, R$_{\text{stress}}$) & & & 0.80--0.95 & Very High \\
+\bottomrule
+\end{tabular}
+\caption{Expected results if content-based hypothesis is correct.}
+\end{table}
+
+\textbf{Interpretation}:
+\begin{itemize}
+  \item Watching video 20 times (10 relaxed + 10 stressful) embeds narrative content in memory
+  \item Participants reliably reconstruct the original sequence regardless of emotional context
+  \item Emotional state affects encoding/retrieval efficiency but not memory structure
+  \item Reuse patterns are similar across contexts because same content is important everywhere
+  \item Traditional cognitive model of memory as content storage is correct
+\end{itemize}
+
+\section{Implications for Theory}
+
+\subsection{If Trajectory-History is Supported}
+
+\subsubsection{Memory Architecture}
+
+Memory is not a ``filing cabinet'' storing content, but a ``map of the path taken.'' This explains:
+
+\begin{enumerate}
+  \item \textbf{Why memories fade}: Trajectory-history decays because the reference geometry fades, not because content is forgotten. You don't lose the facts; you lose the path by which consciousness arrived at those facts.
+
+  \item \textbf{Why emotional context matters}: Emotion is not decorative. The emotional field at the time of consciousness is constitutive of which moments stabilize and thus what gets integrated into trajectory-history. Same event in different emotional states creates different memories because consciousness navigated different attractors.
+
+  \item \textbf{Why we can't retrieve complete memories}: Trajectory-history is inherently a compressed representation (path geometry, not full state content). Asking someone to recall ``everything about that day'' is asking them to reconstruct the entire trajectory---impossible without re-experiencing it. They can only navigate the geometry again from their current emotional field.
+
+  \item \textbf{Why personality changes with emotion}: You don't have a single, stable personality. You have multiple trajectory-histories built under different emotional contexts. Stress, relaxation, love, fear---each emotional field activates different trajectory-geometries. This explains why you're ``not yourself'' under intense stress (you're accessing a different trajectory-history).
+\end{enumerate}
+
+\subsubsection{Personal Identity and Continuity of Consciousness}
+
+If trajectory-history is memory, then \textbf{personal identity is the continuity of trajectory-history}, not bodily continuity:
+
+\begin{enumerate}
+  \item \textbf{Why death is absolute discontinuity}: Death severs trajectory-history. Resurrection does not reconnect it---consciousness starting anew after death is a different person, even in the same body. This explains why resurrection is not immortality; it is replacement.
+
+  \item \textbf{Why coma survivors report personality change}: A long gap in consciousness breaks trajectory-history continuity. Upon waking, a new trajectory-history begins. Depending on gap length and brain recovery, the new trajectory may be substantially different from the old one.
+
+  \item \textbf{Why dementia feels like loss of self}: Dementia is progressive destruction of trajectory-history reference geometry. The person gradually becomes unable to navigate the emotional fields they previously inhabited. This is not forgetting facts; it's losing the map of how consciousness got there.
+\end{enumerate}
+
+\subsubsection{Consciousness Design Principles}
+
+The trajectory-history framework suggests consciousness is optimized not for content accuracy but for \textit{coherent navigation}:
+
+\begin{enumerate}
+  \item \textbf{Attractor Landscapes}: Consciousness doesn't care whether you remember the exact sensory input. It cares that your thought-trajectory and memory-trajectory converge to the same moment. This allows flexibility: multiple sensory paths lead to the same awareness.
+
+  \item \textbf{Emotional Modulation}: Emotions reshape which consciousness moments are attainable. High-stress situations force different convergence patterns than relaxed states. This explains both the adaptive value (stress sharpens focus on task-critical moments) and the pathology (PTSD replays specific attractor patterns regardless of current emotion).
+
+  \item \textbf{Sufficiency Over Completeness}: Consciousness does not require complete information. It requires sufficient convergence. This is an evolutionary advantage---you can navigate without knowing everything, as long as your perception, thought, and memory converge on action.
+\end{enumerate}
+
+\subsection{Methodological Contributions}
+
+This experiment introduces new methodological tools for consciousness science:
+
+\begin{enumerate}
+  \item \textbf{Attractor Landscape Mapping}: By measuring reuse patterns across contexts, we can empirically map which consciousness moments are attractors vs. context-specific. This could be applied to studying PTSD (which attractor moments are overactive?), meditation (which attractors are suppressed?), psychiatric conditions (which attractor landscapes are unstable?).
+
+  \item \textbf{Emotional Field Frequency Measurement}: By varying the emotional context and measuring the resulting attractor landscape changes, we can estimate the ``emotional frequency'' (low vs. high oscillation) of different emotional states. This bridges subjective experience (slow relaxation vs. rapid stress) with quantitative consciousness metrics.
+
+  \item \textbf{Trajectory-History Fingerprinting}: Each person's attractor landscape under a given emotion is unique. Recording and comparing these landscapes could serve as a consciousness fingerprint, similar to how EEG profiles vary across individuals. This might enable personalized consciousness-sensitive interventions.
+\end{enumerate}
+
+\section{Discussion}
+
+\subsection{Relationship to Existing Consciousness Research}
+
+Our framework relates to but differs from existing theories:
+
+\textbf{Global Workspace Theory (GWT)} \cite{baars} proposes consciousness is a ``theater'' where multiple information sources broadcast to a global workspace. Our framework is compatible with GWT but specifies a mechanism: the ``stage'' is the convergence region of three decaying trajectories. Emotional modulation affects which information sources can simultaneously project to the workspace (by reshaping thought-trajectory stability).
+
+\textbf{Integrated Information Theory (IIT)} \cite{tononi} proposes consciousness is maximal integrated information. Our framework is mathematically distinct but empirically related: the convergence of three trajectories creates an integration point where information from perception, thought, and memory is unified. The trajectory-history we measure is an empirical proxy for integration magnitude.
+
+\textbf{Higher-Order Thought (HOT) Theories} \cite{rosenthal} propose consciousness requires thought \textit{about} perception. Our framework predicts thought-perception convergence is necessary but extends this: memory must also converge. The three-way intersection is what produces consciousness, not just thought-about-perception.
+
+Our framework makes novel predictions distinct from these theories, particularly regarding emotional field modulation and memory as trajectory-history rather than content-storage. The proposed experiment directly tests these novel predictions.
+
+\subsection{Limitations and Alternative Explanations}
+
+\subsubsection{Possible Confound: Habituation}
+
+Repeated video viewing under different emotional contexts might cause differential habituation. Relaxed context (slow viewing) might show less habituation than stressed context (fast viewing). This could affect neutral-context rearrangement independent of trajectory-history.
+
+\textbf{Control}: Measure eye gaze duration and decision latency during rearrangement. If habituation is driving the effect, we expect faster rearrangement in stressed-then-neutral participants. If trajectory-history is driving the effect, we expect similar decision latencies across all groups, differing only in final arrangement.
+
+\subsubsection{Possible Confound: Encoding Bias}
+
+Stressful context might produce shallower encoding of the video, making stressful-trained participants unable to reconstruct the sequence in any context. This would produce low neutral-context similarity not because of trajectory-history but because of poor encoding.
+
+\textbf{Control}: After Phase 3 (neutral rearrangement), ask participants in a \textit{free-recall cued task}: ``Tell me the sequence of events you remember from the video.'' If encoding was the issue, stressfully-trained participants should produce less detailed narratives. Trajectory-history predicts they should produce narratives of equal detail but different organization (different attractor emphasis).
+
+\subsubsection{Possible Confound: Motor/UI Effects}
+
+Perhaps participants simply perform better at the drag-and-drop rearrangement task when emotion-matching the current context (relaxed in relaxed context, stressed in stressed context). This would produce similarity differences not due to memory but due to motor/attention factors.
+
+\textbf{Control}: Randomize which emotional context is used for Phase 3 rearrangement. Half of relaxed-trained participants complete Phase 3 in a stressful environment, vice versa. If motor/attention is driving the effect, we'd expect interaction effects (relaxed-trained + stressful-context should be worse at rearranging). Trajectory-history predicts main effects regardless of context mismatch.
+
+\subsection{Unexpected Findings and Their Interpretation}
+
+\subsubsection{If Neutral Rearrangement is High Similarity to Original}
+
+If we find Similarity(S$_{\text{neutral}}$, S$_{\text{original}}$) $\approx 0.85$ rather than 0.50, this suggests either:
+
+\begin{enumerate}
+  \item Content-based storage is correct, or
+  \item Trajectory-histories are more portable across contexts than predicted, or
+  \item The emotional contexts (relaxed/stressful) were not sufficiently different to create distinct trajectory-histories
+\end{enumerate}
+
+This would support traditional neuroscience models and require reconsideration of the trajectory-history hypothesis.
+
+\subsubsection{If Attractor Reuse Patterns are Similar Across Contexts}
+
+If reuse vectors $R_{\text{relax}}$, $R_{\text{stress}}$, $R_{\text{neutral}}$ are highly correlated ($\rho > 0.75$), this suggests attractor landscapes are stable across emotional contexts. This would support a hybrid model: trajectory-history exists but is less sensitive to emotional modulation than predicted.
+
+\subsection{Future Research Directions}
+
+\begin{enumerate}
+  \item \textbf{Video complexity variation}: Replicate with videos of different narrative complexity (simple recipe vs. complex mystery) to test whether trajectory-history effects are stronger for complex narratives.
+
+  \item \textbf{Emotional intensity gradients}: Use graded emotional contexts (very relaxed, mildly relaxed, neutral, mildly stressful, very stressful) to map the relationship between emotional frequency and attractor landscape change.
+
+  \item \textbf{Neuroscience correlates}: Measure fMRI/EEG during the rearrangement task. Trajectory-history predicts different default-mode network activity for neutral-context rearrangement vs. recalled rearrangement from prior contexts.
+
+  \item \textbf{Clinical applications}: Test this in PTSD (are traumatic memories excessively reused attractors?), depression (are attractor landscapes flattened?), meditation practitioners (are attractor landscapes more flexible?).
+
+  \item \textbf{Cross-cultural validation}: Test whether emotional modulation of trajectory-history is universal or culturally dependent.
+
+  \item \textbf{Longevity of trajectory-history}: Extend the washout period between Phase 1 and Phase 3 (e.g., 1 month, 6 months) to test how trajectory-history decay rate changes with time.
+\end{enumerate}
+
+\section{Conclusions}
+
+We propose a direct empirical test of whether memory is content-based storage or trajectory-history reference geometry. The proposed Time-Slice Rearrangement Experiment exploits a critical prediction: if trajectory-history is sensitive to emotional field modulation, then trajectory-histories built in one emotional context should not transfer to another context.
+
+Participants who watch a video in relaxed and stressful contexts will not simply recall and reproduce the original sequence when asked to rearrange it in a neutral context. Instead, they will construct a novel rearrangement reflecting the attractor landscape of consciousness in the neutral emotional field. Crucially, reuse patterns (which time-slices are repeated) will differ across contexts, fingerprinting the distinct attractor landscapes of each emotional state.
+
+If results support the trajectory-history hypothesis, this would require fundamental reconceptualization of memory, consciousness, emotion, and personal identity. If results support the content-based hypothesis, this would vindicate traditional neuroscience and suggest our framework requires substantial revision.
+
+Either outcome provides clarity on a question that has remained unanswered for centuries: What is memory, and what does it mean to be the same person across time?
+
+\newpage
+
+\section*{References}
+
+\begin{thebibliography}{99}
+
+\bibitem{constituentpaper} Author(s). (2026). Constituents of charge dynamics: A unified theory of consciousness, action, and subjective experience. \textit{In preparation}.
+
+\bibitem{baars} Baars, B. J. (1988). \textit{A cognitive theory of consciousness}. Cambridge University Press.
+
+\bibitem{tononi} Tononi, G. (2004). An information integration theory of consciousness. \textit{BMC Neuroscience}, 5(1), 42.
+
+\bibitem{rosenthal} Rosenthal, D. M. (2005). Consciousness and mind. Oxford University Press.
+
+\bibitem{damasio} Damasio, A. R. (1999). The feeling of what happens: Body and emotion in the making of consciousness. Harcourt.
+
+\bibitem{ledoux} LeDoux, J. E. (2015). \textit{Anxious: Using the brain to understand and treat fear and anxiety}. Viking.
+
+\end{thebibliography}
+
+\end{document}

@@ -17,7 +17,7 @@ with open(results_path) as f:
     results = json.load(f)
 
 # Configuration
-FIGURE_SIZE = (16, 10)  # 4 charts in a row
+FIGURE_SIZE = (20, 5)  # 4 charts in a row, landscape format (wider, shorter)
 DPI = 300
 OUTPUT_DIR = Path(__file__).parent / "figures"
 OUTPUT_DIR.mkdir(exist_ok=True)
