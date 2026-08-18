@@ -1,0 +1,81 @@
+-- Experiment 6: Co-contraction as two coupled circulations.
+--
+-- This is the experiment that motivates antagonist pairs (E6). Two muscles
+-- act on one joint and share compartments. Sharing a vertex is not the
+-- composition of two models: it is Kirchhoff's law at that vertex, within
+-- one medium. The coupling is therefore physical rather than declared.
+--
+-- The novel statement is that joint stiffness is EMERGENT from two coupled
+-- limit cycles rather than a commanded parameter. Nothing below sets a
+-- stiffness; it is computed from how much the two circulations overlap.
+
+module cocontraction;
+
+compartment cortex      { capacitance: 1.0e-3 F; stratum: supraspinal; }
+compartment spinal_in   { capacitance: 3.0e-8 F; stratum: spinal; }
+compartment elbow_joint { capacitance: 1.0e-4 F; stratum: reflex; }
+
+compartment bicep_mn    { capacitance: 1.2e-8 F; stratum: reflex; }
+compartment bicep_nmj   { capacitance: 4.0e-9 F; stratum: reflex; }
+compartment bicep_fibre { capacitance: 1.0e-4 F; stratum: reflex; }
+compartment bicep_spndl { capacitance: 2.0e-9 F; stratum: reflex; }
+compartment bicep_ia    { capacitance: 8.0e-9 F; stratum: reflex; }
+
+compartment tricep_mn    { capacitance: 1.2e-8 F; stratum: reflex; }
+compartment tricep_nmj   { capacitance: 4.0e-9 F; stratum: reflex; }
+compartment tricep_fibre { capacitance: 1.2e-4 F; stratum: reflex; }
+compartment tricep_spndl { capacitance: 2.0e-9 F; stratum: reflex; }
+compartment tricep_ia    { capacitance: 8.0e-9 F; stratum: reflex; }
+
+-- Both circulations traverse the shared spinal pool and terminate at the
+-- shared joint. That traversal is what makes them one coupled system:
+-- the shared vertices must actually lie on the declared paths, or the
+-- pair is two independent loops that happen to be named together.
+circuit bicep_loop {
+  floor    : derived(resting_cut(bicep_mn));
+
+  outbound : spinal_in -> bicep_mn -> bicep_nmj -> bicep_fibre -> elbow_joint;
+  return   : elbow_joint -> bicep_spndl -> bicep_ia -> spinal_in;
+
+  element premotor_b conducts spinal_in   -> bicep_mn    delay 2.0 ms;
+  element mn_axon_b  conducts bicep_mn    -> bicep_nmj   delay 5.0 ms;
+  element endplate_b conducts bicep_nmj   -> bicep_fibre delay 0.8 ms;
+  element insert_b   conducts bicep_fibre -> elbow_joint delay 1.0 ms;
+  element ec_b       conducts elbow_joint -> bicep_spndl delay 15.0 ms;
+  element mechano_b  conducts bicep_spndl -> bicep_ia    delay 3.0 ms;
+  element ia_axon_b  conducts bicep_ia    -> spinal_in   delay 8.0 ms gain 1.0;
+}
+
+circuit tricep_loop {
+  floor    : derived(resting_cut(tricep_mn));
+
+  outbound : spinal_in -> tricep_mn -> tricep_nmj -> tricep_fibre -> elbow_joint;
+  return   : elbow_joint -> tricep_spndl -> tricep_ia -> spinal_in;
+
+  element premotor_t conducts spinal_in    -> tricep_mn    delay 2.0 ms;
+  element mn_axon_t  conducts tricep_mn    -> tricep_nmj   delay 5.0 ms;
+  element endplate_t conducts tricep_nmj   -> tricep_fibre delay 0.8 ms;
+  element insert_t   conducts tricep_fibre -> elbow_joint  delay 1.0 ms;
+  element ec_t       conducts elbow_joint  -> tricep_spndl delay 15.0 ms;
+  element mechano_t  conducts tricep_spndl -> tricep_ia    delay 3.0 ms;
+  element ia_axon_t  conducts tricep_ia    -> spinal_in    delay 8.0 ms gain 1.0;
+}
+
+-- The pair shares the spinal interneuron pool and the joint itself.
+antagonist elbow_pair {
+  agonist    : bicep_loop;
+  antagonist : tricep_loop;
+  shared     : spinal_in, elbow_joint;
+}
+
+experiment stiffness_from_coupling {
+  intact : bicep_loop;
+
+  -- Reciprocal inhibition lost: the two loops stop alternating.
+  lesion no_reciprocal :
+      bicep_loop with noise across spinal, reflex (0.5);
+
+  observe : closure_index, oscillation_amplitude,
+            cocontraction_ratio(elbow_pair), joint_stiffness(elbow_pair),
+            coupling_index;
+}

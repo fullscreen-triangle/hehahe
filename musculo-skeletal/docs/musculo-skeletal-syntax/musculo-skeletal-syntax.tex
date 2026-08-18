@@ -1,0 +1,1968 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{booktabs,array,float,multirow}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{syntax}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{listings}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,%
+            citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\usepackage{cleveref}
+
+% ─── Theorem environments ────────────────────────────────────────────
+\newtheoremstyle{thmstyle}{\topsep}{\topsep}{\itshape}{}{\bfseries}{.}{.5em}{}
+\theoremstyle{thmstyle}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Axiom}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{principle}[theorem]{Principle}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\crefname{axiom}{Axiom}{Axioms}
+\Crefname{axiom}{Axiom}{Axioms}
+\crefname{principle}{Principle}{Principles}
+\Crefname{principle}{Principle}{Principles}
+
+% ─── Notation ────────────────────────────────────────────────────────
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Gph}{G}
+\newcommand{\V}{V}
+\newcommand{\E}{E}
+\newcommand{\med}{\mathfrak{M}}
+\newcommand{\cut}{\partial}
+\newcommand{\sep}{\sigma}
+\newcommand{\flo}{\beta}
+\newcommand{\kap}{\kappa}
+\newcommand{\Env}{\Gamma}
+\newcommand{\store}{\Sigma}
+\newcommand{\steps}{\longrightarrow}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\Circ}{\textsf{Circuit}}
+\newcommand{\Comp}{\textsf{Compartment}}
+\newcommand{\Chg}{\textsf{Charge}}
+\newcommand{\Obs}{\textsf{Observable}}
+\newcommand{\Exp}{\textsf{Experiment}}
+\newcommand{\Res}{\textsf{Result}}
+\newcommand{\Strat}{\textsf{Stratum}}
+\newcommand{\circuit}{\mathbf{circuit}}
+\newcommand{\outb}{\mathbf{outbound}}
+\newcommand{\retn}{\mathbf{return}}
+\newcommand{\without}{\mathbf{without}}
+\newcommand{\observe}{\mathbf{observe}}
+\newcommand{\experiment}{\mathbf{experiment}}
+
+% ─── Listings style for Vitruvius ───────────────────────────────────
+\lstdefinelanguage{vitruvius}{
+  morekeywords={circuit,outbound,return,compartment,capacitance,stratum,
+    floor,experiment,observe,without,with,scaling,noise,across,let,
+    element,conducts,at,delay,gain,type,event,against,report,
+    intact,lesion,compare,run,for,module,import,where,derived,
+    reflex,spinal,supraspinal,by,of,in,as,to},
+  sensitive=true,
+  morecomment=[l]{--},
+  morestring=[b]",
+}
+\lstdefinestyle{vvs}{
+  language=vitruvius,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue!70!black}\bfseries,
+  commentstyle=\color{green!45!black}\itshape,
+  stringstyle=\color{red!55!black},
+  numberstyle=\tiny\color{gray},
+  frame=single,
+  framesep=4pt,
+  breaklines=true,
+  columns=fullflexible,
+  showstringspaces=false,
+  xleftmargin=2pt,
+}
+\lstset{style=vvs}
+
+% ─── Title ───────────────────────────────────────────────────────────
+\title{\textbf{Vitruvius: A Language for Musculoskeletal Circuit
+Experiments}\\[4pt]
+\large Grammar, Type System, and Operational Semantics of \texttt{.vvs}}
+
+\author{%
+Kundai Farai Sachikonye\\
+\small Technical University of Munich\\
+\small \texttt{kundai.sachikonye@tum.de}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+We specify \emph{Vitruvius} (source extension \texttt{.vvs}), a domain-specific
+language for expressing and running experiments on models of the human
+musculoskeletal system. The language takes as its unit of description not the
+signal but the \emph{circulation}: a closed path through the neuromuscular
+graph comprising an efferent outbound phase and an afferent return phase. This
+choice is forced rather than stylistic. We prove that a neuromuscular graph
+admits no vertex connected to an unbounded charge reservoir, that a graph so
+constrained possesses no static equilibrium under sustained metabolic input,
+and consequently that its trajectories are bounded perpetual oscillations
+rather than approaches to a set point. A language whose primitive is a signal
+travelling from controller to plant cannot express this; a language whose
+primitive is a circulation can. From the closure structure we derive three
+static analyses that a compiler can perform before any numerical integration:
+an \emph{aperture} analysis reporting which circulations lack a return phase
+and are therefore predicted to fail to terminate rather than to degrade; a
+\emph{compartment} analysis rejecting charge arithmetic that mixes distinct
+capacitances, in the manner of dimensional analysis but over anatomical rather
+than metric units; and a \emph{stratum} analysis enforcing that elements at
+one characteristic time scale do not directly read the state of another,
+implemented as an effect system whose deliberate violation is itself the model
+of a coupling pathology. We give the complete lexical and context-free grammar,
+a type system with seven types and four non-standard rules, and a small-step
+operational semantics over a configuration comprising a circuit, an observation
+store, and a monotone committed record. We prove progress and preservation, and
+hence that a well-typed program does not get stuck; we prove that lesion
+composition is associative, commutative, and idempotent, so that the lesioned
+circuit of an experiment is independent of the order in which ablations are
+declared; we prove that every experiment over a finite observable set
+terminates; and we prove that the language's estimator for the catalytic power
+of an event is non-degenerate, in contrast to the natural instance-specific
+estimator, which we show is an algebraic identity that agrees with its own
+prediction on every data set whatsoever and therefore has no null hypothesis.
+We report the type separation statistic that determines when the
+non-degenerate estimator has power, and specify the diagnostic that
+distinguishes an uninformative model from a negative result. Three worked
+programs---a stretch reflex, a postural loop under ablation, and a
+cross-stratum coupling lesion---exercise every construct.
+\end{abstract}
+
+\noindent\textbf{Keywords:} domain-specific language; musculoskeletal
+simulation; motor control; closed-loop circuits; type systems; effect systems;
+operational semantics; deafferentation; scientific modelling languages.
+
+\tableofcontents
+
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+% =====================================================================
+
+\subsection{The design question}
+
+Simulation platforms for human movement are organised around a pipeline. A
+model is specified as a mechanical plant---segments, joints, musculotendon
+actuators---and a controller supplies activations to that plant; the simulator
+integrates the coupled system forward and returns trajectories
+\citep{delp2007,seth2018,todorov2012}. The organising abstraction is the
+\emph{signal}: activation flows from controller to plant, sensory information
+flows back, and the two are distinct objects joined by a feedback connection
+whose gain is a parameter.
+
+This abstraction is adequate for a large class of questions and we do not
+propose to replace it everywhere. It has, however, a specific and consequential
+limitation, which is the subject of this paper. Consider the class of
+experiments in which a structural element of the sensorimotor loop is removed
+rather than attenuated: severing a proprioceptive afferent, abolishing a
+return pathway, decoupling one anatomical level from another. In a
+signal-and-gain architecture these manipulations are all expressed the same
+way---by setting a gain to zero---and they therefore all predict the same kind
+of outcome, namely a graded increase in variance about a preserved mean
+trajectory. The empirical record does not support that prediction. Removal of
+large-fibre proprioceptive input does not degrade coordinated movement; it
+abolishes it, and does so while motor innervation and voluntary intent remain
+intact \citep{cole1991,sainburg1995,ghez1995,lajoie1996,taub1965}.
+
+A language in which severance and attenuation are the same operation cannot
+express the distinction that the data demand. Vitruvius is built on a different
+primitive for exactly this reason.
+
+\subsection{The primitive}
+
+The unit of description in Vitruvius is the \emph{circulation}: a closed path
+through the neuromuscular graph with a designated outbound phase (efferent,
+central to peripheral) and a designated return phase (afferent, peripheral to
+central). A circulation is one object, not two signals joined by a connection.
+Consequently there are two structurally distinct manipulations available to an
+experimenter, and the language distinguishes them syntactically:
+
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+\item \textbf{Modifying} a circulation---changing a conductance, a delay, a
+gain---leaves it closed and yields a circuit of the same topological class.
+\item \textbf{Severing} a circulation---removing its return phase---opens it,
+and yields a circuit of a different topological class.
+\end{itemize}
+
+The compiler can tell these apart without running anything, and
+\Cref{sec:aperture} shows that it does: a program that opens a circulation
+receives a static diagnostic naming the aperture and the prediction that
+follows from it. This is the language's central design commitment and the
+reason for its existence.
+
+\subsection{Why closure is forced}
+
+The commitment would be arbitrary if closure were merely a convenient way to
+organise a model. \Cref{sec:foundations} shows it is not. We establish, from
+premises that are individually standard, three results:
+
+\begin{enumerate}[leftmargin=1.6em,itemsep=2pt]
+\item The neuromuscular graph of an intact organism has no vertex connected to
+an unbounded charge reservoir (\Cref{prop:no-ground}). Charge crossing any
+membrane is redistributed within finite internal compartments; it does not
+leave.
+\item A graph so constrained, carrying voltage-gated conductances and supplied
+with sustained metabolic energy, admits no static equilibrium
+(\Cref{thm:no-equilibrium}), and its trajectories are therefore bounded and
+non-static---perpetual oscillation within physiological limits
+(\Cref{cor:perpetual}).
+\item In such a graph a perturbation originating centrally does not terminate
+peripherally unless the peripheral vertex lies on a closed path back to the
+origin (\Cref{cor:closure-obligatory}).
+\end{enumerate}
+
+The third result is what distinguishes severance from attenuation. An
+attenuated circulation is a closed path with small currents; a severed
+circulation is not a path at all, and there is no value of a gain that
+expresses the difference.
+
+\subsection{What the language is not}
+
+Vitruvius is not a general-purpose programming language. It has no
+user-defined functions, no recursion, no higher-order values, and no
+input/output beyond the declaration of models and the reporting of
+observations. Numerical work---integration of membrane dynamics, evaluation of
+cross-bridge kinetics, spectral estimation---is performed by a backend that
+the language calls and does not inspect (\Cref{sec:backends}). In the sense in
+which a build language coordinates compilation without compiling anything,
+Vitruvius coordinates experiments without computing anything: it expresses
+which circuits exist, which are ablated, and what is to be observed, and
+delegates the rest.
+
+Neither is it a replacement for existing musculoskeletal simulators. Its scope
+is narrower and its commitments stronger. Where a general platform must
+accommodate open-loop actuation, prescribed kinematics, and externally
+specified controllers, Vitruvius admits none of these as well-formed
+descriptions of an intact system, and gains in return the ability to
+distinguish structural from parametric manipulation. We state the trade
+plainly in \Cref{sec:scope}.
+
+\subsection{Contributions}
+
+\begin{enumerate}[leftmargin=1.6em,itemsep=1pt]
+\item A derivation of circuit closure as a structural necessity of the intact
+neuromuscular graph, from three standard premises (\Cref{sec:foundations}).
+\item A complete lexical and context-free grammar for \texttt{.vvs}, proved
+unambiguous (\Cref{sec:grammar}).
+\item A type system with seven types and four non-standard rules: compartment
+consistency, stratum containment, floor positivity, and typed-event
+estimation (\Cref{sec:typing}).
+\item The aperture analysis: a static decision procedure reporting the
+circulations a program has opened, with the prediction that follows
+(\Cref{sec:aperture}).
+\item A small-step operational semantics with progress, preservation,
+lesion-order independence, and termination (\Cref{sec:semantics}).
+\item A proof that the natural estimator of an event's catalytic power is an
+algebraic identity with no null hypothesis, and a typed estimator that is
+non-degenerate, together with the statistic governing its power
+(\Cref{sec:estimation}).
+\item Three worked programs exercising every construct
+(\Cref{sec:programs}).
+\end{enumerate}
+
+\subsection{Relation to existing work}
+
+The formal apparatus is standard. The grammar is presented in the style of
+\citet{aho2006}; the type system as inference rules with progress and
+preservation in the manner of \citet{wright1994} and \citet{pierce2002}; the
+dynamics as small-step structural operational semantics following
+\citet{plotkin1981}. The compartment rule of \Cref{sec:compartments} is a
+units-of-measure discipline in the sense of \citet{kennedy1997}, differing
+only in that its units are anatomical rather than metric. The stratum rule of
+\Cref{sec:strata} is an effect system in the sense of \citet{lucassen1988},
+with the region structure of \citet{tofte1997}. The novelty claimed here is
+not in the metatheory but in what the rules enforce and why the enforcement is
+physiologically obligatory.
+
+Among modelling languages, CellML \citep{hedley2001} and SBML
+\citep{hucka2003} standardise the exchange of biological models but are
+representations rather than languages with a type discipline; Modelica
+\citep{fritzson2014} supplies acausal equation-based modelling with strong
+unit checking, and is the closest relative of the compartment analysis
+developed here, but has no notion of circuit closure and no analogue of the
+aperture diagnostic. Musculoskeletal simulation platforms
+\citep{delp2007,seth2018,todorov2012} supply the numerics that a Vitruvius
+backend requires, and we regard them as complements rather than competitors:
+\Cref{sec:backends} specifies the interface through which such a platform
+discharges a Vitruvius model.
+
+The motor-control theories with which the framework must be compared---the
+equilibrium-point hypothesis \citep{feldman1986}, optimal feedback control
+\citep{todorov2002}, and internal-model accounts
+\citep{kawato1999,wolpert2000}---are discussed in \Cref{sec:discussion}, where
+we identify the specific predictions on which they and the closure account
+differ.
+
+% =====================================================================
+\section{Foundations}
+\label{sec:foundations}
+% =====================================================================
+
+This section derives the structural facts the language encodes. Each premise
+is standard; the conclusions are what motivate the design.
+
+\subsection{The neuromuscular graph}
+
+\begin{definition}[Neuromuscular graph]
+\label{def:nm-graph}
+The \emph{neuromuscular graph} is a finite directed graph
+$\Gph=(\V,\E)$ whose vertices $\V$ are compartments at which membrane
+potential is approximately uniform---a neuronal soma, a dendritic branch, an
+axonal segment, a presynaptic terminal, a muscle fibre segment, a receptor
+ending---and whose edges $\E$ are conductive pathways between compartments:
+axonal conduction, dendritic coupling, synaptic contact, and the neuromuscular
+junction.
+\end{definition}
+
+At each vertex $v$, conservation of current gives
+\begin{equation}
+\sum_{u:(u,v)\in\E} I_{uv}(t)
+\;=\; C_{\mathrm{m}}^{(v)}\frac{\dd V^{(v)}}{\dd t}
+\;+\; I_{\mathrm{ion}}^{(v)}(t),
+\label{eq:kcl}
+\end{equation}
+where $C_{\mathrm{m}}^{(v)}$ is the membrane capacitance at $v$ and
+$I_{\mathrm{ion}}^{(v)}$ the ionic current through channels at $v$. The ionic
+currents follow the standard conductance-based description
+\citep{hodgkin1952},
+\begin{equation}
+C_{\mathrm{m}}\frac{\dd V}{\dd t}
+= -\sum_k g_k(V,t)\,\bigl(V-E_k\bigr) + I_{\mathrm{ext}},
+\label{eq:hh}
+\end{equation}
+with $g_k$ the conductance for ion species $k$ and $E_k$ its reversal
+potential. Specific membrane capacitance is approximately
+$1\,\mu\mathrm{F/cm}^2$ across cell types
+\citep{cole1941,gentet2000}, a fact we use in \Cref{sec:compartments}.
+
+\subsection{Absence of an external ground}
+
+\begin{definition}[External ground]
+\label{def:ground}
+A vertex $v^\ast$ of a circuit is an \emph{external ground} if it is connected
+to an unbounded charge reservoir: a source or sink into which arbitrary
+current may flow while its potential remains externally fixed.
+\end{definition}
+
+\begin{proposition}[The intact neuromuscular graph is ungrounded]
+\label{prop:no-ground}
+The \emph{in vivo} neuromuscular graph contains no external ground.
+\end{proposition}
+
+\begin{proof}
+An external ground requires an unbounded reservoir. Every charge crossing a
+membrane of the organism enters either the intracellular or the extracellular
+fluid compartment, both of which are of finite volume and finite ionic
+content. Ionic gradients are maintained by the metabolic work of active
+transport, but a pump redistributes charge across a membrane rather than
+supplying it from outside the organism: the ions it moves were already
+present. Transdermal currents on the timescale of a movement are smaller than
+intracellular currents by several orders of magnitude and cannot serve as an
+unbounded sink. Finally, the reversal potentials $E_k$ appearing in
+\eqref{eq:hh} are fixed by the Nernst relation from finite internal and
+external concentrations, not by reference to an external potential. Hence no
+vertex satisfies \Cref{def:ground}.
+\end{proof}
+
+\begin{remark}[The reference electrode is an artefact of measurement]
+\label{rem:electrode}
+Electrophysiological recording introduces a ground externally, and membrane
+potentials are conventionally reported against it. This is a property of the
+apparatus, not of the preparation. \Cref{prop:no-ground} concerns the intact
+organism, in which no such reference exists. The distinction matters for the
+language because a model that admits a grounded vertex is a model of a
+recording configuration rather than of a behaving system, and Vitruvius
+declines to typecheck one (\Cref{sec:typing}).
+\end{remark}
+
+\subsection{No static equilibrium}
+
+\begin{axiom}[Sustained metabolic supply]
+\label{ax:metabolic}
+Ionic gradients are maintained away from electrochemical equilibrium by
+continuous metabolic energy input, and the gradients are nonzero.
+\end{axiom}
+
+\begin{theorem}[No static equilibrium in an ungrounded excitable graph]
+\label{thm:no-equilibrium}
+Let $\Gph$ be an ungrounded neuromuscular graph whose vertices carry
+voltage-dependent conductances, with total charge conserved and
+\Cref{ax:metabolic} in force. Then $\Gph$ admits no static equilibrium: there
+is no state with $\dd V^{(v)}/\dd t=0$ at every vertex that is consistent with
+the dynamics \eqref{eq:kcl}--\eqref{eq:hh} and with global charge
+conservation.
+\end{theorem}
+
+\begin{proof}
+Suppose such a state exists. Setting $\dd V^{(v)}/\dd t=0$ in \eqref{eq:kcl}
+requires, at every vertex, that the net current arriving from neighbours
+exactly balance the local ionic current:
+$\sum_u I_{uv}=I_{\mathrm{ion}}^{(v)}$ for all $v$.
+
+Consider first a spatially uniform candidate, $V^{(v)}=V^\star$ for all $v$.
+Then every inter-vertex current vanishes, so the condition reduces to
+$I_{\mathrm{ion}}^{(v)}(V^\star)=0$ at every vertex. By \Cref{ax:metabolic}
+the reversal potentials $E_k$ are distinct and the gradients nonzero, so
+$I_{\mathrm{ion}}=-\sum_k g_k(V^\star)(V^\star-E_k)$ vanishes only at the
+particular potential at which the conductance-weighted driving forces cancel.
+That potential is vertex-dependent whenever vertices differ in channel
+composition, which is the generic case: motor neurons, muscle fibres, and
+receptor endings do not share a conductance profile. Hence no single $V^\star$
+satisfies the condition at every vertex, and the uniform candidate fails.
+
+Consider then a non-uniform candidate, $V^{(u)}\ne V^{(v)}$ for some adjacent
+$u,v$. The edge between them carries a current proportional to the potential
+difference, which is nonzero. Because the graph is ungrounded
+(\Cref{prop:no-ground}), this current has no reservoir to enter: by global
+charge conservation it must be balanced by redistribution among the remaining
+vertices, which changes their charge and hence their potentials, contradicting
+the assumption that all time derivatives vanish.
+
+Both cases fail, so no static equilibrium exists.
+\end{proof}
+
+\begin{corollary}[Bounded perpetual motion]
+\label{cor:perpetual}
+Under the hypotheses of \Cref{thm:no-equilibrium}, every trajectory of the
+graph is non-static. It is also bounded, since membrane potentials are
+confined to the interval spanned by the reversal potentials by the structure
+of \eqref{eq:hh}. The trajectory is therefore a bounded non-equilibrium
+motion: repeated excursion within a compact region of state space, in the
+sense of a dissipative system held from equilibrium by external supply
+\citep{nicolis1977,onsager1931}.
+\end{corollary}
+
+\begin{remark}[What ``resting'' means]
+\label{rem:resting}
+\Cref{cor:perpetual} is not a claim that muscles visibly move at rest. It is a
+claim about the state of the circuit: the familiar resting potential is a
+conditional rest of an isolated cell measured against an external reference,
+and in the intact organism it is the centre of a limit cycle rather than a
+fixed point. The empirical signature is the tonic discharge observed in
+relaxed muscle---spindle afferents at $5$--$30$\,Hz and motor units at
+$0.5$--$5$\,Hz \citep{burke1976,matthews1972}---and the continuous
+oscillation of the centre of pressure in quiet standing, which never settles
+\citep{winter1998,zatsiorsky2000,collins1993}. A language whose execution
+model expects a steady state cannot represent either.
+\end{remark}
+
+\subsection{Closure is obligatory}
+
+\begin{definition}[Circulation]
+\label{def:circulation}
+A \emph{circulation} in $\Gph$ is a closed directed path
+$v_0\to v_1\to\cdots\to v_n=v_0$ together with a distinguished index $m$
+splitting it into an \emph{outbound phase} $v_0\to\cdots\to v_m$ and a
+\emph{return phase} $v_m\to\cdots\to v_0$. The outbound phase is efferent and
+the return phase afferent.
+\end{definition}
+
+\begin{definition}[Aperture]
+\label{def:aperture}
+A path with a designated outbound phase but no return phase closing it is an
+\emph{aperture}. A circuit containing an aperture is \emph{open}; a circuit
+all of whose paths close is \emph{closed}.
+\end{definition}
+
+We now give the variational statement that selects which closed path a
+perturbation follows. Let $J_k$ denote the current on edge $k$ and $g_k$ its
+conductance.
+
+\begin{theorem}[Minimum-dissipation closure]
+\label{thm:min-dissipation}
+In an ungrounded graph with metabolic supply, a charge perturbation introduced
+at vertex $u$ redistributes along the closed path $\gamma^\ast$ through $u$
+that minimises
+\begin{equation}
+\Phi[\gamma]\;=\;\sum_{k\in\gamma}\frac{J_k^{2}}{g_k},
+\label{eq:dissipation}
+\end{equation}
+subject to current conservation at every vertex.
+\end{theorem}
+
+\begin{proof}
+The quantity \eqref{eq:dissipation} is the Joule dissipation associated with
+the redistribution, and has units of power. Because the graph is ungrounded,
+the perturbation cannot be absorbed and the admissible redistributions are
+exactly the closed paths through $u$; this is the constraint set. Minimising a
+positive-definite quadratic form over a linear constraint set has a unique
+solution characterised by the stationarity conditions, which here state that
+the conductance-weighted currents balance at every vertex---that is, that the
+solution satisfies Kirchhoff's laws on the closed path. Physically, a
+dissipative system under stationary constraint evolves toward the minimum
+entropy production consistent with those constraints \citep{onsager1931,%
+nicolis1977}, which is the same condition.
+\end{proof}
+
+\begin{corollary}[Closure obligation]
+\label{cor:closure-obligatory}
+A perturbation originating at a central vertex $u$ does not terminate at a
+peripheral vertex $w$ unless $w$ lies on a closed path returning to $u$. If no
+such path exists, the constraint set of \Cref{thm:min-dissipation} is empty
+and no redistribution satisfies the stationarity condition.
+\end{corollary}
+
+\begin{proof}
+Immediate: the minimisation in \Cref{thm:min-dissipation} is over closed paths
+through $u$. If $w$ lies on no such path, no admissible redistribution
+terminates at $w$.
+\end{proof}
+
+\Cref{cor:closure-obligatory} is the formal content of the design commitment
+announced in \Cref{sec:intro}. An efferent projection is not a terminus. It is
+one phase of a circulation whose other phase must exist for the perturbation
+to resolve. This is why severing a return pathway is not equivalent to
+reducing a gain: reducing a gain leaves the constraint set nonempty and
+changes the minimiser; severing empties the constraint set.
+
+\begin{principle}[Structural manipulation is not parametric manipulation]
+\label{prin:structural}
+Modifying a conductance, delay, or gain of a circulation preserves its closure
+class and changes the solution of \Cref{thm:min-dissipation}. Removing a
+return phase changes the closure class and empties the constraint set. A
+language for musculoskeletal experiments must distinguish these
+syntactically.
+\end{principle}
+
+\subsection{Time-scale strata}
+
+The neuromuscular graph carries loops of widely differing traversal time. We
+group them into three strata, whose boundaries are set by measured conduction
+and integration times rather than by convention.
+
+\begin{definition}[Strata]
+\label{def:strata}
+The \emph{reflex} stratum comprises loops closing within $30$--$100$\,ms; the
+\emph{spinal} stratum, loops closing within $0.2$--$1$\,s; the
+\emph{supraspinal} stratum, loops closing within $1$--$5$\,s.
+\end{definition}
+
+The reflex figure is not assumed. The monosynaptic stretch reflex loop
+comprises spindle mechanotransduction ($1$--$5$\,ms), afferent conduction
+($5$--$15$\,ms at $\sim\!80$\,m/s over limb-dependent distance), monosynaptic
+delay ($0.5$--$1$\,ms), efferent conduction ($5$--$15$\,ms), neuromuscular
+transmission ($0.5$--$1$\,ms \citep{katz1967,ruff2011}), and
+excitation--contraction coupling ($10$--$20$\,ms), summing to $22$--$57$\,ms
+for the upper limb and $32$--$72$\,ms for the lower. Measured latencies are
+$30$--$40$\,ms and $40$--$50$\,ms respectively \citep{matthews1990},
+consistent with the sum.
+
+\begin{proposition}[Spectral separability]
+\label{prop:separable}
+If the three strata of \Cref{def:strata} are coupled with delays small
+relative to their own time constants, the composite trajectory exhibits three
+distinguishable spectral bands, with coupling contributing power at sum and
+difference frequencies that is small when the time constants are separated by
+a factor of five or more.
+\end{proposition}
+
+\begin{proof}[Justification]
+For weakly coupled oscillators with well-separated natural frequencies, the
+composite spectrum is to leading order the sum of the component spectra, with
+interaction terms at $\abs{f_i\pm f_j}$ whose amplitude scales with the
+coupling strength divided by the frequency separation
+\citep{kuramoto1984,strogatz2015}. The strata of \Cref{def:strata} have
+central time constants in ratio approximately $1:5:30$, placing them in the
+separated regime.
+\end{proof}
+
+\Cref{prop:separable} is what makes the stratum discipline of
+\Cref{sec:strata} enforceable and its violation observable: a program that
+couples strata directly produces cross-band structure that would otherwise be
+absent.
+
+% =====================================================================
+\section{Lexical structure and grammar}
+\label{sec:grammar}
+% =====================================================================
+
+\subsection{Token classes}
+
+\begin{definition}[Tokens]
+\label{def:tokens}
+The lexer recognises:
+\emph{keywords}
+\texttt{circuit}, \texttt{compartment}, \texttt{capacitance},
+\texttt{element}, \texttt{conducts}, \texttt{outbound}, \texttt{return},
+\texttt{stratum}, \texttt{delay}, \texttt{gain}, \texttt{floor},
+\texttt{derived}, \texttt{event}, \texttt{type},
+\texttt{experiment}, \texttt{intact}, \texttt{lesion}, \texttt{observe},
+\texttt{without}, \texttt{with}, \texttt{scaling}, \texttt{noise},
+\texttt{across}, \texttt{compare}, \texttt{report}, \texttt{let},
+\texttt{module}, \texttt{import}, \texttt{reflex}, \texttt{spinal},
+\texttt{supraspinal};
+\emph{identifiers} matching \texttt{[A-Za-z\_][A-Za-z0-9\_]*} that are not
+keywords;
+\emph{numeric literals} in decimal or scientific notation, optionally
+suffixed by a unit token (\texttt{s}, \texttt{ms}, \texttt{Hz},
+\texttt{F}, \texttt{uF}, \texttt{mF}, \texttt{N}, \texttt{m}, \texttt{mm},
+\texttt{W}, \texttt{C});
+\emph{string literals} delimited by double quotes;
+\emph{punctuation} \texttt{\{ \} ( ) [ ] , ; : = -> .};
+and \emph{comments} from \texttt{--} to end of line, discarded.
+Whitespace is insignificant except as a token separator.
+\end{definition}
+
+\subsection{Context-free grammar}
+
+\begin{grammar}
+<program> ::= <module-decl>? <import>* <decl>*
+
+<module-decl> ::= `module' <ident> `;'
+
+<import> ::= `import' <ident> `;'
+
+<decl> ::= <compartment-decl> | <circuit-decl>
+        \alt <event-type-decl> | <experiment-decl> | <let-decl>
+
+<compartment-decl> ::= `compartment' <ident> `\{'
+  `capacitance' `:' <quantity> `;'
+  `stratum' `:' <stratum> `;' `\}'
+
+<stratum> ::= `reflex' | `spinal' | `supraspinal'
+
+<circuit-decl> ::= `circuit' <ident> `\{'
+  `floor' `:' <floor-spec> `;'
+  `outbound' `:' <path> `;'
+  `return' `:' <path> `;'
+  <element-decl>* `\}'
+
+<floor-spec> ::= `derived' `(' <expr> `)' | <quantity>
+
+<path> ::= <ident> ( `->' <ident> )*
+
+<element-decl> ::= `element' <ident> `conducts' <ident> `->' <ident>
+  ( `delay' <quantity> )? ( `gain' <number> )? `;'
+
+<event-type-decl> ::= `event' `type' <ident> `=' <expr> `;'
+
+<experiment-decl> ::= `experiment' <ident> `\{'
+  `intact' `:' <circuit-expr> `;'
+  <lesion-decl>*
+  `observe' `:' <observable-list> `;' `\}'
+
+<lesion-decl> ::= `lesion' <ident> `:' <circuit-expr> `;'
+
+<circuit-expr> ::= <ident>
+  \alt <circuit-expr> `without' `return' `(' <ident> `)'
+  \alt <circuit-expr> `without' `element' `(' <ident> `)'
+  \alt <circuit-expr> `with' <ident> `scaling' <number>
+  \alt <circuit-expr> `with' `noise' `across' <stratum> `,' <stratum>
+       `(' <number> `)'
+
+<observable-list> ::= <observable> ( `,' <observable> )*
+
+<observable> ::= <ident> ( `(' <arg-list>? `)' )?
+
+<let-decl> ::= `let' <ident> `=' <expr> `;'
+
+<expr> ::= <ident> | <number> | <quantity> | <string>
+  \alt <ident> `(' <arg-list>? `)'
+
+<arg-list> ::= <expr> ( `,' <expr> )*
+
+<quantity> ::= <number> <unit>
+\end{grammar}
+
+\begin{proposition}[The grammar is LL(1)]
+\label{prop:ll1}
+The grammar of \Cref{sec:grammar} is LL(1), and therefore unambiguous.
+\end{proposition}
+
+\begin{proof}
+We verify that one token of lookahead selects a unique production at each
+non-terminal. The five \texttt{<decl>} alternatives begin with the pairwise
+distinct keywords \texttt{compartment}, \texttt{circuit}, \texttt{event},
+\texttt{experiment}, \texttt{let}. Within \texttt{<circuit-decl>} the fields
+appear in fixed order and each is introduced by a distinct keyword. The
+alternatives of \texttt{<floor-spec>} are distinguished by whether the first
+token is the keyword \texttt{derived} or a numeric literal.
+\texttt{<circuit-expr>} is left-recursive in the standard sense of a
+postfix-operator chain; eliminating the left recursion yields
+$\textit{<circuit-expr>}\to\textit{<ident>}\ \textit{<circ-tail>}$ with
+$\textit{<circ-tail>}\to$ \texttt{without}\,$\cdots$\,\textit{<circ-tail>}
+$\mid$ \texttt{with}\,$\cdots$\,\textit{<circ-tail>} $\mid\ \varepsilon$,
+whose alternatives are selected by the distinct keywords \texttt{without} and
+\texttt{with} and whose $\varepsilon$-production is taken on any token in the
+follow set (\texttt{;} and \texttt{,}), disjoint from both. Within
+\texttt{without} the two forms are separated by the distinct keywords
+\texttt{return} and \texttt{element}; within \texttt{with}, the \texttt{noise}
+form is distinguished from the \texttt{scaling} form by whether the token
+following \texttt{with} is the keyword \texttt{noise} or an identifier. The
+\texttt{<expr>} alternatives are separated by token class, with the call form
+resolved by a single lookahead for \texttt{(}. Hence the grammar is LL(1), and
+every LL(1) grammar is unambiguous \citep{aho2006}.
+\end{proof}
+
+\begin{remark}[Both phases are mandatory in the grammar]
+\label{rem:mandatory-phases}
+Note that \texttt{outbound} and \texttt{return} are both non-optional in
+\texttt{<circuit-decl>}, whereas \texttt{delay} and \texttt{gain} are
+bracketed as optional in \texttt{<element-decl>}. This is the syntactic
+expression of \Cref{prin:structural}: a circuit \emph{declaration} always
+names both phases, and a circuit lacking a return phase can arise only through
+the explicit \texttt{without return} operator inside an experiment, where it
+is visible as a deliberate act and receives the diagnostic of
+\Cref{sec:aperture}. It is not possible to write an open circuit by
+inadvertent omission.
+\end{remark}
+
+% =====================================================================
+\section{The type system}
+\label{sec:typing}
+% =====================================================================
+
+\subsection{Types}
+
+\begin{definition}[Types]
+\label{def:types}
+The types of Vitruvius are
+\[
+T \;::=\; \Comp \mid \Circ_{c} \mid \Chg_{\gamma} \mid \Obs
+\mid \Exp \mid \Res \mid \textsf{Quantity}_{u}
+\]
+where $c\in\{\textsf{closed},\textsf{open}\}$ indexes the closure class of a
+circuit, $\gamma$ ranges over compartment names and indexes a charge by the
+compartment whose capacitance it was computed against, and $u$ ranges over
+unit expressions.
+\end{definition}
+
+Two indices carry the language's non-standard content. The closure index $c$
+records whether a circuit is closed or has an aperture, and is computed
+statically (\Cref{sec:aperture}). The compartment index $\gamma$ on
+$\Chg{}$ records provenance and is the subject of \Cref{sec:compartments}.
+
+A typing environment $\Env$ maps identifiers to types; a stratum environment
+$\Delta$ maps circuit elements to strata. The judgement
+$\Env;\Delta\vdash e:T\,!\,S$ reads: in environment $\Env$ with stratum
+assignment $\Delta$, expression $e$ has type $T$ and touches the set of strata
+$S$. The effect component $S$ supports \Cref{sec:strata}.
+
+\subsection{Standard rules}
+
+\begin{align*}
+&\textsc{T-Var}\quad
+\frac{x:T\in\Env}{\Env;\Delta\vdash x:T\,!\,\emptyset}
+\qquad\qquad
+\textsc{T-Comp}\quad
+\frac{\Env\vdash \mathit{cap}:\textsf{Quantity}_{\mathrm{F}}\quad
+      s\in\{\textsf{reflex},\textsf{spinal},\textsf{supraspinal}\}}
+     {\Env;\Delta\vdash \texttt{compartment}\ \gamma\ \{\mathit{cap};s\}:\Comp\,!\,\{s\}}
+\\[6pt]
+&\textsc{T-Elem}\quad
+\frac{\Env\vdash u,v:\Comp\quad
+      \Env\vdash d:\textsf{Quantity}_{\mathrm{s}}\quad
+      \Env\vdash g:\textsf{Quantity}_{1}}
+     {\Env;\Delta\vdash \texttt{element}\ k\ \texttt{conducts}\ u\to v\
+      \texttt{delay}\ d\ \texttt{gain}\ g:\Obs\,!\,\{\Delta(u),\Delta(v)\}}
+\end{align*}
+
+\subsection{Rule I: compartment consistency}
+\label{sec:compartments}
+
+Charge is not a scalar in this language. The quantity of charge redistributed
+per second across a compartment carrying metabolic power $P$ is obtained from
+the energy stored on a capacitance $C$,
+\begin{equation}
+U=\frac{Q^{2}}{2C}
+\quad\Longrightarrow\quad
+Q(P;C)=\sqrt{2\,C\,P\,\Delta t},\qquad \Delta t=1\,\mathrm{s},
+\label{eq:charge}
+\end{equation}
+so a charge figure is meaningless without the capacitance against which it was
+computed. Aggregate capacitances differ by more than an order of magnitude
+across functional compartments: taking specific capacitance
+$c_m\approx1\,\mu\mathrm{F/cm}^2$ \citep{cole1941,gentet2000} and the membrane
+areas of the relevant populations \citep{kandel2013,purves2018}, a cortical
+aggregate is of order $10^{-3}$\,F while a motor-circuit aggregate---motor
+neurons, neuromuscular junctions, and sarcolemma of the large postural
+muscles---is of order $10^{-4}$\,F.
+
+Adding a charge computed at one capacitance to a charge computed at another is
+therefore an error of the same kind as adding a length to a mass.
+
+\begin{definition}[Compartment consistency rule]
+\label{def:comp-rule}
+\[
+\textsc{T-Charge-Add}\quad
+\frac{\Env;\Delta\vdash q_1:\Chg_{\gamma}\,!\,S_1\qquad
+      \Env;\Delta\vdash q_2:\Chg_{\gamma}\,!\,S_2}
+     {\Env;\Delta\vdash q_1+q_2:\Chg_{\gamma}\,!\,S_1\cup S_2}
+\]
+Charges combine only at a common compartment index. There is no rule
+concluding $\Chg_{\gamma_1}+\Chg_{\gamma_2}$ for $\gamma_1\ne\gamma_2$.
+\end{definition}
+
+\begin{definition}[Conversion]
+\label{def:conversion}
+\[
+\textsc{T-Charge-Conv}\quad
+\frac{\Env;\Delta\vdash q:\Chg_{\gamma}\,!\,S\qquad
+      \Env\vdash \gamma,\gamma':\Comp}
+     {\Env;\Delta\vdash \texttt{via\_power}(q,\gamma,\gamma'):\Chg_{\gamma'}\,!\,S}
+\]
+The only route between compartment indices is through power: $q$ is inverted
+to a power by \eqref{eq:charge} at $C_{\gamma}$ and re-expressed at
+$C_{\gamma'}$. The conversion is explicit in the source.
+\end{definition}
+
+\begin{proposition}[No silent mixing]
+\label{prop:no-mixing}
+If $\Env;\Delta\vdash e:\Chg_{\gamma}\,!\,S$ is derivable, then every charge
+literal occurring in $e$ either carries index $\gamma$ or occurs within an
+application of \texttt{via\_power} whose target index is $\gamma$.
+\end{proposition}
+
+\begin{proof}
+By induction on the derivation. The only rules concluding a $\Chg{}$ type are
+\textsc{T-Var}, \textsc{T-Charge-Add}, and \textsc{T-Charge-Conv}.
+\textsc{T-Var} introduces a literal with its own index. \textsc{T-Charge-Add}
+requires both premises to carry the same index as the conclusion, so by the
+induction hypothesis every literal in either subterm satisfies the claim.
+\textsc{T-Charge-Conv} concludes index $\gamma'$ from a subterm of index
+$\gamma$, and the subterm occurs within the application, satisfying the second
+disjunct. No other rule concludes $\Chg{}$, so the induction is complete.
+\end{proof}
+
+\subsection{Rule II: stratum containment}
+\label{sec:strata}
+
+By \Cref{prop:separable} the three strata occupy separated frequency bands.
+Physiologically, an element at the reflex stratum does not read supraspinal
+state directly: influence from higher levels arrives through the intervening
+spinal stratum, with the delays that implies. A program in which a reflex-level
+element reads supraspinal state describes a shortcut that the anatomy does not
+provide.
+
+We enforce this with an effect discipline. Let $\prec$ order the strata
+$\textsf{reflex}\prec\textsf{spinal}\prec\textsf{supraspinal}$, and write
+$\mathrm{adj}(s)$ for the strata at distance at most one from $s$ under
+$\prec$.
+
+\begin{definition}[Stratum containment rule]
+\label{def:stratum-rule}
+\[
+\textsc{T-Stratum}\quad
+\frac{\Env;\Delta\vdash e:T\,!\,S\qquad
+      \Delta(k)=s\qquad S\subseteq\mathrm{adj}(s)}
+     {\Env;\Delta\vdash \texttt{element}\ k\ \texttt{:=}\ e:\Obs\,!\,\{s\}}
+\]
+An element assigned to stratum $s$ may touch only strata adjacent to $s$. An
+element whose body touches a stratum two or more levels away is rejected.
+\end{definition}
+
+\begin{proposition}[Containment is transitive-closure-free]
+\label{prop:containment}
+Under \textsc{T-Stratum}, influence from stratum $s$ to stratum $s'$ with
+$\abs{s-s'}\ge2$ is expressible only as a composition of elements each of
+which satisfies the adjacency condition. Consequently every such influence
+passes through the intervening stratum and incurs its delay.
+\end{proposition}
+
+\begin{proof}
+Suppose an element $k$ at stratum $s$ has an effect set containing $s'$ with
+$\abs{s-s'}\ge2$. Then $s'\notin\mathrm{adj}(s)$ and the premise
+$S\subseteq\mathrm{adj}(s)$ of \textsc{T-Stratum} fails, so no derivation
+assigns $k$ a type. Hence any well-typed program realising influence between
+$s$ and $s'$ does so through a chain of elements $k_1,\dots,k_n$ with
+consecutive strata adjacent, and each $k_i$ contributes its declared delay.
+\end{proof}
+
+\begin{remark}[The violation is a model, not merely an error]
+\label{rem:violation-is-model}
+Direct cross-stratum coupling is precisely what is lost when the structure
+that regulates the phase relationship between levels is damaged. The language
+therefore provides a construct that introduces such coupling deliberately:
+\texttt{with noise across supraspinal, reflex($\eta$)} inserts a
+phase-perturbing edge between the named strata with amplitude $\eta$. This
+expression is well typed---the escape is explicit and confined to the
+experiment section---while an element that quietly reads across two strata is
+not. The distinction the language draws is between a modelled lesion and an
+unnoticed shortcut.
+\end{remark}
+
+\subsection{Rule III: floor positivity}
+\label{sec:floor-rule}
+
+Several observables in \Cref{sec:estimation} are expressed as fractions of the
+distance between a current value and an irreducible lower bound $\flo$. That
+bound must be strictly positive, or the fractions are undefined.
+
+\begin{definition}[Separation cost]
+\label{def:sepcost}
+Let a circuit be represented as a weighted undirected graph with a
+distinguished vertex $\med$ standing for the remainder of the organism. For an
+element $v$, the \emph{separation cost} $\sep(v)$ is the minimum total weight
+of a set of edges whose removal disconnects $v$ from $\med$; a minimising set
+is the \emph{resting cut} of $v$.
+\end{definition}
+
+By the max-flow--min-cut correspondence \citep{fordfulkerson1956} this
+minimum equals the maximum flow from $v$ to $\med$, and by Menger's theorem
+\citep{menger1927} it counts, in the unweighted case, the edge-disjoint paths
+that must be severed to isolate $v$. Both readings support the same
+interpretation: $\sep(v)$ is the commitment required to hold $v$ apart from
+the rest of the system.
+
+\begin{proposition}[Positive floor from connectivity]
+\label{prop:floor}
+Let a circuit be closed in the sense of \Cref{def:aperture} and connected.
+Then $\sep(v)>0$ for every element $v$, and
+$\flo:=\min_{v}\sep(v)>0$.
+\end{proposition}
+
+\begin{proof}
+Since the graph is connected, $v$ is joined to $\med$ by at least one path, so
+every disconnecting set is nonempty. Edge weights are positive by
+construction---an edge records a conductive pathway of nonzero conductance---so
+every disconnecting set has positive total weight, whence $\sep(v)>0$. The
+minimum over the finite vertex set of finitely many positive numbers is
+positive.
+\end{proof}
+
+\begin{definition}[Floor positivity rule]
+\label{def:floor-rule}
+\[
+\textsc{T-Floor}\quad
+\frac{\Env;\Delta\vdash C:\Circ_{c}\,!\,S\qquad \flo(C)>0}
+     {\Env;\Delta\vdash \texttt{floor}(C):\textsf{Quantity}_{\mathrm{C}}\,!\,S}
+\]
+A circuit declaring a floor of zero, or one whose derived floor evaluates to
+zero, does not type.
+\end{definition}
+
+\begin{remark}[Two floor estimators, only one falsifiable]
+\label{rem:floor-estimators}
+A \texttt{floor} field may be discharged by a literal or by
+\texttt{derived(\ldots)}. Two derivations are common and they differ in kind.
+The first returns the smallest observed value of the quantity in a finite
+sample. This is positive whenever the sample is nonempty, and therefore cannot
+return a value inconsistent with a positivity claim: it has no capacity to
+falsify. It is moreover biased upward, a sample minimum being an upper bound
+on the infimum of the underlying process. The second estimates the asymptote
+of separation cost as the model is elaborated, and can return a value
+statistically indistinguishable from zero, which would be a falsification.
+Vitruvius requires the derivation to be written in the source so that a reader
+can see which was used, and \Cref{prop:floor-sensitivity} quantifies what is
+at stake.
+\end{remark}
+
+\begin{proposition}[Floor sensitivity]
+\label{prop:floor-sensitivity}
+Let the true floor be $\flo$ and suppose an analysis uses
+$\flo'=\flo+\epsilon$. Then a quantity reported as a fraction of the gap,
+$\kap=(S_{\mathrm{b}}-S_{\mathrm{a}})/(S_{\mathrm{b}}-\flo)$, is computed as
+\[
+\kap' \;=\; \kap\cdot\frac{S_{\mathrm{b}}-\flo}{S_{\mathrm{b}}-\flo-\epsilon}
+\;=\;\kap\Bigl(1+\frac{\epsilon}{S_{\mathrm{b}}-\flo}\Bigr)+O(\epsilon^{2}),
+\]
+so the relative error is $\epsilon/(S_{\mathrm{b}}-\flo)$ to first order.
+Misestimating the floor inflates the reported values for events acting near
+the floor and leaves those acting far from it nearly unchanged.
+\end{proposition}
+
+\begin{proof}
+Substituting $\flo'$ leaves the numerator unchanged and replaces the
+denominator by $S_{\mathrm{b}}-\flo-\epsilon$; the ratio and its first-order
+expansion follow.
+\end{proof}
+
+The consequence is practical: an upward-biased floor inflates exactly the
+quantities that describe the events closest to the irreducible limit, which
+are usually the events of interest.
+
+\subsection{Rule IV: typed-event estimation}
+
+The fourth non-standard rule concerns how the effect of an event is estimated,
+and requires the development of \Cref{sec:estimation}. We state it here for
+completeness and prove its necessity there.
+
+\begin{definition}[Typed estimation rule]
+\label{def:typed-rule}
+\[
+\textsc{T-Event}\quad
+\frac{\Env;\Delta\vdash \gamma:\Obs\,!\,S\qquad
+      \Env\vdash \theta:\textsf{EventType}\qquad
+      \abs{\mathcal{T}_{\theta}}\ge2}
+     {\Env;\Delta\vdash \kap(\gamma;\theta):\textsf{Quantity}_{1}\,!\,S}
+\]
+The catalytic power of an event is well typed only when the event carries a
+declared type $\theta$ possessing at least two recorded instances. There is no
+rule assigning a power to an untyped event.
+\end{definition}
+
+% =====================================================================
+\section{The aperture analysis}
+\label{sec:aperture}
+% =====================================================================
+
+We now specify the static analysis that gives the language its purpose: the
+decision, before any integration, of whether a program's circuits are closed,
+and the diagnostic issued when they are not.
+
+\begin{definition}[Closure index]
+\label{def:closure-index}
+For a circuit expression $e$, the \emph{closure index} $c(e)$ is
+$\textsf{closed}$ if every declared outbound path in $e$ is matched by a
+return path from its terminal compartment to its initial compartment, and
+$\textsf{open}$ otherwise.
+\end{definition}
+
+\begin{theorem}[Closure is decidable in linear time]
+\label{thm:closure-decidable}
+The closure index of a circuit expression is decidable, and computable in time
+linear in the number of elements.
+\end{theorem}
+
+\begin{proof}
+A circuit declaration names its outbound path $p$ and return path $r$
+explicitly (\Cref{sec:grammar}), so closure of a base circuit is checked by
+comparing the terminal compartment of $p$ with the initial compartment of $r$
+and the initial of $p$ with the terminal of $r$: two comparisons.
+
+For a compound expression we proceed by structural induction. The operators
+\texttt{with $k$ scaling $\lambda$} and
+\texttt{with noise across $s_1,s_2(\eta)$} alter weights and add a coupling
+edge respectively, and neither removes an element from a path, so
+$c(e\ \texttt{with}\ \cdots)=c(e)$. The operator
+\texttt{without element($k$)} removes $k$; the result is open if $k$ lies on
+the return path of any circulation of $e$ and closed otherwise, decided by a
+single membership test. The operator \texttt{without return($a$)} removes the
+return phase named $a$ and yields $\textsf{open}$ by definition.
+
+Each case performs work bounded by a constant plus one traversal of the
+element list, so the total is linear in the number of elements.
+\end{proof}
+
+\begin{definition}[Aperture report]
+\label{def:aperture-report}
+When $c(e)=\textsf{open}$, the compiler emits an \emph{aperture report} naming
+(i) the circulation left open, (ii) the outbound phase now without a return,
+and (iii) the prediction of \Cref{cor:closure-obligatory}: that the
+perturbation admits no closed redistribution, so the expected behaviour is
+failure of the movement to resolve, not increased variance about a preserved
+trajectory.
+\end{definition}
+
+\begin{remark}[The report is not an error]
+\label{rem:report-not-error}
+An open circuit is a legitimate object of study---it is the model of
+deafferentation, and simulating it is the point of the exercise. The aperture
+report is therefore a diagnostic, not a rejection: the program compiles, runs,
+and returns results. What the language refuses is silence. A user who opens a
+circulation is told so, in terms that state what the framework predicts, before
+the numerics begin. This is the discipline the language exists to impose, and
+the reason \Cref{prin:structural} is enforced syntactically rather than left to
+a comment.
+\end{remark}
+
+\begin{proposition}[Attenuation preserves closure]
+\label{prop:attenuation}
+For any circuit $e$, element $k$, and scaling $\lambda>0$,
+$c(e\ \texttt{with}\ k\ \texttt{scaling}\ \lambda)=c(e)$. In particular no
+finite attenuation of a return element opens a circulation.
+\end{proposition}
+
+\begin{proof}
+By \Cref{thm:closure-decidable}, the scaling operator alters edge weights and
+removes no element, so the outbound and return paths are unchanged as vertex
+sequences and the matching test returns the same answer. That $\lambda>0$ is
+required is what makes the statement non-vacuous: the grammar admits no
+$\lambda=0$, and the elimination of an element is available only through
+\texttt{without}, which is the syntactically distinct structural operator.
+\end{proof}
+
+\Cref{prop:attenuation} is the formal content of the claim that Vitruvius
+separates structural from parametric manipulation. In a signal-and-gain
+architecture, $\lambda\to0$ and severance are the same limit; here they are
+different operators with different closure indices, and the difference is
+visible statically.
+
+% =====================================================================
+\section{Operational semantics}
+\label{sec:semantics}
+% =====================================================================
+
+\subsection{Configurations}
+
+\begin{definition}[Configuration]
+\label{def:config}
+A \emph{configuration} is a quadruple
+$\langle e,\ K,\ \store,\ \rho\rangle$ in which $e$ is the term under
+evaluation, $K$ is the circuit under study, $\store$ is the observation store
+mapping observable names to recorded values, and $\rho\in\N$ is the
+\emph{committed record}, the count of observations discharged.
+\end{definition}
+
+\subsection{Reduction rules}
+
+We write $\mathcal{B}(K,o)\Downarrow x$ for ``the backend, given circuit $K$,
+discharges observable $o$ to value $x$'' (\Cref{sec:backends}). Let $O$ denote
+the pending observable set of an experiment and $L$ its lesion list.
+
+\begin{align*}
+&\textsc{E-Lesion}\quad
+\frac{\ell\in L\qquad K'=\mathrm{apply}(\ell,K)}
+{\bigl\langle \experiment\{K;L;O\},\store,\rho\bigr\rangle
+\steps
+\bigl\langle \experiment\{K';L\setminus\{\ell\};O\},\store,\rho\bigr\rangle}
+\\[8pt]
+&\textsc{E-Observe}\quad
+\frac{L=\emptyset\qquad o\in O\qquad \mathcal{B}(K,o)\Downarrow x}
+{\bigl\langle \experiment\{K;\emptyset;O\},\store,\rho\bigr\rangle
+\steps
+\bigl\langle \experiment\{K;\emptyset;O\setminus\{o\}\},
+ \store[o\mapsto x],\rho+1\bigr\rangle}
+\\[8pt]
+&\textsc{E-Report}\quad
+\frac{L=\emptyset\qquad O=\emptyset}
+{\bigl\langle \experiment\{K;\emptyset;\emptyset\},\store,\rho\bigr\rangle
+\steps
+\bigl\langle \Res(\store),\store,\rho\bigr\rangle}
+\end{align*}
+
+\textsc{E-Lesion} applies one pending ablation; \textsc{E-Observe} discharges
+one pending observable and increments the record; \textsc{E-Report} produces
+the result once both sets are exhausted. Lesions precede observations, so an
+experiment observes the circuit it declared and not an intermediate.
+
+\subsection{Metatheory}
+
+\begin{theorem}[Progress]
+\label{thm:progress}
+If $\Env;\Delta\vdash e:\Exp\,!\,S$ and $e$ is not of the form $\Res(\cdot)$,
+then for any store $\store$ and record $\rho$ there is a configuration to
+which $\langle e,K,\store,\rho\rangle$ steps.
+\end{theorem}
+
+\begin{proof}
+A well-typed non-value term of type $\Exp$ is an experiment, that being the
+only form for which a rule concludes $\Exp$. Consider its lesion list $L$ and
+observable set $O$. If $L\ne\emptyset$, pick $\ell\in L$; the operator
+$\mathrm{apply}$ is total on well-typed lesions, since each of the four
+circuit operators is defined for every circuit (removal of an absent element
+being the identity), so \textsc{E-Lesion} applies. If $L=\emptyset$ and
+$O\ne\emptyset$, pick $o\in O$; the backend obligation
+(\Cref{def:backend}) requires $\mathcal{B}$ to be total on well-typed
+observables, so \textsc{E-Observe} applies. If both are empty,
+\textsc{E-Report} applies. The three cases are exhaustive, so the term is not
+stuck.
+\end{proof}
+
+\begin{theorem}[Preservation]
+\label{thm:preservation}
+If $\Env;\Delta\vdash e:T\,!\,S$ and
+$\langle e,K,\store,\rho\rangle\steps\langle e',K',\store',\rho'\rangle$, then
+$\Env;\Delta\vdash e':T\,!\,S'$ for some $S'\subseteq S$.
+\end{theorem}
+
+\begin{proof}
+By cases on the rule applied. \textsc{E-Lesion} yields an experiment differing
+only in its circuit and a smaller lesion list. The typing of an experiment
+requires its circuit to be well typed at $\Circ_{c}$ for some $c$, and each
+circuit operator maps well-typed circuits to well-typed circuits---possibly
+altering the closure index, which is a change of index rather than of type
+constructor and is admitted by \Cref{def:types}. The effect set does not grow,
+since no operator introduces an element outside the strata already present
+except the \texttt{noise} operator, whose strata are named in its own typing
+premise and hence already in $S$. \textsc{E-Observe} yields an experiment with
+a smaller observable set and an extended store, neither of which appears in
+the typing premises for $\Exp$. \textsc{E-Report} yields $\Res(\store)$, of
+type $\Res$; the experiment's declared result type is $\Res$ by
+\textsc{T-Exp}, so the type is preserved. In every case the type constructor is
+unchanged and the effect set does not grow.
+\end{proof}
+
+\begin{corollary}[Soundness]
+\label{cor:soundness}
+A well-typed program does not get stuck: it either reduces indefinitely or
+reaches a value of type $\Res$. With \Cref{thm:termination} it reaches such a
+value in finitely many steps.
+\end{corollary}
+
+\begin{proof}
+Immediate from \Cref{thm:progress,thm:preservation} by the standard syntactic
+argument \citep{wright1994}.
+\end{proof}
+
+\begin{theorem}[Lesion composition is a join-semilattice operation]
+\label{thm:lesion-monoid}
+The application of lesions is associative, commutative, and idempotent on
+circuits: for lesions $\ell_1,\ell_2$ and circuit $K$,
+\begin{align*}
+\mathrm{apply}(\ell_1,\mathrm{apply}(\ell_2,K))
+&=\mathrm{apply}(\ell_2,\mathrm{apply}(\ell_1,K)),\\
+\mathrm{apply}(\ell,\mathrm{apply}(\ell,K))&=\mathrm{apply}(\ell,K).
+\end{align*}
+Consequently the lesioned circuit of an experiment is independent of the order
+in which its lesions are written.
+\end{theorem}
+
+\begin{proof}
+We treat the operators in turn. \texttt{without element($k$)} and
+\texttt{without return($a$)} both delete a named item from the element set;
+deletion of distinct names commutes, deletion of the same name twice equals
+deletion once, and deletion is associative because set difference is. So both
+removal operators are commutative, idempotent, and associative among
+themselves and with each other.
+
+\texttt{with $k$ scaling $\lambda$} multiplies the weight of $k$ by $\lambda$.
+Two scalings of distinct elements commute since they touch disjoint weights.
+Two scalings of the same element compose multiplicatively, and are therefore
+commutative but idempotent only for $\lambda=1$. We accordingly define the
+lesion list to be a \emph{set} of scalings keyed by element name, with
+duplicate keys rejected at typecheck; under that restriction at most one
+scaling applies per element and idempotence holds. Scaling commutes with
+removal in the following sense: if $k$ is removed then its weight is
+irrelevant, so scaling before or after removal yields the same circuit; if $k$
+is not removed, the operations touch different items.
+
+\texttt{with noise across $s_1,s_2(\eta)$} adjoins a coupling edge. Adjunction
+of edges commutes and is idempotent when edges are identified by their
+endpoint pair and amplitude, and duplicate declarations are rejected as above.
+Adjunction commutes with scaling (disjoint items) and with removal (a coupling
+edge is not on a declared path, so its presence does not affect which elements
+are deleted).
+
+All pairs commute and each operator is idempotent under the stated key
+restriction, so the induced operation on circuits is a commutative idempotent
+monoid action; the resulting circuit is therefore the join of the individual
+lesions and independent of order by induction on the length of the list.
+\end{proof}
+
+\begin{theorem}[Termination]
+\label{thm:termination}
+Every well-typed experiment over a finite lesion list and finite observable
+set reaches a $\Res$ value in at most $\abs{L}+\abs{O}+1$ steps.
+\end{theorem}
+
+\begin{proof}
+\textsc{E-Lesion} strictly decreases $\abs{L}$ and leaves $\abs{O}$ unchanged;
+\textsc{E-Observe} applies only when $L=\emptyset$ and strictly decreases
+$\abs{O}$; \textsc{E-Report} applies once. The lexicographic measure
+$(\abs{L},\abs{O})$ therefore strictly decreases at every step of the first
+two kinds and is bounded below, so after at most $\abs{L}$ lesion steps and
+$\abs{O}$ observation steps both are zero and \textsc{E-Report} fires, giving
+the stated bound.
+\end{proof}
+
+\begin{theorem}[Monotone record and non-return]
+\label{thm:monotone}
+The record $\rho$ is non-decreasing along any reduction and strictly increases
+at each \textsc{E-Observe}. Two configurations with identical terms, circuits,
+and stores but different records are distinct; hence no experiment returns to
+a previous configuration.
+\end{theorem}
+
+\begin{proof}
+\textsc{E-Observe} increments $\rho$; the other rules leave it unchanged, and
+no rule decrements it. Configurations with records $r<r'$ are separated by the
+predicate $\rho\le r$, hence distinct. A return would require $\rho$ to
+decrease, which no rule permits.
+\end{proof}
+
+\begin{remark}[Why the record matters here]
+\label{rem:record}
+By \Cref{cor:perpetual} the underlying system has no terminal state, so a run
+cannot be individuated by its final configuration in the way a conventional
+program can. The record supplies an intrinsic ordering of observations that
+does not appeal to a wall clock and does not presume convergence, and it is
+what makes a repeated value in the store distinguishable from a return to an
+earlier state.
+\end{remark}
+
+% =====================================================================
+\section{Estimating the effect of an event}
+\label{sec:estimation}
+% =====================================================================
+
+Experiments in this language routinely ask how much a given event contributes
+to a change. This section shows that the natural way to ask is vacuous, and
+specifies the way that is not. The result governs rule IV of
+\Cref{sec:typing}.
+
+\subsection{Catalytic power}
+
+\begin{definition}[Catalytic power]
+\label{def:power}
+Let an event $\gamma$ carry the system from a state with observable value
+$S_{\mathrm{b}}>\flo$ to one with value $S_{\mathrm{a}}$, where $\flo$ is the
+floor of \Cref{sec:floor-rule}. Its \emph{catalytic power} is
+\begin{equation}
+\kap(\gamma)\;=\;\frac{S_{\mathrm{b}}-S_{\mathrm{a}}}{S_{\mathrm{b}}-\flo},
+\label{eq:kappa}
+\end{equation}
+the fraction of the outstanding distance to the floor that the event closes.
+Its \emph{residual factor} is
+$\bar\kap(\gamma)=1-\kap(\gamma)
+=(S_{\mathrm{a}}-\flo)/(S_{\mathrm{b}}-\flo)$.
+\end{definition}
+
+\begin{theorem}[Multiplicative composition]
+\label{thm:composition}
+For a sequence of events $\gamma_1,\dots,\gamma_n$ applied in order over a
+fixed floor, with the post-state of each the pre-state of the next, the net
+power satisfies
+\begin{equation}
+\kap_{\mathrm{net}}
+\;=\;1-\prod_{i=1}^{n}\bigl(1-\kap(\gamma_i)\bigr).
+\label{eq:composition}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Write $g_i=S_i-\flo$ for the gap before event $i$. By
+\Cref{def:power}, $\bar\kap(\gamma_i)=g_{i+1}/g_i$. Hence
+\[
+\prod_{i=1}^{n}\bar\kap(\gamma_i)=\prod_{i=1}^{n}\frac{g_{i+1}}{g_i}
+=\frac{g_{n+1}}{g_1}=\frac{S_{n+1}-\flo}{S_1-\flo}=1-\kap_{\mathrm{net}},
+\]
+which rearranges to \eqref{eq:composition}.
+\end{proof}
+
+\subsection{The degenerate estimator}
+
+\Cref{thm:composition} suggests an immediate empirical test: estimate each
+event's power, form the product, compare with the directly measured net
+change. We show this test cannot fail.
+
+\begin{definition}[Instance-specific estimation]
+\label{def:instance}
+Powers are estimated \emph{instance-specifically} when each $\kap(\gamma_i)$
+is computed from \eqref{eq:kappa} using the same observed values
+$S_i,S_{i+1}$ that determine the measured net change of the sequence they
+belong to.
+\end{definition}
+
+\begin{theorem}[The instance-specific test is an identity]
+\label{thm:telescoping}
+Under instance-specific estimation, the composed prediction and the measured
+net power are equal for every sequence, identically:
+\[
+1-\prod_{i=1}^{n}\bigl(1-\kap(\gamma_i)\bigr)
+\;=\;\frac{S_1-S_{n+1}}{S_1-\flo}
+\;=\;\kap_{\mathrm{measured}}.
+\]
+Consequently any discrepancy statistic---a correlation, a root-mean-square
+error, a regression slope---attains its degenerate value on every data set
+whatsoever, independently of the process generating the data.
+\end{theorem}
+
+\begin{proof}
+This is \Cref{thm:composition} read as an identity rather than as a
+prediction. With $g_i=S_i-\flo$, instance-specific estimation gives
+$1-\kap(\gamma_i)=g_{i+1}/g_i$ exactly, so the product telescopes to
+$g_{n+1}/g_1$, whence
+$1-\prod_i(1-\kap_i)=(S_1-S_{n+1})/(S_1-\flo)$, which is the measured
+quantity. The two are the same function of the data, so their difference
+vanishes pointwise.
+\end{proof}
+
+\begin{corollary}[No null hypothesis]
+\label{cor:no-null}
+There is no data set and no generating process under which the
+instance-specific test fails. It therefore has no power against any
+alternative, and a reported agreement carries no evidential weight.
+\end{corollary}
+
+\begin{remark}[Why this is easy to miss]
+\label{rem:easy-to-miss}
+The obstruction is invisible in the implementation. The two quantities are
+computed by different routines---one iterating over events and multiplying,
+the other differencing the endpoints---and they agree to machine precision
+across arbitrarily many trials. The agreement presents as a striking
+confirmation. It is a restatement of \Cref{thm:composition}. A correlation of
+exactly unity between a composed prediction and its own measurement is
+therefore an occasion for suspicion rather than satisfaction, and any
+framework whose composition law telescopes will exhibit it.
+\end{remark}
+
+\subsection{The typed estimator}
+
+The identity arises because the constituent powers and the aggregate outcome
+are functions of the same numbers. Breaking it requires estimating powers from
+a source independent of the particular sequence being predicted. The natural
+such source is the event's \emph{type}: for a stretch reflex, the ordered pair
+of compartments it connects together with its stratum.
+
+\begin{definition}[Type-averaged power]
+\label{def:type-averaged}
+Let each event carry a type $t(\gamma)$ from a finite label set. For a corpus
+of observed events, the type-averaged power of type $\theta$ is
+\[
+\bar\kap_{\theta}
+=\frac{1}{\abs{\mathcal{T}_{\theta}}}
+ \sum_{\gamma\in\mathcal{T}_{\theta}}\kap(\gamma),
+\qquad
+\mathcal{T}_{\theta}=\{\gamma:t(\gamma)=\theta\},
+\]
+and the type-averaged prediction for a sequence is
+$\hat\kap=1-\prod_{i}\bigl(1-\bar\kap_{t(\gamma_i)}\bigr)$.
+\end{definition}
+
+\begin{theorem}[The typed estimator is non-degenerate]
+\label{thm:nondegenerate}
+Suppose some type $\theta$ has at least two instances with distinct powers.
+Then there exist sequences for which
+$\hat\kap\ne\kap_{\mathrm{measured}}$, so the discrepancy is not identically
+zero and the test has a genuine null hypothesis.
+\end{theorem}
+
+\begin{proof}
+Let $\theta$ have instances with powers $\kap\ne\kap'$; then
+$\bar\kap_{\theta}$ differs from at least one of them, say from $\kap$.
+Consider the length-one sequence consisting of that instance. Then
+$\kap_{\mathrm{measured}}=\kap$ while $\hat\kap=\bar\kap_{\theta}\ne\kap$, so
+the discrepancy is nonzero at that point and hence not identically zero as a
+function of the data.
+\end{proof}
+
+This theorem is the justification for rule IV (\Cref{def:typed-rule}): the
+premise $\abs{\mathcal{T}_{\theta}}\ge2$ is exactly the hypothesis of
+\Cref{thm:nondegenerate}. A language that permitted untyped power estimation
+would permit its users to compute a statistic that cannot fail.
+
+\begin{proposition}[Exact bias of the typed prediction]
+\label{prop:bias}
+Write $\kap_i=\bar\kap_{t(i)}+\delta_i$. Then
+\[
+\frac{1-\kap_{\mathrm{measured}}}{1-\hat\kap}
+=\prod_{i=1}^{n}\Bigl(1-\frac{\delta_i}{1-\bar\kap_{t(i)}}\Bigr),
+\]
+so the prediction is exact if and only if the within-type deviations vanish,
+and to first order
+$\hat\kap-\kap_{\mathrm{measured}}\approx
+(1-\hat\kap)\sum_i \delta_i/(1-\bar\kap_{t(i)})$.
+\end{proposition}
+
+\begin{proof}
+By \Cref{thm:composition},
+$1-\kap_{\mathrm{measured}}=\prod_i(1-\bar\kap_{t(i)}-\delta_i)
+=\prod_i(1-\bar\kap_{t(i)})\prod_i\bigl(1-\delta_i/(1-\bar\kap_{t(i)})\bigr)$,
+and $\prod_i(1-\bar\kap_{t(i)})=1-\hat\kap$ by \Cref{def:type-averaged}.
+Dividing gives the ratio; expanding to first order gives the approximation.
+\end{proof}
+
+\subsection{When the typed estimator has power}
+
+\begin{definition}[Type separation]
+\label{def:eta}
+Let $\mathrm{Var}_{\mathrm{w}}$ be the mean within-type variance of $\kap$ and
+$\mathrm{Var}_{\mathrm{b}}$ the variance across types of the type means. The
+\emph{type separation} is
+\[
+\eta=\frac{\mathrm{Var}_{\mathrm{b}}}
+{\mathrm{Var}_{\mathrm{b}}+\mathrm{Var}_{\mathrm{w}}}\in[0,1].
+\]
+\end{definition}
+
+\begin{proposition}[Degeneracy at vanishing separation]
+\label{prop:degeneracy}
+If $\eta=0$, the type-averaged prediction is constant across sequences of a
+given length, its sample variance vanishes, its correlation with the measured
+outcome is undefined, and the multiplicative law is indistinguishable from any
+competitor that is also a function of the type means alone.
+\end{proposition}
+
+\begin{proof}
+If all $\bar\kap_{\theta}$ equal a common $\bar\kap$, then
+$\hat\kap=1-(1-\bar\kap)^{n}$ depends only on $n$. Among sequences of fixed
+length the predictor is constant, so its sample variance is zero and the
+Pearson correlation, having a zero denominator, is undefined. Any alternative
+law computed from the same type means is likewise constant at fixed length and
+therefore not separable from it.
+\end{proof}
+
+\begin{remark}[Reporting obligation]
+\label{rem:report-eta}
+\Cref{prop:degeneracy} identifies a failure mode that must be excluded before
+a negative result is interpreted. If the chosen typing maps every event into a
+narrow band of powers, the test is underpowered by construction regardless of
+whether the composition law holds, and a negative result is then evidence
+about the typing rather than about the process. Vitruvius therefore reports
+$\eta$ alongside any composed estimate, and flags results computed at low
+$\eta$. The strata of \Cref{def:strata} are separated by factors of five to
+thirty, which is the regime in which $\eta$ should be large; a low $\eta$ under
+that typing is itself an informative finding about the model.
+\end{remark}
+
+\begin{proposition}[Competing composition laws are ordered]
+\label{prop:competitors}
+For $n\ge2$ and powers in $(0,1)$,
+\[
+\max_i\kap_i \;\le\; 1-\prod_i(1-\kap_i)
+\;\le\;\min\Bigl(\sum_i\kap_i,\,1\Bigr),
+\]
+with both inequalities strict unless some $\kap_i=0$; and the geometric-mean
+law $1-\bigl(\prod_i(1-\kap_i)\bigr)^{1/n}$ lies strictly below the
+multiplicative law whenever $\prod_i(1-\kap_i)<1$.
+\end{proposition}
+
+\begin{proof}
+For the left inequality, every factor of $\prod_i(1-\kap_i)$ is at most $1$
+and one factor equals $1-\max_i\kap_i$, so
+$\prod_i(1-\kap_i)\le 1-\max_i\kap_i$; negating gives the claim, with equality
+exactly when all other powers vanish. For the right, the Weierstrass
+inequality gives $\prod_i(1-\kap_i)\ge 1-\sum_i\kap_i$, whence
+$1-\prod_i(1-\kap_i)\le\sum_i\kap_i$; combining with
+$\kap_{\mathrm{net}}\le1$ gives the bound. For the geometric mean, with
+$P=\prod_i(1-\kap_i)<1$ we have $P^{1/n}>P$ for $n\ge2$, so
+$1-P^{1/n}<1-P$.
+\end{proof}
+
+\Cref{prop:competitors} supplies the comparison set: the laws are distinct and
+ordered, so a corpus with adequate $\eta$ can in principle select among them,
+and the multiplicative law being intermediate means a finding in its favour is
+two-sided.
+
+% =====================================================================
+\section{Backends}
+\label{sec:backends}
+% =====================================================================
+
+The language computes nothing. Every observable is discharged by a backend,
+which is obliged to satisfy the following interface and is otherwise opaque.
+
+\begin{definition}[Backend]
+\label{def:backend}
+A \emph{backend} $\mathcal{B}$ is a total map from a well-typed circuit and a
+well-typed observable to a value, discharging four obligations:
+\begin{enumerate}[label=\textup{(B\arabic*)},leftmargin=3.4em,nosep]
+\item \textbf{Totality.} $\mathcal{B}(K,o)$ is defined for every well-typed
+$K$ and $o$, including open $K$. An open circuit yields a value describing the
+failure---a divergence time, an unbounded excursion---not an exception.
+\item \textbf{Floor agreement.} $\mathcal{B}$ reports the floor it used, and
+it must equal the floor of the circuit declaration up to a stated tolerance.
+\item \textbf{Stratum honesty.} $\mathcal{B}$ reports the bandwidth over which
+each observable was computed, so that a value attributed to one stratum can be
+checked against that stratum's band.
+\item \textbf{Determinism modulo seed.} Given a circuit, an observable, and a
+seed, $\mathcal{B}$ returns the same value.
+\end{enumerate}
+\end{definition}
+
+Obligation (B1) deserves emphasis. A backend that raises on a diverging
+integration would convert the central experimental result of the language---the
+failure of an open circuit to resolve---into a crash, discarding the
+measurement that the experiment was constructed to obtain. The divergence is
+the finding.
+
+\begin{proposition}[Backend independence of the static analyses]
+\label{prop:backend-independent}
+The closure index, the compartment analysis, the stratum analysis, and the
+floor positivity check are computed without reference to $\mathcal{B}$.
+Consequently a program's diagnostics are identical under every conforming
+backend.
+\end{proposition}
+
+\begin{proof}
+By inspection of the rules. \Cref{thm:closure-decidable} computes $c(e)$ from
+the element list alone. \textsc{T-Charge-Add} and \textsc{T-Charge-Conv}
+inspect compartment indices, which are declared. \textsc{T-Stratum} inspects
+$\Delta$, which is declared. \textsc{T-Floor} inspects the floor field, whose
+\texttt{derived} form is evaluated over the declared graph by
+\Cref{def:sepcost}. None of these consults $\mathcal{B}$, which appears only in
+\textsc{E-Observe}.
+\end{proof}
+
+\Cref{prop:backend-independent} is what permits a workflow in which a model is
+checked cheaply and integrated expensively: the diagnostics that matter for
+model correctness are available before any numerical work, and do not change
+when the backend does.
+
+\begin{remark}[Three natural backends]
+\label{rem:three-backends}
+The interface admits backends of quite different character. A
+\emph{continuous} backend integrates \eqref{eq:hh} together with cross-bridge
+kinetics \citep{huxley1957,zahalak1981} and a musculotendon model
+\citep{zajac1989,millard2013}, using standard stiff solvers
+\citep{hairer1996,shampine1997}; it is the most expensive and the only one
+that returns waveforms. A \emph{discrete} backend represents each compartment
+by a finite state set and each element by a transition rule, and returns
+occupancies and dwell statistics; it is cheap and adequate for questions about
+reachability and closure failure. A \emph{spectral} backend linearises about
+the operating cycle and returns band powers directly by periodogram methods
+\citep{welch1967}, which suffices for the observables of
+\Cref{prop:separable}. A model may be developed against the discrete backend
+and only later integrated, since by \Cref{prop:backend-independent} the
+diagnostics do not change.
+\end{remark}
+
+% =====================================================================
+\section{Worked programs}
+\label{sec:programs}
+% =====================================================================
+
+We exercise every construct on three experiments of increasing scope.
+
+\subsection{A monosynaptic stretch reflex}
+
+The first program declares compartments with their capacitances and strata,
+assembles a circulation from spindle to motor neuron to muscle and back, and
+observes the loop latency predicted in \Cref{sec:foundations}.
+
+\begin{lstlisting}[style=vvs,caption={\texttt{soleus\_reflex.vvs} --- a closed
+monosynaptic loop.},label={lst:reflex}]
+module soleus_reflex;
+
+-- Compartments carry a capacitance and a stratum. Capacitance is
+-- required: it indexes every charge computed against this compartment.
+compartment spindle    { capacitance: 2.0e-9 F;  stratum: reflex; }
+compartment ia_afferent{ capacitance: 8.0e-9 F;  stratum: reflex; }
+compartment alpha_mn   { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment nmj        { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment fibre      { capacitance: 1.41e-4 F; stratum: reflex; }
+
+circuit soleus_loop {
+  -- The floor is derived from the resting cut, not from a sample
+  -- minimum; see the discussion of estimator falsifiability.
+  floor    : derived(resting_cut(alpha_mn));
+
+  outbound : alpha_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_afferent -> alpha_mn;
+
+  element mn_axon   conducts alpha_mn    -> nmj        delay 5.0 ms;
+  element endplate  conducts nmj         -> fibre      delay 0.8 ms;
+  element ec_couple conducts fibre       -> spindle    delay 15.0 ms;
+  element mechano   conducts spindle     -> ia_afferent delay 3.0 ms;
+  element ia_axon   conducts ia_afferent -> alpha_mn   delay 8.0 ms
+                                                       gain 1.0;
+}
+
+experiment latency_budget {
+  intact  : soleus_loop;
+  observe : loop_latency, tonic_rate, resting_cut_weight;
+}
+\end{lstlisting}
+
+The declared delays sum to $31.8$\,ms, within the $30$--$40$\,ms band measured
+for upper-limb reflexes and just below the $40$--$50$\,ms band for the lower
+limb \citep{matthews1990}; the residual is the limb-length-dependent
+conduction term, which a backend supplies from the declared segment geometry.
+The program typechecks: every element lies at the reflex stratum, so
+\textsc{T-Stratum} is satisfied trivially; the circuit is closed, since the
+return path begins at \texttt{fibre}, the terminus of the outbound path, and
+ends at \texttt{alpha\_mn}, its origin.
+
+\subsection{Ablation of the return phase}
+
+The second program is the language's characteristic experiment. It compares an
+intact postural loop against three manipulations: attenuation of the return
+element, removal of the return element, and removal of the entire return
+phase.
+
+\begin{lstlisting}[style=vvs,caption={\texttt{postural\_ablation.vvs} ---
+attenuation and severance are distinct operators.},
+label={lst:ablation}]
+module postural_ablation;
+import soleus_reflex;
+
+compartment spinal_in  { capacitance: 3.0e-8 F; stratum: spinal; }
+compartment cortex     { capacitance: 1.0e-3 F; stratum: supraspinal; }
+
+circuit postural_loop {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : cortex -> spinal_in -> alpha_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_afferent -> spinal_in -> cortex;
+
+  element descend   conducts cortex      -> spinal_in   delay 12.0 ms;
+  element premotor  conducts spinal_in   -> alpha_mn    delay 2.0 ms;
+  element mn_axon   conducts alpha_mn    -> nmj         delay 5.0 ms;
+  element endplate  conducts nmj         -> fibre       delay 0.8 ms;
+  element ec_couple conducts fibre       -> spindle     delay 15.0 ms;
+  element mechano   conducts spindle     -> ia_afferent delay 3.0 ms;
+  element ia_axon   conducts ia_afferent -> spinal_in   delay 8.0 ms
+                                                        gain 1.0;
+  element ascend    conducts spinal_in   -> cortex      delay 14.0 ms;
+}
+
+experiment deafferentation {
+  intact  : postural_loop;
+
+  -- Parametric: the loop stays closed, the gain falls to one tenth.
+  lesion attenuated : postural_loop with ia_axon scaling 0.1;
+
+  -- Structural: the return element is deleted. The compiler reports
+  -- an aperture, because no path now returns fibre to spinal_in.
+  lesion severed    : postural_loop without element(ia_axon);
+
+  -- Structural: the whole return phase is deleted.
+  lesion abolished  : postural_loop without return(fibre);
+
+  observe : cop_rms, divergence_time, band_power(reflex),
+            band_power(supraspinal), coupling_index;
+}
+\end{lstlisting}
+
+The three lesions are not three points on one continuum. By
+\Cref{prop:attenuation} the first preserves the closure index and the compiler
+is silent; by \Cref{thm:closure-decidable} the second and third set it to
+$\textsf{open}$ and each receives an aperture report naming the circulation
+and stating the prediction of \Cref{cor:closure-obligatory}. The observable
+\texttt{divergence\_time} is well defined only for the open cases; obligation
+(B1) requires the backend to return it rather than raise.
+
+This is the point at which the language earns its design. A signal-and-gain
+formulation would express all three as gains of $0.1$, $0$, and $0$, making
+the second and third identical and the first a small perturbation of them.
+Vitruvius separates them statically, and reports which of them is predicted to
+fail structurally rather than merely to perform worse.
+
+\subsection{A cross-stratum coupling lesion}
+
+The third program exercises the stratum discipline and the estimation
+machinery. It models loss of phase regulation between the supraspinal and
+reflex strata---a coupling pathology rather than a conduction failure---and
+reports the type separation alongside the composed estimate.
+
+\begin{lstlisting}[style=vvs,caption={\texttt{coupling\_lesion.vvs} --- a
+deliberate stratum violation, and the reporting obligation.},
+label={lst:coupling}]
+module coupling_lesion;
+import postural_ablation;
+
+-- Event types are declared so that catalytic power can be estimated
+-- from a type rather than from the instance being predicted. Rule IV
+-- rejects an untyped power, and each type needs >= 2 instances.
+event type reflex_arc     = pair(spindle, alpha_mn);
+event type spinal_relay   = pair(spinal_in, alpha_mn);
+event type descending_set = pair(cortex, spinal_in);
+
+experiment phase_regulation {
+  intact  : postural_loop;
+
+  -- Well typed: the escape is explicit and confined to the experiment.
+  -- An *element* reading across two strata would be rejected by
+  -- T-Stratum; this construct declares the violation as the model.
+  lesion decoupled : postural_loop
+                       with noise across supraspinal, reflex (0.35);
+
+  observe : coupling_index,
+            band_power(reflex), band_power(spinal),
+            band_power(supraspinal),
+            kappa(reflex_arc), kappa(spinal_relay),
+            type_separation;
+}
+\end{lstlisting}
+
+Two features of this program are enforced rather than conventional. First, the
+cross-stratum edge could not have been written as an element: an element at
+the reflex stratum whose body touched \texttt{supraspinal} would violate
+\textsc{T-Stratum}, since the two are not adjacent. The only route to such
+coupling is the explicit \texttt{with noise across} operator, so a
+cross-stratum influence in a Vitruvius model is always a declared lesion and
+never an oversight (\Cref{rem:violation-is-model}).
+
+Second, each \texttt{kappa} observable names an event type. Rule IV
+(\Cref{def:typed-rule}) rejects a bare \texttt{kappa(mechano)} on a single
+instance, which is exactly the instance-specific estimator that
+\Cref{thm:telescoping} shows cannot fail. The accompanying
+\texttt{type\_separation} observable returns $\eta$ of \Cref{def:eta}, without
+which, by \Cref{prop:degeneracy}, a reported agreement or disagreement cannot
+be interpreted.
+
+% =====================================================================
+\section{Discussion}
+\label{sec:discussion}
+% =====================================================================
+
+\subsection{Relation to motor control theories}
+
+The closure account developed here is not a rival to existing motor-control
+frameworks across their whole domain, but it differs from each on a specific
+prediction, and the differences are what a Vitruvius experiment is designed to
+expose.
+
+The equilibrium-point hypothesis \citep{feldman1986} holds that a movement
+command specifies a set point toward which the limb converges by the elastic
+and reflexive properties of the musculotendon system. Within the present
+framework the set point is recovered as the centre of the bounded oscillation
+of a closed loop, and the width of that oscillation is the physiological
+tremor observed in steady posture. The two accounts agree on convergence
+without explicit feedback correction and differ on whether the target is a
+point in configuration space or a cycle in state space; the second predicts
+residual oscillation that the first must add separately.
+
+Optimal feedback control \citep{todorov2002} treats the controller and the
+plant as distinct systems joined by feedback whose gain enters
+multiplicatively. It therefore predicts that removing feedback increases
+variance while preserving the mean trajectory. The closure account predicts
+instead a change of kind, because severance empties the constraint set of
+\Cref{thm:min-dissipation} rather than perturbing its minimiser. The
+deafferentation literature reports abolition rather than degradation of
+coordinated movement \citep{cole1991,sainburg1995,ghez1995,lajoie1996}, which
+is the pattern the closure account predicts and the gain formulation does not.
+
+Internal-model theories \citep{kawato1999,wolpert2000} hold that the nervous
+system maintains forward and inverse models updated by efference copy and
+sensory return, and therefore predict that a deafferented subject can move
+using internal prediction with errors accumulating as the model drifts. The
+closure account requires no separate model: the loop's own return path
+supplies the predictive dynamics, and learning is modification of circuit
+conductance. The two differ on whether a deafferented subject should be able
+to execute a well-practised movement open-loop for a short period, which is an
+experimentally addressable question.
+
+We state plainly that these are differences of prediction, not demonstrations.
+Vitruvius is an instrument for posing them, and \Cref{lst:ablation} is the
+shape such a posing takes.
+
+\subsection{What the design buys}
+
+The language makes four things checkable before any computation. A circulation
+that has been opened is named, with the prediction that follows. A charge
+computed at one capacitance cannot be silently combined with one computed at
+another. An influence between non-adjacent time scales must pass through the
+intervening scale and incur its delay, unless it is declared as a lesion. And
+a floor of zero, which would make the fractional observables undefined, cannot
+be declared. Because none of these consults a backend
+(\Cref{prop:backend-independent}), they are available at the cost of parsing.
+
+It also removes a specific way of being wrong. The instance-specific estimator
+of \Cref{def:instance} is the natural thing to write, is implemented by
+routines that look independent, and agrees with its own prediction to machine
+precision on every data set. \Cref{thm:telescoping} shows the agreement is an
+identity; rule IV makes the identity unwritable.
+
+\subsection{What it does not buy}
+
+The language does not make a model correct. Compartment indices, strata, and
+floors are declarations, and a model may declare them wrongly; what the type
+system guarantees is that the declarations are used consistently, not that
+they are true. The stratum discipline enforces adjacency but cannot verify
+that a given element belongs to the stratum it claims. The typed estimator has
+a genuine null hypothesis but no power when type separation is low
+(\Cref{prop:degeneracy}), and the language can only report $\eta$, not repair
+a typing that fails to carve the system.
+
+Nor does the closure analysis certify physiological realism. A closed circuit
+is one whose declared paths match; whether those paths correspond to
+anatomical pathways is outside what the compiler can see. \Cref{lst:reflex}
+would typecheck with the delays permuted.
+
+Finally, the design is deliberately narrow. It has no representation for
+prescribed kinematics, externally specified controllers, or open-loop
+actuation of an intact system, all of which are legitimate objects of study in
+general-purpose platforms \citep{delp2007,seth2018,todorov2012}. A user who
+needs them needs a different tool, or needs to treat the Vitruvius model as
+one component in a larger workflow.
+
+% =====================================================================
+\section{Scope and limitations}
+\label{sec:scope}
+% =====================================================================
+
+We record the limitations that a reader should weigh before adopting the
+language.
+
+\emph{The lumped representation.} \Cref{sec:foundations} treats compartments
+as points at which potential is uniform. Spatially extended phenomena---cable
+propagation along an axon, diffusion in the synaptic cleft, continuum
+mechanics of muscle---are represented by lumped delays and conductances. This
+is adequate for establishing closure and its consequences and inadequate for
+detailed waveform prediction, which requires the partial differential
+formulations that a continuous backend supplies internally.
+
+\emph{Strata are a coarse partition.} \Cref{def:strata} recognises three
+levels. Slower processes exist, including drift over minutes, and faster ones,
+including physiological tremor above $5$\,Hz. A model requiring these must
+either extend the stratum lattice---which the adjacency rule of
+\Cref{def:stratum-rule} accommodates without modification, being defined over
+an arbitrary linear order---or accept their absence.
+
+\emph{Closure is topological, not functional.} The analysis of
+\Cref{sec:aperture} decides whether declared paths match. It does not decide
+whether a return path carries enough information to be useful, and it will
+report a circuit closed when the return path is intact but its conductance has
+been scaled to a value at which the loop is functionally silent. The
+distinction between an attenuated loop and a severed one is exactly what
+\Cref{prop:attenuation} is about, and users should note that the language
+takes the topological side of it by design.
+
+\emph{The floor is only as good as its derivation.} \Cref{prop:floor}
+guarantees positivity for a connected closed circuit, and
+\Cref{prop:floor-sensitivity} quantifies the cost of misestimation, but
+neither validates a particular \texttt{derived} expression. A model that
+discharges the floor by a sample minimum satisfies the type system while
+carrying no evidential weight (\Cref{rem:floor-estimators}).
+
+\emph{Backends are trusted.} Obligations (B1)--(B4) are requirements on a
+backend, not properties the language verifies. A backend that violates (B1) by
+raising on divergence converts the central result of an ablation experiment
+into a crash, and nothing in the type system prevents it.
+
+\emph{No cross-model composition.} A program describes one system. Composing a
+musculoskeletal model with models of other physiology is outside the language,
+by design: what would be required is an account of how the compartments of two
+models share a medium, and we do not supply one here.
+
+% =====================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% =====================================================================
+
+Vitruvius has one primitive, four non-standard typing rules, and three
+reduction rules. The primitive is the circulation, and it is chosen because
+the intact neuromuscular graph has no external ground
+(\Cref{prop:no-ground}), therefore no static equilibrium
+(\Cref{thm:no-equilibrium}), and therefore no way for an efferent projection
+to terminate except by closing (\Cref{cor:closure-obligatory}). From that
+premise the language's distinguishing capability follows: severing a return
+pathway and attenuating it are different operators with different closure
+indices, distinguishable statically (\Cref{prop:attenuation}), where a
+signal-and-gain formulation makes them the same limit.
+
+Three further analyses fall out of the same structure. Charge carries the
+compartment against which it was computed, so mixing capacitances is a type
+error rather than a silent numerical mistake. Influence between time scales
+must traverse the intervening scale, so a cross-stratum shortcut is either a
+declared lesion or a rejected program. And a fractional observable requires a
+positive floor, whose derivation the source must state, because an
+upward-biased floor inflates exactly the quantities describing events nearest
+the irreducible limit.
+
+The metatheory is standard---progress, preservation, order-independent lesion
+composition, termination---and the backend interface is narrow enough that the
+same program runs unchanged over integrators of quite different character,
+with the static diagnostics unaffected by the choice
+(\Cref{prop:backend-independent}).
+
+The result we regard as most useful is negative. The natural estimator of an
+event's contribution agrees with its own prediction on every data set that can
+exist (\Cref{thm:telescoping}), so a perfect correlation between a composed
+prediction and its measurement is not a confirmation of anything. The language
+makes that estimator unwritable and requires the typed alternative, which can
+fail, together with the separation statistic without which its success cannot
+be interpreted. A language for experiments should make the vacuous experiment
+hard to express, and this is the one place where we have been able to do so
+mechanically rather than by advice.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

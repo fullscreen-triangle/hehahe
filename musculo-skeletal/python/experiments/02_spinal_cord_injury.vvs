@@ -1,0 +1,116 @@
+-- Experiment 2: Spinal cord injury, level-dependent classification.
+--
+-- Uses templates (E1) so the repeated limb anatomy is declared once.
+-- The clinical picture of a complete T6 injury -- paralysis below,
+-- preserved reflexes below, normal function above -- is derived from
+-- which circulations traverse the injured level.
+--
+-- What is NOT encoded: the ASIA classification, the level of the lesion
+-- relative to any muscle, or that reflexes survive below a complete injury.
+
+module spinal_cord_injury;
+
+compartment cortex_leg   { capacitance: 1.0e-3 F;  stratum: supraspinal; }
+compartment cortex_arm   { capacitance: 1.0e-3 F;  stratum: supraspinal; }
+compartment cervical_in  { capacitance: 2.8e-8 F;  stratum: spinal; }
+compartment thoracic_in  { capacitance: 2.5e-8 F;  stratum: spinal; }
+compartment lumbar_in    { capacitance: 2.2e-8 F;  stratum: spinal; }
+
+compartment quad_mn      { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment quad_nmj     { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment quad_fibre   { capacitance: 1.41e-4 F; stratum: reflex; }
+compartment quad_spindle { capacitance: 2.0e-9 F;  stratum: reflex; }
+compartment quad_ia      { capacitance: 8.0e-9 F;  stratum: reflex; }
+
+compartment bicep_mn      { capacitance: 1.2e-8 F; stratum: reflex; }
+compartment bicep_nmj     { capacitance: 4.0e-9 F; stratum: reflex; }
+compartment bicep_fibre   { capacitance: 1.0e-4 F; stratum: reflex; }
+compartment bicep_spindle { capacitance: 2.0e-9 F; stratum: reflex; }
+compartment bicep_ia      { capacitance: 8.0e-9 F; stratum: reflex; }
+
+-- E1: one segmental reflex arc, instantiated per muscle.
+circuit template segmental_arc(mn, nmj, fibre, spindle, ia, d_mn, d_ec) {
+  floor    : derived(resting_cut(mn));
+  outbound : mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia -> mn;
+
+  element mn_axon  conducts mn      -> nmj     delay 8.0 ms;
+  element endplate conducts nmj     -> fibre   delay 0.8 ms;
+  element ec       conducts fibre   -> spindle delay 15.0 ms;
+  element mechano  conducts spindle -> ia      delay 3.0 ms;
+  element ia_axon  conducts ia      -> mn      delay 12.0 ms gain 1.0;
+}
+
+circuit quad_reflex  = segmental_arc(quad_mn, quad_nmj, quad_fibre,
+                                     quad_spindle, quad_ia, 8.0 ms, 15.0 ms);
+circuit bicep_reflex = segmental_arc(bicep_mn, bicep_nmj, bicep_fibre,
+                                     bicep_spindle, bicep_ia, 5.0 ms, 15.0 ms);
+
+-- Supraspinal circulation to the lower limb: crosses the thoracic level.
+circuit cortical_quad {
+  floor    : derived(resting_cut(lumbar_in));
+
+  outbound : cortex_leg -> thoracic_in -> lumbar_in -> quad_mn -> quad_nmj -> quad_fibre;
+  return   : quad_fibre -> quad_spindle -> quad_ia -> lumbar_in -> thoracic_in -> cortex_leg;
+
+  element descend_t   conducts cortex_leg   -> thoracic_in  delay 10.0 ms;
+  element relay_l     conducts thoracic_in  -> lumbar_in    delay 4.0 ms;
+  element premotor_q  conducts lumbar_in    -> quad_mn      delay 2.0 ms;
+  element mn_axon_q   conducts quad_mn      -> quad_nmj     delay 8.0 ms;
+  element endplate_q  conducts quad_nmj     -> quad_fibre   delay 0.8 ms;
+  element ec_couple_q conducts quad_fibre   -> quad_spindle delay 15.0 ms;
+  element mechano_q   conducts quad_spindle -> quad_ia      delay 3.0 ms;
+  element ia_axon_q   conducts quad_ia      -> lumbar_in    delay 12.0 ms gain 1.0;
+  element ascend_l    conducts lumbar_in    -> thoracic_in  delay 4.0 ms;
+  element ascend_t    conducts thoracic_in  -> cortex_leg   delay 10.0 ms;
+}
+
+-- Supraspinal circulation to the upper limb: crosses cervical, not thoracic.
+circuit cortical_bicep {
+  floor    : derived(resting_cut(cervical_in));
+
+  outbound : cortex_arm -> cervical_in -> bicep_mn -> bicep_nmj -> bicep_fibre;
+  return   : bicep_fibre -> bicep_spindle -> bicep_ia -> cervical_in -> cortex_arm;
+
+  element descend_c   conducts cortex_arm    -> cervical_in   delay 8.0 ms;
+  element premotor_b  conducts cervical_in   -> bicep_mn      delay 2.0 ms;
+  element mn_axon_b   conducts bicep_mn      -> bicep_nmj     delay 5.0 ms;
+  element endplate_b  conducts bicep_nmj     -> bicep_fibre   delay 0.8 ms;
+  element ec_couple_b conducts bicep_fibre   -> bicep_spindle delay 15.0 ms;
+  element mechano_b   conducts bicep_spindle -> bicep_ia      delay 3.0 ms;
+  element ia_axon_b   conducts bicep_ia      -> cervical_in   delay 8.0 ms gain 1.0;
+  element ascend_c    conducts cervical_in   -> cortex_arm    delay 8.0 ms;
+}
+
+-- A complete T6 injury severs conduction through the thoracic level in
+-- both directions. Only circulations traversing that level are touched.
+experiment t6_complete_lower_limb {
+  intact  : cortical_quad;
+  lesion descending_only : cortical_quad without element(relay_l);
+  lesion ascending_only  : cortical_quad without element(ascend_l);
+  lesion complete        : cortical_quad without element(relay_l)
+                                         without element(ascend_l);
+  observe : closure_index, divergence_time, loop_latency,
+            band_power(reflex), band_power(supraspinal);
+}
+
+-- ASIA B: motor complete, sensory incomplete. Severance and attenuation
+-- are different operators, so the two fibre classes are distinguishable.
+experiment t6_asia_b {
+  intact  : cortical_quad;
+  lesion motor_complete_sensory_partial :
+      cortical_quad without element(relay_l) with ascend_l scaling 0.2;
+  observe : closure_index, divergence_time, oscillation_amplitude;
+}
+
+-- Below the lesion, the segmental arc does not traverse the thoracic level.
+experiment t6_below_lesion_reflex {
+  intact  : quad_reflex;
+  observe : closure_index, tonic_rate, loop_latency, oscillation_amplitude;
+}
+
+-- Above the lesion, nothing is touched at all.
+experiment t6_above_lesion_function {
+  intact  : cortical_bicep;
+  observe : closure_index, tonic_rate, loop_latency;
+}

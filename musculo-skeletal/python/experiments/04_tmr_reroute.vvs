@@ -1,0 +1,75 @@
+-- Experiment 4: Amputation, targeted muscle reinnervation, mirror therapy.
+--
+-- This is the experiment that motivates reroute (E3). Every other operator
+-- either preserves closure or opens it; reroute is the only one that can
+-- carry a circulation from open back to CLOSED. Modelling repair, rather
+-- than only ablation, is what it buys.
+--
+-- The novel statement is not that TMR helps -- that is known -- but that
+-- TMR RESTORES CLOSURE, and does so through a path with different delays
+-- and a different capacitance, so the restored circulation has a different
+-- limit-cycle structure from the original. Mirror therapy also restores
+-- closure but through the supraspinal stratum, which is why it works and
+-- why it is slow.
+
+module tmr_reroute;
+
+compartment cortex_hand   { capacitance: 1.0e-3 F; stratum: supraspinal; }
+compartment visual_cortex { capacitance: 1.0e-3 F; stratum: supraspinal; }
+compartment cervical_in   { capacitance: 2.8e-8 F; stratum: spinal; }
+compartment hand_mn       { capacitance: 1.2e-8 F; stratum: reflex; }
+compartment hand_nmj      { capacitance: 4.0e-9 F; stratum: reflex; }
+compartment hand_fibre    { capacitance: 8.0e-5 F; stratum: reflex; }
+compartment hand_spindle  { capacitance: 2.0e-9 F; stratum: reflex; }
+compartment hand_ia       { capacitance: 8.0e-9 F; stratum: reflex; }
+
+-- The reinnervation target: pectoralis, with its own intact proprioceptors.
+compartment pec_fibre   { capacitance: 1.2e-4 F; stratum: reflex; }
+compartment pec_spindle { capacitance: 2.0e-9 F; stratum: reflex; }
+compartment pec_ia      { capacitance: 8.0e-9 F; stratum: reflex; }
+
+circuit hand_loop {
+  floor    : derived(resting_cut(cervical_in));
+
+  outbound : cortex_hand -> cervical_in -> hand_mn -> hand_nmj -> hand_fibre;
+  return   : hand_fibre -> hand_spindle -> hand_ia -> cervical_in -> cortex_hand;
+
+  element descend   conducts cortex_hand  -> cervical_in  delay 8.0 ms;
+  element premotor  conducts cervical_in  -> hand_mn      delay 2.0 ms;
+  element mn_axon   conducts hand_mn      -> hand_nmj     delay 5.0 ms;
+  element endplate  conducts hand_nmj     -> hand_fibre   delay 0.8 ms;
+  element ec_couple conducts hand_fibre   -> hand_spindle delay 15.0 ms;
+  element mechano   conducts hand_spindle -> hand_ia      delay 3.0 ms;
+  element ia_axon   conducts hand_ia      -> cervical_in  delay 8.0 ms gain 1.0;
+  element ascend    conducts cervical_in  -> cortex_hand  delay 8.0 ms;
+}
+
+experiment amputation_and_repair {
+  intact : hand_loop;
+
+  -- Trans-radial amputation: the return phase from the muscle is gone.
+  -- Descending drive has nowhere to resolve.
+  lesion amputated :
+      hand_loop without return(hand_fibre);
+
+  -- TMR: the motor nerve is rerouted to pectoralis, which carries its own
+  -- proprioceptive return. Closure is restored through a different path.
+  lesion tmr :
+      hand_loop without return(hand_fibre)
+                reroute return(hand_fibre)
+                  through pec_fibre -> pec_spindle -> pec_ia -> cervical_in
+                       -> cortex_hand;
+
+  -- Mirror therapy: closure is restored through the VISUAL cortex, at the
+  -- supraspinal stratum rather than the reflex stratum. The checker notes
+  -- the stratum crossing; the substituted path carries the bandwidth of
+  -- the higher stratum, which is the cost.
+  lesion mirror :
+      hand_loop without return(hand_fibre)
+                reroute return(hand_fibre)
+                  through visual_cortex -> cortex_hand;
+
+  observe : closure_index, divergence_time, loop_latency,
+            force_output, oscillation_amplitude, band_power(reflex),
+            band_power(supraspinal);
+}

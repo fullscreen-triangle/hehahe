@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(purpose index)",
+      "Bash(purpose ask:*)",
+      "Bash(purpose ledger:*)",
+      "Bash(purpose ckg lens:*)",
+      "Bash(purpose ckg build:*)",
+      "Bash(purpose ckg ask:*)",
+      "Bash(purpose ckg why:*)",
+      "Bash(purpose ckg floor:*)"
+    ]
+  }
+}

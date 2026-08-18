@@ -1,0 +1,131 @@
+# Lens for hehahe — a LaTeX-heavy research repo, not a codebase.
+#
+# Index shape (2026-08-16, 11168 symbols / 354 files):
+#   section 8719, heading 1611, def 529, func 113, class 73, struct 54, fn 53
+# So 93% of the index is prose section titles. The default all-kinds lens is
+# degenerate here: every paper carries "Introduction"/"Conclusion"/"Validation",
+# so every module is in contact with every other and `ckg lens` does not return.
+#
+# Measured prose term spread under the DEFAULT lens (fraction of the 354 modules
+# carrying the term) — this is why the stopword list below is long:
+#   validation 41.8%  introduction 39.0%  framework 32.5%  analysis 30.8%
+#   implications 30.5%  conclusion 28.8%  summary 27.1%  integration 26.0%
+#   theoretical 25.1%  discussion 24.0%  ...
+# Note oscillatory (26.0%) and coupling (24.9%) are NOT stopworded: they are
+# high-spread because they are what this repo is about, and removing them would
+# make the graph unable to see the actual subject.
+
+[lens]
+granularity = "file"
+floor = 1
+
+[include]
+# SCOPED DELIBERATELY — do not set this back to [].
+#
+# Measured cost of an unscoped lens on this repo (2026-08-16):
+#   modules   40      80      120     354
+#   secs       3      31      121     between 5 and ~50 min (completed)
+#   density  0.887   0.915   0.894    0.494
+# Cost grows steeply but the 354-module `lens` run DOES complete -- an earlier
+# note here claimed it did not return, which was wrong; two runs were killed by
+# timeout before finishing. Runtime is therefore not the reason to scope.
+#
+# The reason to scope is that the unscoped lens does not DISCRIMINATE. At 354
+# modules it reports 87% of modules in one component, and the tool itself prints
+# "tau is not discriminating between them". Goal saturation for
+# "oscillatory coupling scale separation" is exactly 50% -- the threshold at
+# which the usage doc says a goal cannot be discriminated. Scoping to
+# olduvai-gorge/** moves density 0.494 -> 0.292, saturation 50% -> 28%, and the
+# giant component 87% -> 74%.
+#
+# Density does not fall with tuning alone, because this repo
+# is one research program restated across 354 documents: every paper genuinely
+# shares `oscillatory`, `coupling`, `information`, `entropy`. Those are content,
+# not noise, so stopwording them to break the density would be exactly the
+# degenerate lens section 6 warns about.
+#
+# So scope instead. Each subtree below is a coherent program and is tractable
+# alone (<=85 files). Swap the active line to ask about a different one.
+# Measured runtimes by scope (2026-08-16, after `build`):
+#   scope                          modules  lens   build  why    ask
+#   olduvai-gorge/**                  149    51s    21s    34s   >300s (killed)
+#   olduvai-gorge/docs/**              27     -      2s     -       3s
+#   olduvai-gorge/docs/automobile/**    3     -      1s     -       2s
+# `ask` adds a dominator pass over every contact and is the binding constraint:
+# it is fine at ~30 modules and does not return at 149. `lens`, `build`, `why`
+# and `floor` all remain usable at 149. So keep the active scope near a single
+# program; widen only to run `why`/`floor`, and expect `ask` to need narrowing.
+paths = ["olduvai-gorge/docs/**"]
+# paths = ["olduvai-gorge/**"]                 # 149 modules — no `ask`
+# paths = ["olduvai-gorge/publications/**"]
+# paths = ["docs/oscillations/**", "docs/biology/**", "docs/biomechanics/**"]
+# paths = ["docs/thought-validation/**"]
+# paths = ["upward/**"]
+# All kinds retained. §4 says include.kinds is the strongest lever, and dropping
+# `section` would take the graph from 11168 entries to 2449 — but this repo IS
+# the prose, so that would drop the subject matter, not the noise. The noise here
+# is boilerplate TITLES, which stopwords do reach (they are prose, not symbol
+# names). Recorded as a deliberate trade, per §4.
+#   kinds = ["heading", "def", "func", "class", "struct", "fn"]
+
+[terms]
+min_len = 4                  # raised from 3: kills "the"/"and"/"for" class residue
+split_camel_case = true      # snake/camel Python+Rust symbols contribute pieces
+prose_kinds = ["heading", "section"]
+
+# Prose-only. Two groups: generic English, then LaTeX/paper-structure boilerplate
+# that every one of the 354 documents carries and which therefore distinguishes
+# nothing.
+stopwords = [
+  # generic
+  "the", "and", "not", "for", "with", "from", "that", "this",
+  "what", "when", "where", "which", "how", "why", "who", "are",
+  "was", "were", "has", "have", "had", "can", "will", "its",
+  "into", "out", "over", "than", "then", "there", "does", "did",
+  "you", "your", "our", "all", "any", "but", "use", "using",
+  "used", "via", "per", "about", "also",
+  # paper-structure boilerplate — measured 18-42% spread each
+  "introduction", "conclusion", "conclusions", "discussion", "summary",
+  "abstract", "acknowledgments", "acknowledgements", "references",
+  "appendix", "appendices", "overview", "background", "preliminaries",
+  "results", "methods", "methodology", "future", "directions",
+  "related", "work", "outline", "notation", "definitions",
+  "theorem", "lemma", "proof", "corollary", "proposition", "remark",
+  "figure", "table", "equation", "section", "chapter", "part",
+  # generic academic connective tissue
+  "validation", "framework", "analysis", "implications", "theoretical",
+  "experimental", "mathematical", "empirical", "complete", "general",
+  "applications", "clinical", "performance", "properties", "considerations",
+  "extensions", "limitations", "comparison", "evaluation", "assessment",
+  "formulation", "derivation", "foundations", "principles", "approach",
+  "implementation", "architecture", "design", "model", "models",
+  "system", "systems", "theory", "problem", "solution", "solutions",
+  "main", "core", "basic", "advanced", "detailed", "formal",
+]
+
+# Merge spellings of one idea so they form a single distinction.
+[terms.alias]
+"oscillation" = "oscillatory"
+"oscillations" = "oscillatory"
+"coupled" = "coupling"
+"couplings" = "coupling"
+"biomechanical" = "biomechanics"
+"cardiovascular" = "cardiac"
+"neuronal" = "neural"
+"metabolism" = "metabolic"
+
+# A shared term is worth min(what each side gives it). Section titles are cheap
+# evidence of shared subject; a defined symbol is strong evidence. Weighting
+# moves separation cost sigma, not component structure (§4 lever 2) — it is here
+# so that a contact resting only on two papers sharing a subheading costs less
+# than one resting on a shared definition.
+[terms.weight]
+"section:*" = 0.5
+"heading:*" = 0.75
+"class:*" = 2.0
+"struct:*" = 2.0
+"def:*" = 1.5
+"fn:*" = 1.5
+
+[edges]
+weight = "sum"

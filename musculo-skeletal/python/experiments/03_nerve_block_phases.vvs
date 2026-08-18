@@ -1,0 +1,90 @@
+-- Experiment 3: Regional nerve block, resolved in time.
+--
+-- This is the experiment that motivates phases (E4). A block does not
+-- arrive all at once: thin fibres go first, then proprioceptive, then
+-- motor, and the block recedes in reverse order. Without phases the
+-- semantics applies every lesion before any observation, so the ordering
+-- -- which is the whole clinical phenomenon -- is inexpressible.
+--
+-- The prediction to look for is in `proprioceptive_loss`: the outbound
+-- phase is intact and unattenuated, so strength is preserved, while the
+-- return phase is severed, so the circulation is open. The framework
+-- therefore predicts COORDINATION FAILURE WITH PRESERVED STRENGTH -- not
+-- graded weakness. This is the deafferentation result in a reversible,
+-- dose-controlled, routine setting.
+
+module nerve_block;
+
+compartment cortex       { capacitance: 1.0e-3 F;  stratum: supraspinal; }
+compartment spinal_in    { capacitance: 3.0e-8 F;  stratum: spinal; }
+compartment alpha_mn     { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment nmj          { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment fibre        { capacitance: 1.41e-4 F; stratum: reflex; }
+compartment spindle      { capacitance: 2.0e-9 F;  stratum: reflex; }
+compartment ia_afferent  { capacitance: 8.0e-9 F;  stratum: reflex; }
+
+circuit sensorimotor_loop {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : cortex -> spinal_in -> alpha_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_afferent -> spinal_in -> cortex;
+
+  element descend   conducts cortex      -> spinal_in   delay 12.0 ms;
+  element premotor  conducts spinal_in   -> alpha_mn    delay 2.0 ms;
+  element mn_axon   conducts alpha_mn    -> nmj         delay 5.0 ms;
+  element endplate  conducts nmj         -> fibre       delay 0.8 ms;
+  element ec_couple conducts fibre       -> spindle     delay 15.0 ms;
+  element mechano   conducts spindle     -> ia_afferent delay 3.0 ms;
+  element ia_axon   conducts ia_afferent -> spinal_in   delay 8.0 ms gain 1.0;
+  element ascend    conducts spinal_in   -> cortex      delay 12.0 ms;
+}
+
+-- Each phase is an independent stage over the same declared anatomy.
+-- Lesions do not carry forward unless restated, which forces the
+-- experimenter to say what is present at each stage.
+experiment brachial_plexus_block {
+  intact : sensorimotor_loop;
+
+  -- t = 0: baseline.
+  phase baseline {
+    observe : closure_index, force_output, loop_latency,
+              oscillation_amplitude, tonic_rate;
+  }
+
+  -- t = 2-5 min: thin fibres first. Nothing on this circulation is a
+  -- thin fibre, so the sensorimotor loop is untouched: analgesia with
+  -- fully intact motor and proprioceptive function.
+  phase analgesia {
+    observe : closure_index, force_output, loop_latency,
+              oscillation_amplitude, tonic_rate;
+  }
+
+  -- t = 5-10 min: the Ia afferent blocks. Outbound intact and
+  -- unattenuated; return severed. THE PREDICTION IS HERE.
+  phase proprioceptive_loss {
+    lesion ia_blocked : sensorimotor_loop without element(ia_axon);
+    observe : closure_index, divergence_time, force_output,
+              oscillation_amplitude, band_power(reflex);
+  }
+
+  -- t = 10-20 min: motor fibres block too. Both phases now open.
+  phase motor_block {
+    lesion motor_blocked : sensorimotor_loop without element(ia_axon)
+                                             without element(mn_axon);
+    observe : closure_index, divergence_time, force_output,
+              oscillation_amplitude;
+  }
+
+  -- t = 4-8 h: motor returns first, still without proprioception.
+  phase motor_recovery {
+    lesion partial : sensorimotor_loop without element(ia_axon)
+                                       with mn_axon scaling 0.3;
+    observe : closure_index, divergence_time, force_output,
+              oscillation_amplitude;
+  }
+
+  -- t = 8+ h: full recovery.
+  phase resolved {
+    observe : closure_index, force_output, loop_latency, tonic_rate;
+  }
+}

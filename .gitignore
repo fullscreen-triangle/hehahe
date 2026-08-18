@@ -115,3 +115,8 @@ docs/api/_autosummary/
 tmp/
 temp/
 *.tmp
+
+# purpose — derived caches. .purpose/lens.toml IS committed (it is a decision
+# about how this repo should be read); the index and graph are rebuildable.
+.purpose/*
+!.purpose/lens.toml

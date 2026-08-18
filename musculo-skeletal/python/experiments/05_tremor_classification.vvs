@@ -1,0 +1,73 @@
+-- Experiment 5: Tremor taxonomy from lesion operators on one circuit.
+--
+-- Four tremor types, one declared anatomy, four different operators. What
+-- distinguishes them is not four different models but four different
+-- manipulations of the same model, and the observables that separate them
+-- are the band powers and the coupling index.
+--
+-- The estimation observables appear here too, and Rule IV applies: kappa
+-- must name a declared event type. An instance-specific estimate is an
+-- algebraic identity that agrees with its own prediction on every data set
+-- and therefore cannot fail; the type system makes it unwritable.
+-- type_separation reports whether the typing separates at all -- without
+-- it, neither agreement nor disagreement can be interpreted.
+
+module tremor_classification;
+
+compartment cortex      { capacitance: 1.0e-3 F;  stratum: supraspinal; }
+compartment cerebellum  { capacitance: 8.0e-4 F;  stratum: supraspinal; }
+compartment thalamus    { capacitance: 5.0e-4 F;  stratum: supraspinal; }
+compartment spinal_in   { capacitance: 3.0e-8 F;  stratum: spinal; }
+compartment alpha_mn    { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment nmj         { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment fibre       { capacitance: 1.41e-4 F; stratum: reflex; }
+compartment spindle     { capacitance: 2.0e-9 F;  stratum: reflex; }
+compartment ia_afferent { capacitance: 8.0e-9 F;  stratum: reflex; }
+
+circuit postural_loop {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : cortex -> thalamus -> spinal_in -> alpha_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_afferent -> spinal_in -> cerebellum -> cortex;
+
+  element cort_thal  conducts cortex      -> thalamus    delay 3.0 ms;
+  element thal_sp    conducts thalamus    -> spinal_in   delay 8.0 ms;
+  element premotor   conducts spinal_in   -> alpha_mn    delay 2.0 ms;
+  element mn_axon    conducts alpha_mn    -> nmj         delay 5.0 ms;
+  element endplate   conducts nmj         -> fibre       delay 0.8 ms;
+  element ec_couple  conducts fibre       -> spindle     delay 15.0 ms;
+  element mechano    conducts spindle     -> ia_afferent delay 3.0 ms;
+  element ia_axon    conducts ia_afferent -> spinal_in   delay 8.0 ms gain 1.0;
+  element sp_cereb   conducts spinal_in   -> cerebellum  delay 10.0 ms;
+  element cereb_cort conducts cerebellum  -> cortex      delay 8.0 ms;
+}
+
+-- Event types: each names a compartment pair, so kappa is estimated from
+-- the type across instances rather than from the instance being predicted.
+event type reflex_arc      = pair(spindle, alpha_mn);
+event type spinal_relay    = pair(spinal_in, alpha_mn);
+event type cerebellar_time = pair(cerebellum, cortex);
+event type thalamocortical = pair(thalamus, cortex);
+
+experiment tremor_taxonomy {
+  intact : postural_loop;
+
+  -- Parkinsonian: reduced descending modulation of the spinal loops.
+  -- The circulation stays closed; only the drive is attenuated.
+  lesion parkinsonian : postural_loop with cort_thal scaling 0.2;
+
+  -- Essential: abnormal coupling ACROSS stratum boundaries. This could
+  -- not have been written as an element -- T-Stratum rejects a reflex
+  -- element that reads supraspinal state -- so the violation is declared.
+  lesion essential : postural_loop with noise across supraspinal, reflex (0.45);
+
+  -- Cerebellar: the timing return is attenuated, so phase regulation is
+  -- lost while amplitudes are preserved.
+  lesion cerebellar : postural_loop with cereb_cort scaling 0.1;
+
+  observe : closure_index, oscillation_frequency, oscillation_amplitude,
+            band_power(reflex), band_power(spinal), band_power(supraspinal),
+            coupling_index,
+            kappa(reflex_arc), kappa(cerebellar_time),
+            type_separation, composition_residual;
+}

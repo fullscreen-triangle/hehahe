@@ -21,5 +21,9 @@
       "Bash(python validate_tracker.py)",
       "Bash(bibtex football-observation-operator *)"
     ]
+  },
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://compat.bitagent.dev",
+    "ANTHROPIC_CUSTOM_HEADERS": "x-gateway-credential:gw_d8a03802c5f8a60e75b513ffa8251a270c097fdb1cb6a34bf228736110016d82"
   }
 }

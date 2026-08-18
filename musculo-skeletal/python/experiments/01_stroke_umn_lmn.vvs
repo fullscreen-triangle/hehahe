@@ -1,0 +1,84 @@
+-- Experiment 1: Upper vs lower motor neuron lesion.
+--
+-- The derivation, not the conclusion, is the point. Nothing below records
+-- that a cortical stroke produces spasticity or that a spinal one produces
+-- flaccidity. What is declared is anatomy: two circulations, one traversing
+-- the cortex and one confined to the segment. The clinical taxonomy is the
+-- output of the closure computation over that anatomy.
+--
+-- What is NOT encoded anywhere in this file:
+--   * that spasticity follows a cortical lesion
+--   * that flaccidity follows an anterior horn lesion
+--   * that the two are distinguishable at all
+
+module stroke_umn_lmn;
+
+compartment cortex_limb { capacitance: 1.0e-3 F;  stratum: supraspinal; }
+compartment brainstem   { capacitance: 5.0e-4 F;  stratum: supraspinal; }
+compartment spinal_in   { capacitance: 3.0e-8 F;  stratum: spinal; }
+compartment alpha_mn    { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment nmj         { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment fibre       { capacitance: 1.41e-4 F; stratum: reflex; }
+compartment spindle     { capacitance: 2.0e-9 F;  stratum: reflex; }
+compartment ia_afferent { capacitance: 8.0e-9 F;  stratum: reflex; }
+
+-- Circulation A: traverses cortex and brainstem.
+circuit corticospinal_loop {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : cortex_limb -> brainstem -> spinal_in -> alpha_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_afferent -> spinal_in -> brainstem -> cortex_limb;
+
+  element cortical_out conducts cortex_limb  -> brainstem   delay 5.0 ms;
+  element reticular    conducts brainstem    -> spinal_in   delay 7.0 ms;
+  element premotor     conducts spinal_in    -> alpha_mn    delay 2.0 ms;
+  element mn_axon      conducts alpha_mn     -> nmj         delay 5.0 ms;
+  element endplate     conducts nmj          -> fibre       delay 0.8 ms;
+  element ec_couple    conducts fibre        -> spindle     delay 15.0 ms;
+  element mechano      conducts spindle      -> ia_afferent delay 3.0 ms;
+  element ia_axon      conducts ia_afferent  -> spinal_in   delay 8.0 ms gain 1.0;
+  element ascend_sp    conducts spinal_in    -> brainstem   delay 7.0 ms;
+  element ascend_bs    conducts brainstem    -> cortex_limb delay 5.0 ms;
+}
+
+-- Circulation B: confined to the segment. Never touches cortex.
+circuit stretch_reflex {
+  floor    : derived(resting_cut(alpha_mn));
+
+  outbound : alpha_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_afferent -> alpha_mn;
+
+  element mn_axon_r   conducts alpha_mn    -> nmj         delay 5.0 ms;
+  element endplate_r  conducts nmj         -> fibre       delay 0.8 ms;
+  element ec_couple_r conducts fibre       -> spindle     delay 15.0 ms;
+  element mechano_r   conducts spindle     -> ia_afferent delay 3.0 ms;
+  element ia_axon_r   conducts ia_afferent -> alpha_mn    delay 8.0 ms gain 1.0;
+}
+
+-- A cortical lesion severs the descending element of circulation A.
+-- Circulation B is not mentioned, because the lesion does not reach it.
+experiment cortical_lesion_supraspinal {
+  intact  : corticospinal_loop;
+  lesion umn : corticospinal_loop without element(cortical_out);
+  observe : closure_index, divergence_time, loop_latency,
+            oscillation_amplitude, band_power(reflex), band_power(supraspinal);
+}
+
+experiment cortical_lesion_segmental {
+  intact  : stretch_reflex;
+  observe : closure_index, tonic_rate, loop_latency, oscillation_amplitude;
+}
+
+-- An anterior horn lesion destroys the motor neuron, which lies on BOTH
+-- circulations. The same operator is applied to each.
+experiment anterior_horn_supraspinal {
+  intact  : corticospinal_loop;
+  lesion lmn : corticospinal_loop without element(premotor);
+  observe : closure_index, divergence_time, loop_latency;
+}
+
+experiment anterior_horn_segmental {
+  intact  : stretch_reflex;
+  lesion lmn : stretch_reflex without element(mn_axon_r);
+  observe : closure_index, tonic_rate, divergence_time;
+}
