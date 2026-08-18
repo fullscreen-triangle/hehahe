@@ -233,7 +233,120 @@ def part3_laws() -> None:
     print()
 
 
+def collect() -> dict:
+    """Same computations, returned as data for JSON export."""
+    out = {"parts": {}}
+
+    # Part 1: the identity holds regardless of generating process.
+    gens = {
+        "multiplicative_obeys_law": cascade_multiplicative,
+        "adversarial_violates_law": cascade_adversarial,
+        "random_walk_no_process": cascade_random_walk,
+    }
+    p1 = {}
+    for label, gen in gens.items():
+        worst, preds, meas = 0.0, [], []
+        for _ in range(4000):
+            c = gen(int(RNG.integers(3, 6)))
+            worst = max(worst, telescoping_residual(c, FLOOR))
+            a, b = (instance_specific_prediction(c, FLOOR),
+                    measured_net_power(c, FLOOR))
+            if math.isfinite(a) and math.isfinite(b):
+                preds.append(a); meas.append(b)
+        p1[label] = {
+            "max_abs_discrepancy": worst,
+            "pearson_r": float(np.corrcoef(preds, meas)[0, 1]),
+            "n_cascades": 4000,
+        }
+    out["parts"]["instance_specific_identity"] = {
+        "claim": "the instance-specific estimator agrees with its own "
+                 "measurement on every data set, so the test has no null",
+        "by_generating_process": p1,
+    }
+
+    # Part 2: the typed estimator can fail; eta says when it is readable.
+    p2 = {}
+    for label, spread, bases in (
+        ("separated", 0.04, {"fast": 0.55, "mid": 0.32, "slow": 0.12}),
+        ("compressed", 0.22, {"fast": 0.33, "mid": 0.33, "slow": 0.33}),
+    ):
+        corpus = []
+        for t, base in bases.items():
+            for _ in range(60):
+                s_b = float(RNG.uniform(40, 120))
+                k = min(max(base + float(RNG.normal(0, spread)), 0.01), 0.95)
+                corpus.append(Event(t, s_b, FLOOR + (s_b - FLOOR) * (1 - k)))
+        by_type = {}
+        for e in corpus:
+            by_type.setdefault(e.etype, []).append(e)
+        cascades = [v[i:i + 3] for v in by_type.values() for i in range(0, 45, 3)]
+        p2[label] = {
+            "type_separation_eta": type_separation(corpus, FLOOR),
+            "type_means": type_averaged_powers(corpus, FLOOR),
+            "mean_abs_discrepancy": composition_residual(cascades, corpus, FLOOR),
+            "n_corpus": len(corpus),
+        }
+    out["parts"]["typed_estimator"] = {
+        "claim": "estimating from the event type breaks the identity, so a "
+                 "discrepancy is possible and the test has a null",
+        "by_corpus": p2,
+    }
+
+    # Part 3: the four laws are distinct and orderable.
+    bases = {"fast": 0.5, "mid": 0.3, "slow": 0.15}
+    corpus = []
+    for t, base in bases.items():
+        for _ in range(80):
+            s_b = float(RNG.uniform(40, 120))
+            k = min(max(base + float(RNG.normal(0, 0.05)), 0.01), 0.95)
+            corpus.append(Event(t, s_b, FLOOR + (s_b - FLOOR) * (1 - k)))
+    means = type_averaged_powers(corpus, FLOOR)
+    cascades = []
+    for _ in range(400):
+        s_b = float(RNG.uniform(60, 140))
+        chain = []
+        for _ in range(int(RNG.integers(3, 6))):
+            t = str(RNG.choice(list(bases)))
+            k = min(max(bases[t] + float(RNG.normal(0, 0.05)), 0.01), 0.95)
+            nxt = FLOOR + (s_b - FLOOR) * (1 - k)
+            chain.append(Event(t, s_b, nxt)); s_b = nxt
+        cascades.append(chain)
+
+    laws = {"multiplicative": compose_multiplicative,
+            "additive": compose_additive,
+            "geometric_mean": compose_geometric,
+            "maximum": compose_maximum}
+    p3 = {}
+    for nm, fn in laws.items():
+        preds, meas = [], []
+        for c in cascades:
+            a = fn([means.get(e.etype, 0.0) for e in c])
+            b = measured_net_power(c, FLOOR)
+            if math.isfinite(a) and math.isfinite(b):
+                preds.append(a); meas.append(b)
+        p3[nm] = {
+            "rmse": float(np.sqrt(np.mean((np.array(preds) - np.array(meas)) ** 2))),
+            "pearson_r": float(np.corrcoef(preds, meas)[0, 1]),
+        }
+    out["parts"]["law_comparison"] = {
+        "claim": "the four composition laws are distinct and ordered, so a "
+                 "corpus with adequate eta can select among them",
+        "generating_process": "multiplicative",
+        "laws": p3,
+        "n_cascades": len(cascades),
+    }
+    return out
+
+
 if __name__ == "__main__":
+    import json
+
     part1_identity()
     part2_typed()
     part3_laws()
+
+    data = collect()
+    out = Path(__file__).resolve().parent.parent / "results" / "07_telescoping.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    print(f"wrote {out}")

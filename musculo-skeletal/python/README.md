@@ -11,11 +11,12 @@ fails.
 ## Quick start
 
 ```bash
+python run_all.py                        # run everything -> results/*.json
 python -m vitruvius check  experiments/01_stroke_umn_lmn.vvs
 python -m vitruvius run    experiments/03_nerve_block_phases.vvs
 python -m vitruvius table  experiments/05_tremor_classification.vvs
 python -m vitruvius observables          # the registry, with procedures
-python -m pytest                         # 43 tests
+python -m pytest                         # 50 tests
 ```
 
 ```python
@@ -52,6 +53,7 @@ when the backend does.
 | `antagonist.py` | coupled pairs sharing compartments |
 | `runtime.py` | operational semantics, phases |
 | `report.py` | formatting |
+| `serialize.py` | JSON export with backend provenance |
 
 ## What the language enforces
 
@@ -112,6 +114,44 @@ observable, not syntax).
 | `05_tremor_classification.vvs` | four tremor types, one anatomy |
 | `06_cocontraction.vvs` | joint stiffness as an emergent property |
 | `07_telescoping.py` | the degenerate estimator, demonstrated |
+| `08_myasthenia.vvs` | fatigable weakness as a phase trajectory |
+| `09_rehabilitation.vvs` | why multi-component trial statistics are vacuous |
+| `10_gait_asymmetry.vvs` | prosthetic compliance as capacitance |
+
+## Results
+
+`python run_all.py` writes to `results/`:
+
+| file | contents |
+|---|---|
+| `<program>.json` | full record: circuits, closure, apertures, every observation |
+| `index.json` | one row per program |
+| `observations.json` / `.csv` | flat table, 257 observations |
+| `07_telescoping.json` | the estimator demonstration |
+
+Every measurement records what the backend was obliged to disclose — the
+floor it used, the frequency band, the seed, the sample count — so a
+results file is self-describing. Undefined values are `null` with
+`"undefined": true`, distinguishable from absent ones.
+
+Selected findings, all derived rather than encoded:
+
+```
+01  cortical lesion      supraspinal open  / segmental closed 15.7 Hz  -> spasticity
+    anterior horn        supraspinal open  / segmental open,  no rhythm -> flaccidity
+
+03  proprioceptive_loss  OPEN but force 420.0 N -- identical to baseline
+    motor_block          OPEN and force   0.0 N
+
+04  amputated OPEN -> tmr CLOSED (65.8 ms) / mirror CLOSED (35.8 ms)
+    vs intact 49.8 ms: the repaired circulation is not the original one
+
+08  myasthenic  closed, 63.0 N, rhythm intact     (attenuation)
+    denervated  open,    0.0 N, rhythm undefined  (severance)
+
+10  biological 474.5 N vs prosthetic 335.6 N -- ratio 0.707 = sqrt(0.9/1.8),
+    from Q = sqrt(2CP) and a single declared capacitance difference
+```
 
 Two kinds of result. The **reproductions** (01, 02, 05) recover known
 clinical taxonomy — the novelty is the derivation, since nothing in those

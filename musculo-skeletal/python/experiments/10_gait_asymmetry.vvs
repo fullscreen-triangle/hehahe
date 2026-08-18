@@ -1,0 +1,97 @@
+-- Experiment 10: Gait asymmetry after unilateral hip arthroplasty.
+--
+-- The source proposal asked for a `bilateral` declaration. It is not
+-- needed: the two limbs are two circuits, and what makes them a pair is
+-- that their corresponding compartments have corresponding capacitances.
+-- Adding syntax for that would add a keyword without adding semantics --
+-- every typing and reduction rule would still apply to each circuit
+-- independently. So the pairing is left as a property of the declaration
+-- and the comparison is done over the results.
+--
+-- The substantive point survives intact. A prosthetic hip has a different
+-- compliance from a biological one, so hip_fibre_r carries half the
+-- capacitance of hip_fibre_l. Because charge is indexed by the
+-- compartment it was computed against (Rule I), the two limbs' charges
+-- are not interchangeable quantities -- and the loops they sit in have
+-- measurably different dynamics even though both remain closed.
+--
+-- What is NOT encoded: that asymmetry follows arthroplasty, or that the
+-- prosthetic side differs in any way other than its declared compliance.
+
+module gait_asymmetry;
+
+compartment cortex_l    { capacitance: 1.0e-3 F; stratum: supraspinal; }
+compartment cortex_r    { capacitance: 1.0e-3 F; stratum: supraspinal; }
+compartment lumbar_l    { capacitance: 2.2e-8 F; stratum: spinal; }
+compartment lumbar_r    { capacitance: 2.2e-8 F; stratum: spinal; }
+compartment glut_mn_l   { capacitance: 1.2e-8 F; stratum: reflex; }
+compartment glut_mn_r   { capacitance: 1.2e-8 F; stratum: reflex; }
+compartment glut_nmj_l  { capacitance: 4.0e-9 F; stratum: reflex; }
+compartment glut_nmj_r  { capacitance: 4.0e-9 F; stratum: reflex; }
+
+-- The only asymmetry in the entire declaration: joint compliance.
+compartment hip_fibre_l { capacitance: 1.8e-4 F; stratum: reflex; }
+compartment hip_fibre_r { capacitance: 0.9e-4 F; stratum: reflex; }
+
+compartment hip_spndl_l { capacitance: 2.0e-9 F; stratum: reflex; }
+compartment hip_spndl_r { capacitance: 2.0e-9 F; stratum: reflex; }
+compartment hip_ia_l    { capacitance: 8.0e-9 F; stratum: reflex; }
+compartment hip_ia_r    { capacitance: 8.0e-9 F; stratum: reflex; }
+
+circuit left_hip_loop {
+  floor    : derived(resting_cut(lumbar_l));
+
+  outbound : cortex_l -> lumbar_l -> glut_mn_l -> glut_nmj_l -> hip_fibre_l;
+  return   : hip_fibre_l -> hip_spndl_l -> hip_ia_l -> lumbar_l -> cortex_l;
+
+  element descend_l  conducts cortex_l    -> lumbar_l    delay 14.0 ms;
+  element premotor_l conducts lumbar_l    -> glut_mn_l   delay 2.0 ms;
+  element mn_axon_l  conducts glut_mn_l   -> glut_nmj_l  delay 10.0 ms;
+  element endplate_l conducts glut_nmj_l  -> hip_fibre_l delay 0.8 ms;
+  element ec_l       conducts hip_fibre_l -> hip_spndl_l delay 15.0 ms;
+  element mechano_l  conducts hip_spndl_l -> hip_ia_l    delay 3.0 ms;
+  element ia_axon_l  conducts hip_ia_l    -> lumbar_l    delay 14.0 ms gain 1.0;
+  element ascend_l   conducts lumbar_l    -> cortex_l    delay 14.0 ms;
+}
+
+circuit right_hip_loop {
+  floor    : derived(resting_cut(lumbar_r));
+
+  outbound : cortex_r -> lumbar_r -> glut_mn_r -> glut_nmj_r -> hip_fibre_r;
+  return   : hip_fibre_r -> hip_spndl_r -> hip_ia_r -> lumbar_r -> cortex_r;
+
+  element descend_r  conducts cortex_r    -> lumbar_r    delay 14.0 ms;
+  element premotor_r conducts lumbar_r    -> glut_mn_r   delay 2.0 ms;
+  element mn_axon_r  conducts glut_mn_r   -> glut_nmj_r  delay 10.0 ms;
+  element endplate_r conducts glut_nmj_r  -> hip_fibre_r delay 0.8 ms;
+  element ec_r       conducts hip_fibre_r -> hip_spndl_r delay 15.0 ms;
+  element mechano_r  conducts hip_spndl_r -> hip_ia_r    delay 3.0 ms;
+  element ia_axon_r  conducts hip_ia_r    -> lumbar_r    delay 14.0 ms gain 1.0;
+  element ascend_r   conducts lumbar_r    -> cortex_r    delay 14.0 ms;
+}
+
+-- Biological side.
+experiment left_hip_biological {
+  intact : left_hip_loop;
+  observe : closure_index, loop_latency, floor_value,
+            oscillation_amplitude, oscillation_frequency,
+            force_output, cop_rms, band_power(reflex);
+}
+
+-- Prosthetic side. Same topology, same delays, same gains; only the
+-- terminal compartment's capacitance differs.
+experiment right_hip_prosthetic {
+  intact : right_hip_loop;
+  observe : closure_index, loop_latency, floor_value,
+            oscillation_amplitude, oscillation_frequency,
+            force_output, cop_rms, band_power(reflex);
+}
+
+-- Loading asymmetry: the prosthetic side is offloaded during stance,
+-- modelled as reduced gain on the insertion pathway.
+experiment offloading_compensation {
+  intact : right_hip_loop;
+  lesion offloaded : right_hip_loop with endplate_r scaling 0.6;
+  observe : closure_index, loop_latency, force_output,
+            oscillation_amplitude, cop_rms;
+}

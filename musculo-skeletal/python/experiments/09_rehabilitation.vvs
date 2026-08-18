@@ -1,0 +1,96 @@
+-- Experiment 9: Multi-component rehabilitation, and why its usual
+-- statistics are vacuous.
+--
+-- This is the experiment where the type system does the work. A trial that
+-- estimates each component's contribution from the same pre/post scores
+-- that measure the outcome is computing an algebraic identity: the
+-- composed prediction and the measurement are the SAME function of the
+-- data, so they agree on every possible data set and the agreement is not
+-- evidence of anything.
+--
+-- Rule IV makes that unwritable. `kappa` requires a declared event type
+-- with at least two instances, so powers come from the type across the
+-- corpus rather than from the instance being predicted. `type_separation`
+-- then reports whether the typing separates at all -- without it, neither
+-- agreement nor disagreement can be read.
+--
+-- Note also that recovery here is modelled by reroute (E3), because
+-- cortical reorganisation constructs a NEW descending path rather than
+-- restoring the old one. That distinction is visible in the loop latency.
+
+module rehabilitation;
+
+compartment cortex      { capacitance: 1.0e-3 F;  stratum: supraspinal; }
+compartment premotor_cx { capacitance: 9.0e-4 F;  stratum: supraspinal; }
+compartment spinal_in   { capacitance: 3.0e-8 F;  stratum: spinal; }
+compartment alpha_mn    { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment nmj         { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment fibre       { capacitance: 1.41e-4 F; stratum: reflex; }
+compartment spindle     { capacitance: 2.0e-9 F;  stratum: reflex; }
+compartment ia_afferent { capacitance: 8.0e-9 F;  stratum: reflex; }
+
+circuit rehab_loop {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : cortex -> spinal_in -> alpha_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_afferent -> spinal_in -> cortex;
+
+  element descend   conducts cortex      -> spinal_in   delay 12.0 ms;
+  element premotor  conducts spinal_in   -> alpha_mn    delay 2.0 ms;
+  element mn_axon   conducts alpha_mn    -> nmj         delay 5.0 ms;
+  element endplate  conducts nmj         -> fibre       delay 0.8 ms;
+  element ec_couple conducts fibre       -> spindle     delay 15.0 ms;
+  element mechano   conducts spindle     -> ia_afferent delay 3.0 ms;
+  element ia_axon   conducts ia_afferent -> spinal_in   delay 8.0 ms gain 1.0;
+  element ascend    conducts spinal_in   -> cortex      delay 12.0 ms;
+}
+
+-- Three intervention components, each a declared event type so that
+-- kappa is estimable from the type rather than from the instance.
+event type strength_training = pair(alpha_mn, fibre);
+event type proprioceptive_ex = pair(spindle, ia_afferent);
+event type cortical_relearn  = pair(cortex, spinal_in);
+
+experiment stroke_rehabilitation {
+  intact : rehab_loop;
+
+  phase acute {
+    lesion post_stroke : rehab_loop without element(descend);
+    observe : closure_index, divergence_time, force_output,
+              kappa(strength_training), kappa(proprioceptive_ex),
+              kappa(cortical_relearn), type_separation,
+              composition_residual;
+  }
+
+  -- Strength training raises endplate conductance. The loop is still
+  -- open: strengthening a muscle does not restore a severed pathway.
+  phase after_strength {
+    lesion post_strength : rehab_loop without element(descend)
+                                      with endplate scaling 1.3;
+    observe : closure_index, force_output,
+              kappa(strength_training), type_separation;
+  }
+
+  -- Proprioceptive retraining raises afferent gain. Still open.
+  phase after_proprioceptive {
+    lesion post_proprio : rehab_loop without element(descend)
+                                     with endplate scaling 1.3
+                                     with ia_axon scaling 1.5;
+    observe : closure_index, force_output,
+              kappa(proprioceptive_ex), type_separation;
+  }
+
+  -- Cortical reorganisation recruits premotor cortex as an alternative
+  -- descending route. Restoring the RETURN alone would not help: the
+  -- outbound phase is what was severed, and the checker says so. So the
+  -- reorganised circuit is declared with its own descending element,
+  -- and the recovered pathway is weaker than the original (0.4).
+  phase after_reorganisation {
+    lesion post_cortical : rehab_loop with descend scaling 0.4
+                                      with endplate scaling 1.3
+                                      with ia_axon scaling 1.5;
+    observe : closure_index, loop_latency, force_output,
+              kappa(cortical_relearn), type_separation,
+              composition_residual;
+  }
+}

@@ -476,3 +476,80 @@ def test_sci_spares_circuits_that_do_not_cross_the_level():
     assert lower["complete"].closure == "open"   # paralysis below
     assert below.closure == "closed"             # reflexes preserved below
     assert above.closure == "closed"             # normal above
+
+
+# ── JSON serialisation ──────────────────────────────────────────────
+
+def test_results_serialize_to_json():
+    import json
+
+    from vitruvius.serialize import result_to_dict
+
+    r = run_source(MINIMAL)
+    d = result_to_dict(r, backend=Backend())
+    s = json.dumps(d)          # must be JSON-clean: no NaN, no objects
+    assert "NaN" not in s
+    assert d["provenance"]["schema"].startswith("vitruvius-results/")
+    assert d["static_analysis"]["typechecks"] is True
+    assert d["experiments"][0]["arms"][0]["closure_index"] == "closed"
+
+
+def test_nan_is_recorded_as_null_not_dropped():
+    """An undefined observable must be distinguishable from a missing one."""
+    import json
+
+    from vitruvius.serialize import result_to_dict
+
+    src = MINIMAL.replace("observe : closure_index, loop_latency;",
+                          "observe : closure_index, divergence_time;")
+    d = result_to_dict(run_source(src), backend=Backend())
+    obs = d["experiments"][0]["arms"][0]["observations"]["divergence_time"]
+    assert obs["value"] is None
+    assert obs["undefined"] is True
+    json.dumps(d)
+
+
+@pytest.mark.parametrize("name", [
+    "08_myasthenia.vvs",
+    "09_rehabilitation.vvs",
+    "10_gait_asymmetry.vvs",
+])
+def test_additional_experiments_run(name):
+    from vitruvius import run_file
+
+    r = run_file(str(EXPERIMENTS / name))
+    assert r.experiments
+
+
+def test_myasthenia_distinguishes_attenuation_from_severance():
+    """The distinction the stochastic operator was proposed for, obtained
+    from two existing operators instead."""
+    from vitruvius import run_file
+
+    r = run_file(str(EXPERIMENTS / "08_myasthenia.vvs"))
+    arms = {a.name: a
+            for a in r.experiment("myasthenia_versus_denervation").arms}
+
+    myasthenic = arms["myasthenic"]
+    denervated = arms["denervated"]
+
+    assert myasthenic.closure == "closed"          # weak but circulating
+    assert myasthenic.store["force_output"].value > 0
+    assert myasthenic.store["tonic_rate"].value > 0
+
+    assert denervated.closure == "open"            # no circulation at all
+    assert denervated.store["force_output"].value == 0.0
+    assert math.isnan(denervated.store["tonic_rate"].value)
+
+
+def test_prosthetic_compliance_scales_force_as_sqrt_capacitance():
+    """Q = sqrt(2 C P): halving compliance scales force by sqrt(1/2)."""
+    from vitruvius import run_file
+
+    r = run_file(str(EXPERIMENTS / "10_gait_asymmetry.vvs"))
+    bio = r.experiment("left_hip_biological").arms[0]
+    pro = r.experiment("right_hip_prosthetic").arms[0]
+
+    f_bio = bio.store["force_output"].value
+    f_pro = pro.store["force_output"].value
+    assert f_pro / f_bio == pytest.approx(math.sqrt(0.9 / 1.8), rel=1e-6)

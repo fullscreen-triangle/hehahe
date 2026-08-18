@@ -1,0 +1,88 @@
+-- Experiment 8: Myasthenia gravis as progressive safety-factor loss.
+--
+-- The source proposal asked for a stochastic `failure p` operator, which
+-- would make the closure index a random variable and cost the language its
+-- backend-independence: closure could no longer be decided from the
+-- declaration alone. Phases give the same clinical picture without that.
+--
+-- Fatigable weakness is a TRAJECTORY, not a coin flip. Sustained activity
+-- drives the endplate safety factor down; the loop stays closed while the
+-- factor is above threshold and opens when transmission fails. Reading it
+-- as a sequence of states makes the transition visible and keeps closure
+-- statically decidable at every stage.
+--
+-- What is NOT encoded: that weakness worsens with use, that rest restores
+-- it, or that crisis differs in kind from fatigue rather than degree.
+
+module myasthenia;
+
+compartment spinal_in { capacitance: 3.0e-8 F;  stratum: spinal; }
+compartment quad_mn   { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment quad_nmj  { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment quad_fib  { capacitance: 1.41e-4 F; stratum: reflex; }
+compartment quad_spdl { capacitance: 2.0e-9 F;  stratum: reflex; }
+compartment quad_ia   { capacitance: 8.0e-9 F;  stratum: reflex; }
+
+circuit quad_reflex {
+  floor    : derived(resting_cut(quad_mn));
+
+  outbound : quad_mn -> quad_nmj -> quad_fib;
+  return   : quad_fib -> quad_spdl -> quad_ia -> quad_mn;
+
+  element mn_axon  conducts quad_mn   -> quad_nmj  delay 8.0 ms;
+  element endplate conducts quad_nmj  -> quad_fib  delay 0.8 ms;
+  element ec       conducts quad_fib  -> quad_spdl delay 15.0 ms;
+  element mechano  conducts quad_spdl -> quad_ia   delay 3.0 ms;
+  element ia_axon  conducts quad_ia   -> quad_mn   delay 12.0 ms gain 1.0;
+}
+
+-- Sustained contraction: the safety factor falls monotonically.
+experiment fatigable_weakness {
+  intact : quad_reflex;
+
+  phase rested {
+    observe : closure_index, force_output, force_amplitude,
+              tonic_rate, loop_latency;
+  }
+
+  -- Safety factor ~4x -> ~2x. Every impulse still transmits.
+  phase early_contraction {
+    lesion mild : quad_reflex with endplate scaling 0.5;
+    observe : closure_index, force_output, force_amplitude, tonic_rate;
+  }
+
+  -- ~1.2x. Transmission is marginal but the loop is still closed:
+  -- attenuation cannot open a circulation at any positive factor.
+  phase sustained {
+    lesion moderate : quad_reflex with endplate scaling 0.15;
+    observe : closure_index, force_output, force_amplitude, tonic_rate;
+  }
+
+  -- Transmission fails. This is a STRUCTURAL change, not more of the
+  -- same: the operator differs, and so does the closure index.
+  phase crisis {
+    lesion failed : quad_reflex without element(endplate);
+    observe : closure_index, divergence_time, force_output, tonic_rate;
+  }
+
+  -- Rest restores the safety factor.
+  phase recovered {
+    observe : closure_index, force_output, force_amplitude, tonic_rate;
+  }
+}
+
+-- Myasthenia versus denervation: the distinction the source document
+-- wanted `closure_probability` for. It is available without it, because
+-- the two are different OPERATORS rather than different probabilities.
+experiment myasthenia_versus_denervation {
+  intact : quad_reflex;
+
+  -- Weakness: closed, attenuated. Force falls, circulation intact.
+  lesion myasthenic  : quad_reflex with endplate scaling 0.15;
+
+  -- Denervation: open. The circulation cannot complete at all.
+  lesion denervated  : quad_reflex without element(mn_axon);
+
+  observe : closure_index, divergence_time, force_output,
+            force_amplitude, tonic_rate, oscillation_amplitude;
+}
