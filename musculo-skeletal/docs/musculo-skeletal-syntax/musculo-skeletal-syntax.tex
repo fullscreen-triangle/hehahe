@@ -149,7 +149,18 @@ We report the type separation statistic that determines when the
 non-degenerate estimator has power, and specify the diagnostic that
 distinguishes an uninformative model from a negative result. Three worked
 programs---a stretch reflex, a postural loop under ablation, and a
-cross-stratum coupling lesion---exercise every construct.
+cross-stratum coupling lesion---exercise every construct. A reference
+implementation, exercised over ten programs yielding $257$ observations,
+establishes that the language recovers clinical taxonomy from anatomy
+alone---the upper/lower motor neuron distinction and the level-dependent
+picture of spinal cord injury each follow from a membership test on declared
+paths---and produces three statements not otherwise available: that regional
+anaesthesia passes through a window in which contractile capacity is
+preserved to full precision while the circulation is open, so coordination
+fails without weakness; that surgical reinnervation restores closure through
+a path $16$\,ms slower than the limb it replaces, so the repaired
+circulation is not the original one; and that joint stiffness is an emergent
+property of two coupled limit cycles rather than a commanded parameter.
 \end{abstract}
 
 \noindent\textbf{Keywords:} domain-specific language; musculoskeletal
@@ -282,6 +293,10 @@ non-degenerate, together with the statistic governing its power
 (\Cref{sec:estimation}).
 \item Three worked programs exercising every construct
 (\Cref{sec:programs}).
+\item A reference implementation whose fifty tests assert the specification's
+properties directly, together with the empirical findings it produced and the
+three specification-level errors that building it exposed
+(\Cref{sec:implementation}).
 \end{enumerate}
 
 \subsection{Relation to existing work}
@@ -1785,6 +1800,597 @@ instance, which is exactly the instance-specific estimator that
 \texttt{type\_separation} observable returns $\eta$ of \Cref{def:eta}, without
 which, by \Cref{prop:degeneracy}, a reported agreement or disagreement cannot
 be interpreted.
+
+% =====================================================================
+\section{Implementation and empirical findings}
+\label{sec:implementation}
+% =====================================================================
+
+The specification above is a set of claims about what a language can decide
+and what it must refuse. We have implemented it, and this section reports
+what the implementation established --- including three respects in which
+building it corrected the specification, and one respect in which it
+revealed a gap the specification did not know it had.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/panel1-closure-dynamics.png}
+\caption{\textbf{Closure decides the character of the dynamics, not merely
+its magnitude.}
+(\textbf{A})~State of a corticospinal circulation over $12$\,s, closed (left
+axis) and after severance of the cortical output element (right axis). The
+two are plotted on separate scales because they differ by four orders of
+magnitude: the closed circulation executes bounded oscillation about a
+non-zero centre, as \Cref{cor:perpetual} requires of an ungrounded graph
+under sustained supply, while the severed one ramps monotonically until it
+saturates the integrator. No value of a gain interpolates between these.
+(\textbf{B})~Phase portrait of the closed circulation, state against its time
+derivative over $9$\,s. The trajectory fills an annular region and never
+approaches the marked centroid, which is the geometric content of
+\Cref{thm:no-equilibrium}: the system has no fixed point to relax onto, so
+what electrophysiology calls a resting potential is the centre of a cycle
+rather than a state the circuit occupies.
+(\textbf{C})~Excursion envelope on a logarithmic axis, closed and open, with
+the median divergence time across all open arms in the corpus marked. The
+closed envelope is stationary near $10^{-2}$; the open envelope crosses it
+within the first second and saturates four decades higher.
+(\textbf{D})~Envelope of the closed circulation as a function of loop gain
+and elapsed time, with level contours projected onto the base plane. Decay
+is governed by the product of gain and time, so a weakly conducting return
+sustains a wider limit cycle without ever failing to close --- the surface
+approaches zero envelope only asymptotically and never leaves the closed
+regime.}
+\label{fig:panel1}
+\end{figure*}
+
+\subsection{The reference implementation}
+
+A complete implementation---lexer, LL(1) recursive-descent parser, type
+checker, the four static analyses, the operational semantics of
+\Cref{sec:semantics}, and a continuous backend discharging obligations
+(B1)--(B4)---has been written and exercised against ten programs. It is a
+\emph{reference} implementation in the strict sense: its purpose is to make
+the specification's claims executable rather than merely stated, so that a
+divergence between the two is a test failure rather than a matter of
+opinion. Fifty tests assert specification properties directly. Among them:
+\Cref{prop:attenuation} is checked at scaling factors down to $10^{-12}$;
+\Cref{thm:lesion-monoid} is checked over all $3!$ orderings of three
+distinct lesions; \Cref{thm:telescoping} is checked over $500$ randomly
+generated cascades; and \Cref{prop:backend-independent} is checked by
+confirming that the diagnostic stream is invariant under re-analysis.
+
+The ten programs comprise $47$ experimental arms and yield $257$
+observations, recorded with the provenance that (B2) and (B3) require: each
+value carries the floor used to compute it, the frequency band it was
+attributed to, the random seed, and the sample count.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/panel2-attenuation-severance.png}
+\caption{\textbf{Attenuation and severance are different operators, and the
+difference is visible before any integration.}
+(\textbf{A})~Closure index against the scaling factor $\lambda$ over twelve
+decades. The index is invariant at \textsf{closed} throughout, confirming
+\Cref{prop:attenuation} at factors down to $10^{-12}$; the marker at the
+left edge is the value taken by the structurally distinct
+\texttt{without element} operator. The discontinuity is not a limit of the
+curve but a different point in the operator space.
+(\textbf{B})~Tonic discharge rate over return gain and loop delay. Rate falls
+smoothly with attenuation and rises as the reciprocal of delay, so a
+parametric lesion moves the operating point continuously across this surface
+while leaving the closure class fixed.
+(\textbf{C})~Force output against outbound gain. The two curves --- one for
+circulations that remain closed, one for those that have been opened ---
+coincide exactly, because force is computed from the integrity and gain of
+the outbound phase alone and closure is a property of both phases. The
+markers are the measured nerve-block stages.
+(\textbf{D})~The measured sequence, stages $1$--$6$ of the phased block, with
+bar colour giving the closure index. Stage $3$ carries the full baseline
+force of $420$\,N with the circulation open; stage $4$ carries none. Strength
+and coordination therefore dissociate, and they dissociate discontinuously.}
+\label{fig:panel2}
+\end{figure*}
+
+\subsection{Derivations that recover known clinical taxonomy}
+
+Three programs reproduce classifications that clinical neurology arrived at
+empirically. The interest is not in the conclusions, which are standard, but
+in the derivation: none of these files encodes the conclusion anywhere. What
+is declared is anatomy---compartments, delays, and two path declarations per
+circulation---and the classification is the output of the linear-time
+closure computation of \Cref{thm:closure-decidable}.
+
+\paragraph{Upper versus lower motor neuron lesion.}
+A program declares two circulations over shared compartments: a
+corticospinal loop traversing cortex and brainstem, and a segmental stretch
+reflex confined to the spinal level. Severing the cortical output element
+opens the first; the second is not mentioned in that lesion, because the
+lesion does not reach it. The observed result is
+
+\begin{center}
+\begin{tabular}{@{}lccl@{}}
+\toprule
+Lesion & Supraspinal loop & Segmental loop & Derived picture\\
+\midrule
+Cortical output & open & closed, $15.7$\,Hz & spasticity\\
+Anterior horn   & open & open, no rhythm    & flaccidity\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The segmental loop survives a cortical lesion because it does not traverse
+the severed element, and it continues to oscillate at the rate its own loop
+delay implies---which is the circuit-level content of spasticity. The same
+operator applied to the motor axon opens both, and the tonic rate becomes
+undefined rather than small, because an open circulation sustains no rhythm
+at all. This is the upper/lower motor neuron distinction obtained from
+topology, and \Cref{cor:perpetual} is what makes the surviving oscillation a
+prediction rather than an artefact.
+
+\paragraph{Spinal cord injury.}
+A second program declares circulations at three spinal levels, using the
+template facility of \Cref{sec:extensions} to avoid restating the segmental
+arc per muscle. A complete thoracic injury is expressed by severing
+conduction through the thoracic level in both directions. Circulations
+traversing that level open; the segmental arc below it remains closed at
+$12.9$\,Hz; the upper-limb circulation, which traverses the cervical level
+only, is untouched at $10.0$\,Hz. Paralysis below, preserved reflexes below,
+and normal function above are three consequences of one membership test.
+
+The program also expresses a motor-complete, sensory-incomplete injury by
+applying \emph{different} operators to the descending and ascending
+elements---severance to one, attenuation to the other. That this is
+expressible at all is \Cref{prin:structural}; that the two receive different
+closure indices is \Cref{prop:attenuation}.
+
+\paragraph{Tremor.}
+A third program applies four different lesion operators to one declared
+postural circuit. All four leave the circulation closed, so the closure
+index does not separate them and the spectral observables must. The measured
+separation is
+
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Arm & reflex band & supraspinal band & coupling & $\eta$\\
+\midrule
+intact       & $0.241$ & $0.0123$ & $0.052$ & $0.899$\\
+parkinsonian & $0.278$ & $0.0188$ & $0.048$ & $0.931$\\
+essential    & $0.229$ & $0.0226$ & $0.063$ & $\mathbf{0.166}$\\
+cerebellar   & $0.281$ & $0.0198$ & $0.047$ & $0.938$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The final column is the reason \Cref{rem:report-eta} imposes a reporting
+obligation, and it is worth dwelling on. The essential-tremor arm is the one
+modelled by cross-stratum coupling, and it is the only arm whose type
+separation collapses. This is not a defect of that arm's typing: it is
+\Cref{prop:degeneracy} operating exactly as stated. Coupling across
+non-adjacent strata disperses catalytic power \emph{within} each event type,
+so the types stop separating, so any composed estimate from that arm is
+uninterpretable. The language reports $\eta=0.166$ alongside $\kap=0.601$
+rather than reporting the latter alone. A framework that returned only the
+$\kap$ would have returned a confident number computed in precisely the
+regime where confidence is unwarranted.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/panel3-lesion-level.png}
+\caption{\textbf{Which circulations survive a lesion is decided by which
+traverse it.}
+(\textbf{A})~Tonic rate of two circulations after severance of the cortical
+output element. The supraspinal circulation, which traverses the severed
+element, sustains no rhythm; the segmental circulation, which does not,
+continues at $15.7$\,Hz. This pair is the circuit-level content of the
+upper motor neuron picture, and neither value is declared anywhere in the
+program.
+(\textbf{B})~Fraction of circulations left open as a function of lesion level
+for three anatomical classes: lower-limb supraspinal loops, upper-limb
+supraspinal loops, and segmental arcs. The classes separate because a
+membership test decides each: a loop opens exactly when the severed level
+lies on one of its declared paths.
+(\textbf{C})~Loop latency over segment index and declared per-hop delay. The
+surface is planar because latency is a sum of declared delays, which is what
+makes the reflex-latency budget of \Cref{def:strata} checkable against
+measurement rather than fitted to it.
+(\textbf{D})~Measured latencies of four circulations in the corpus, coloured
+by closure index. The corticospinal loop is both the longest and the one the
+cortical lesion opens.}
+\label{fig:panel3}
+\end{figure*}
+
+\subsection{Findings not otherwise available}
+
+Three programs produce statements that we have not found in the literature
+and that follow from the closure formulation rather than from any parameter
+choice.
+
+\paragraph{Dissociation of strength from coordination under regional block.}
+A phased program (\Cref{sec:extensions}) models the onset of a peripheral
+nerve block in the order the fibre classes are recruited. The intermediate
+stage---after the proprioceptive afferent has blocked but before the motor
+efferent has---produces the following:
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Stage & Closure index & Force output\\
+\midrule
+baseline            & closed        & $420.0$\,N\\
+analgesia           & closed        & $420.0$\,N\\
+proprioceptive loss & \textbf{open} & $\mathbf{420.0}$\,\textbf{N}\\
+motor block         & open          & $0.0$\,N\\
+motor recovery      & open          & $126.0$\,N\\
+resolved            & closed        & $420.0$\,N\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Force is unchanged to full floating-point precision while the circulation is
+open. The equality is not arranged: force is computed from the integrity and
+gain of the outbound phase, closure from the topology of both phases, and
+the two are independent functions of the declaration. Severing a return
+element changes the second without touching the first.
+
+The prediction is therefore that regional anaesthesia passes through a
+window in which contractile capacity is fully preserved and coordinated
+movement is nevertheless abolished---a dissociation of kind, not of degree.
+This is the deafferentation phenomenology
+\citep{cole1991,sainburg1995,ghez1995,lajoie1996} relocated into a
+reversible, dose-controlled, routinely performed clinical procedure. An
+optimal feedback control formulation, in which the afferent enters as a
+multiplicative gain \citep{todorov2002}, predicts graded degradation across
+this window instead. The two accounts disagree, the disagreement is sharp,
+and the window is accessible.
+
+\paragraph{Surgical repair as closure restoration.}
+A program models trans-radial amputation, targeted muscle reinnervation, and
+mirror therapy. Amputation is \texttt{without return}, which opens the
+circulation. Reinnervation and mirror therapy are both \texttt{reroute},
+which is the only operator in the language able to carry a circuit from
+$\textsf{open}$ back to $\textsf{closed}$. The measured latencies are
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Arm & Closure index & Loop latency\\
+\midrule
+intact    & closed & $49.8$\,ms\\
+amputated & open   & ---\\
+TMR       & closed & $65.8$\,ms\\
+mirror    & closed & $35.8$\,ms\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both interventions restore closure, and neither restores the original
+circulation. The reinnervated loop is $16$\,ms slower than the limb it
+replaces, because it traverses a different muscle with different conduction
+distances; the mirror loop is faster but, as the checker notes at compile
+time, traverses the supraspinal stratum, so it carries that stratum's
+bandwidth and requires conscious mediation. The framework thus distinguishes
+two repairs that both work, by the delay and the stratum of the substituted
+path---a statement about prosthetic proprioception that the signal-and-gain
+formulation cannot make, because in that formulation there is nothing to
+restore, only a gain to raise.
+
+\paragraph{Joint stiffness as an emergent quantity.}
+A program declares two circulations sharing a spinal interneuron pool and a
+joint, and measures their co-activation. Degrading reciprocal inhibition
+raises the co-contraction ratio from $0.63$ to $0.87$ and the joint
+stiffness from $139$ to $148$\,N/m. No stiffness is commanded anywhere in
+the program; it is a property of two coupled limit cycles, and it moves
+because the coupling changed. Under \Cref{cor:perpetual} this is what
+stiffness must be: if the circuits admit no static equilibrium, a joint held
+between them has no equilibrium stiffness either, only the effective
+stiffness of two oscillations that overlap to a degree the coupling sets.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/panel4-spectral-separation.png}
+\caption{\textbf{When closure does not separate lesions, spectra must ---
+and the separation statistic says whether they can.}
+(\textbf{A})~Power spectral density of four tremor arms over $40$\,s. All
+four circulations are closed, so the closure index is uninformative here and
+the distinction is carried entirely by the distribution of power across the
+stratum bands.
+(\textbf{B})~Reflex-band and supraspinal-band power for the same four arms.
+The parkinsonian and cerebellar arms elevate reflex-band power by
+approximately one seventh; the essential arm does not, and instead raises
+supraspinal-band power most.
+(\textbf{C})~The diagnostic plane: type separation $\eta$ against coupling
+index. Three arms sit above $0.89$; the essential arm, the only one modelled
+by coupling across non-adjacent strata, falls to $0.166$, below the flagging
+threshold. This is \Cref{prop:degeneracy} realised on real output --- the
+cross-stratum edge disperses catalytic power within each event type, so the
+typing stops separating and any composed estimate from that arm is
+uninterpretable regardless of how confident it looks.
+(\textbf{D})~Log spectral density over frequency and arm. The reflex-band
+ridge is common to all four; what differs is its height relative to the
+low-frequency shoulder, which is the quantity panel~\textbf{B} extracts.}
+\label{fig:panel4}
+\end{figure*}
+
+\subsection{Prosthetic compliance as capacitance}
+
+One result exercises \Cref{sec:compartments} rather than the closure
+analysis. A program declares left and right hip circulations identical in
+topology, delays, and gains, differing in exactly one declared quantity: the
+terminal compartment's capacitance, $1.8\times10^{-4}$\,F for the biological
+joint and $0.9\times10^{-4}$\,F for the prosthetic one. The measured forces
+are $474.5$\,N and $335.6$\,N, a ratio of $0.7071$. This is
+$\sqrt{0.9/1.8}$ to six figures, which is \eqref{eq:charge} evaluated at the
+two capacitances.
+
+The point is not that the implementation performs a square root correctly.
+It is that a mechanical property of an implanted device---joint
+compliance---enters the model as a compartment capacitance, propagates
+through the charge relation without further modelling assumptions, and
+emerges as a force asymmetry. Rule I is what makes this traceable: because
+charge carries the compartment it was computed against, the two limbs'
+charges are not interchangeable quantities and the asymmetry cannot be
+silently averaged away.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/panel5-repair-closure.png}
+\caption{\textbf{Repair restores closure through a path that is not the
+original.}
+(\textbf{A})~Loop latency of the intact circulation, the amputated
+circulation, and two repairs, with the intact value marked. Amputation
+carries no latency because there is no loop to traverse.
+(\textbf{B})~Latency offset of each repair from the original. Targeted muscle
+reinnervation closes the circulation $16$\,ms slower, because the
+substituted return traverses a different muscle at a different conduction
+distance; mirror substitution closes it $14$\,ms faster but through the
+supraspinal stratum, which the checker reports at compile time and which
+carries that stratum's bandwidth.
+(\textbf{C})~Restored latency over the number of hops in the substituted
+return and the delay per hop, with level contours on the base plane. Any
+point on this surface is a closed circulation; the surgical question is
+which point, and the framework answers it before any integration.
+(\textbf{D})~Closure index against loop latency for the four arms. Repair
+moves a circulation vertically, from open to closed, and horizontally, to a
+latency the original did not have. A signal-and-gain formulation has no
+vertical axis here: there is nothing to restore, only a gain to raise.}
+\label{fig:panel5}
+\end{figure*}
+
+\subsection{The degenerate estimator, exhibited}
+
+\Cref{thm:telescoping} is a theorem and needs no empirical support. It is
+nevertheless the claim in this paper that readers find least intuitive,
+because the two quantities are computed by routines that look independent.
+We therefore exhibit it. The implementation computes the instance-specific
+prediction and the measured net power over $4000$ cascades from each of
+three generating processes: one obeying the composition law, one constructed
+to violate it, and one that is pure noise.
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Generating process & $\max\abs{\hat\kap-\kap_{\mathrm{meas}}}$ & Pearson $r$\\
+\midrule
+multiplicative (obeys the law)  & $2.2\times10^{-16}$ & $1.000000$\\
+adversarial (violates the law)  & $1.8\times10^{-15}$ & $1.000000$\\
+random walk (no process at all) & $1.4\times10^{-15}$ & $1.000000$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The agreement is at machine precision for data generated by a process
+constructed to violate every substantive claim of the algebra, and for data
+generated by no process whatsoever. A statistic that reports perfect
+agreement on a random walk is not measuring the random walk.
+
+Replacing the estimator with the typed one of \Cref{def:type-averaged} makes
+the discrepancy nonzero, as \Cref{thm:nondegenerate} requires, and the
+separation statistic behaves as \Cref{prop:degeneracy} predicts: a corpus
+with well-separated types gives $\eta=0.934$, and one whose type means agree
+to two figures gives $\eta=0.013$. On multiplicatively generated data with
+mixed-type cascades the four laws of \Cref{prop:competitors} are cleanly
+ordered, the multiplicative law attaining $\mathrm{RMSE}=0.033$ and
+$r=0.967$ against $0.19$, $0.32$, and $0.44$ for its competitors---so the
+corrected test selects, which is what a test with a null hypothesis is
+supposed to do.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/panel6-coupled-stiffness.png}
+\caption{\textbf{Joint stiffness is emergent from two coupled circulations,
+not commanded by either.}
+(\textbf{A})~Activation of an agonist and an antagonist circulation sharing a
+spinal interneuron pool and a joint, over $4$\,s with reciprocal inhibition
+intact. The two alternate: reciprocal inhibition through the shared pool
+pushes them out of phase, which is what smooth alternating movement is.
+(\textbf{B})~The same pair after the inhibition is degraded by a declared
+cross-stratum lesion. The traces now move together, because the mechanical
+coupling through the shared joint is left unopposed.
+(\textbf{C})~Measured co-contraction ratio and joint stiffness for the two
+conditions. The ratio rises from $0.63$ to $0.87$ and the stiffness from
+$139$ to $148$\,N/m. No stiffness is commanded anywhere in the program; it
+moves because the coupling changed.
+(\textbf{D})~Stiffness over reciprocal inhibition strength and the fraction
+of each circulation's path that the shared junctions occupy. Stiffness falls
+as inhibition rises and as sharing increases, and is defined only where the
+two paths genuinely intersect --- a pair whose nominated junctions lie on
+neither path is reported as uncoupled rather than silently coupled.}
+\label{fig:panel6}
+\end{figure*}
+
+\subsection{What implementation changed in the specification}
+
+Three corrections arose from building the system, and we record them because
+each was a specification-level error that reading could not have caught.
+
+\emph{An observable must name what computes it.} The specification treats
+observables as opaque names discharged by a backend. Exercising the language
+revealed that this admits names such as \texttt{conscious\_overhead}
+alongside \texttt{loop\_latency}, with nothing to distinguish a quantity
+that has a measurement procedure from one that does not. An observable
+without a procedure is a promise, not a result. The implementation therefore
+maintains a registry in which each admissible observable is declared with
+its unit, its arity, and the procedure that computes it, and the checker
+rejects any name absent from it. We regard this as a repair to
+\Cref{sec:backends} rather than an implementation detail: it is the
+difference between a framework that produces results and one that produces
+vocabulary.
+
+\emph{Force is a property of the outbound phase alone.} An early backend
+computed force from the simulated state trace. This reported an open
+circulation as producing more force than an intact one, because the open
+circulation diverges and the divergence is large. The error inverted the
+central claim of the nerve-block experiment. The correct treatment is that
+the outbound phase carries the command to the muscle, so contractile
+capacity depends on the integrity and gain of that phase and not on whether
+the return phase closes---which is precisely why strength and coordination
+dissociate. The specification did not say this because the specification did
+not have to compute anything.
+
+\emph{Loop gain is a property of the whole circulation.} A second backend
+computed loop gain from the return path alone, which made lesions of
+descending elements silent. Attenuating a descending pathway must change the
+dynamics, since the restoring term traverses the entire loop. Both errors
+share a shape: they arise from treating one phase of a circulation as
+privileged, which is exactly the habit the language exists to break, and
+they are the sort of error that survives careful reading and dies on contact
+with a test.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/panel7-degenerate-estimator.png}
+\caption{\textbf{The instance-specific estimator agrees with its own
+measurement on data generated by no process at all.}
+(\textbf{A})~Composed prediction against directly measured net power for
+cascades drawn from three generating processes: one obeying the composition
+law, one constructed to violate it, and one a random walk. Every point of
+every process lies on the identity line. If the two quantities were
+independent, the adversarial and random-walk clouds would scatter.
+(\textbf{B})~Maximum absolute discrepancy over $4000$ cascades per process,
+on a logarithmic axis, with double-precision epsilon marked. All three sit
+within one order of magnitude of it. A statistic that reports perfect
+agreement on a random walk is not measuring the random walk
+(\Cref{cor:no-null}).
+(\textbf{C})~Residual over cascade length and process index. The surface is
+flat in the process direction --- the agreement is insensitive to what
+generated the data, which is the signature of an identity rather than a
+confirmation --- and rises only with length, as accumulated floating-point
+error.
+(\textbf{D})~Root-mean-square error of four composition laws under the typed
+estimator, on multiplicatively generated data with mixed-type cascades. The
+multiplicative law attains $0.033$ against $0.19$, $0.32$, and $0.44$; the
+corrected test therefore selects, which is what a test possessing a null
+hypothesis is supposed to do.}
+\label{fig:panel7}
+\end{figure*}
+
+\subsection{Extensions the experiments required}
+\label{sec:extensions}
+
+Exercising the language against clinically realistic programs revealed that
+the core grammar of \Cref{sec:grammar} is expressive enough for ablation but
+not for two other things experimenters need. We describe the extensions
+and, equally, the ones we declined.
+
+\emph{Templates.} A realistic model declares one segmental arc per muscle
+group per level, differing only in compartment names and conduction delays.
+A template facility, \texttt{circuit template} with instantiation, removes
+the repetition. It is pure syntactic sugar: each instance expands to a
+circuit declaration before typechecking, so every result of
+\Cref{sec:typing,sec:semantics} applies unchanged to the expanded form.
+
+\emph{Reroute.} \texttt{reroute return($v$) through $p$} replaces a
+circulation's return phase with an explicit new path. It is the only
+operator that can raise the closure index, and this asymmetry is the point:
+without it the language models ablation but not repair, and reinnervation,
+prosthetic feedback, and sensory substitution are all repairs. The aperture
+analysis extends without modification, since the substituted path is checked
+against the outbound phase exactly as the original was; a reroute that fails
+to terminate at the outbound origin leaves the circuit open, and the
+aperture report says why.
+
+\emph{Phases.} The semantics of \Cref{sec:semantics} applies every lesion
+before any observation, which makes any experiment whose circuit changes
+over time inexpressible. A \texttt{phase} block, optionally naming a
+predecessor, resolves this. Each phase is an independent experiment sharing
+the intact circuit, so progress, preservation, and termination apply per
+phase and the step bound becomes
+$\sum_j(\abs{L_j}+\abs{O_j})+n_{\mathrm{ph}}$. Without phases the
+nerve-block dissociation reported above cannot be posed at all, since its
+content is entirely in the ordering.
+
+\emph{Antagonist pairs.} Two circulations acting on one joint share
+compartments. This is not composition of two models---which \Cref{sec:scope}
+declines---but current conservation at a shared vertex within one medium,
+and the distinction matters: the shared vertices must lie on both
+circulations' declared paths, and the implementation reports a pair whose
+nominated junctions do not as uncoupled, rather than silently coupling loops
+that do not touch.
+
+We declined two further extensions. \emph{Stochastic element failure} was
+proposed to model fatigable weakness at the neuromuscular junction. It would
+make the closure index a random variable, and hence a runtime rather than a
+static property, forfeiting \Cref{prop:backend-independent}. It also buys
+nothing: fatigable weakness is a trajectory through safety-factor loss,
+which phases express while leaving closure statically decidable, and the
+clinical distinction it was proposed to capture---myasthenic weakness
+against denervation---is already the distinction between attenuation and
+severance. Our implementation obtains it directly: the myasthenic arm is
+closed with $63.0$\,N and an intact $12.9$\,Hz rhythm, the denervated arm
+open with $0.0$\,N and no rhythm. \emph{Bilateral declaration} was proposed
+for left--right comparison. It is metadata: every typing and reduction rule
+applies to each circuit independently, so it would add a keyword without
+adding semantics, and the comparison is properly performed over results.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/panel8-capacitance-force.png}
+\caption{\textbf{A mechanical property of an implant enters as a compartment
+capacitance and emerges as a force asymmetry.}
+(\textbf{A})~Force output against terminal compartment capacitance, with the
+two declared values marked: $1.8\times10^{-4}$\,F for the biological hip and
+$0.9\times10^{-4}$\,F for the prosthetic one. The curve is
+\eqref{eq:charge}; the markers are measurements.
+(\textbf{B})~Force over capacitance and outbound gain, with level contours on
+the base plane. The two variables enter differently --- as a square root and
+linearly --- so a compliance change and a weakness are not
+interchangeable, which is what the compartment index of Rule~I preserves.
+(\textbf{C})~Force ratio against capacitance ratio. The measured pair falls
+on $\sqrt{0.5}=0.7071$ to six figures, which is \eqref{eq:charge} evaluated
+at the two declared capacitances and not a fitted relation.
+(\textbf{D})~Three observables of the prosthetic limb relative to the
+biological one, with the $\sqrt{0.5}$ reference marked. Latency and
+oscillation amplitude are unchanged, since topology, delays, and gains are
+identical by construction; only force moves, and it moves to the reference
+line. The asymmetry is attributable to one declared quantity.}
+\label{fig:panel8}
+\end{figure*}
+
+\subsection{Threats to validity}
+\label{sec:threats}
+
+The backend used here is a linearised reference implementation. It
+integrates a delayed multi-stratum loop and does not integrate cross-bridge
+kinetics or musculotendon mechanics, so its absolute magnitudes---amplitudes
+in arbitrary units, forces scaled from a nominal tetanic maximum---are not
+physiological predictions and should not be read as such. What survives this
+caveat is precisely what \Cref{prop:backend-independent} says survives: the
+closure indices, the aperture reports, the compartment and stratum analyses,
+and quantities derived from declared values by \eqref{eq:charge} are
+backend-independent. The force ratio of $0.7071$ is exact; the $420$\,N it
+scales is a convention.
+
+Two further limits deserve statement. The findings above are consequences of
+declarations, and a model may declare wrongly: the type system guarantees
+that compartments, strata, and floors are used consistently, not that they
+are true (\Cref{sec:scope}). And the clinical reproductions demonstrate that
+the method recovers known taxonomy from anatomy, not that the anatomy was
+chosen without knowledge of the taxonomy. We have tried to make that
+inference checkable by keeping the declarations minimal and stating, for
+each program, what is not encoded in it; a reader who suspects the
+capacitances or delays were tuned to the answer can verify that no program
+mentions spasticity, flaccidity, or any clinical category.
 
 % =====================================================================
 \section{Discussion}
