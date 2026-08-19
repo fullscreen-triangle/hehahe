@@ -102,7 +102,39 @@ OBSERVABLES: dict[str, ObsSpec] = dict(
            "Discrepancy between the type-averaged multiplicative prediction "
            "and the measured net power. Non-degenerate by construction."),
 
-        # ── E6: antagonist pairs ──────────────────────────────────────
+        # ── coherence, identity, opacity: static, no backend needed ───
+    _o("coherence_margin", "s", 0,
+       "kappa(C) = -max over a cycle basis of |sum of transports around the "
+       "cycle|. Zero at perfect coherence; negative when two routes between "
+       "the same compartments disagree. A circuit can be CLOSED and still "
+       "INCOHERENT: closure says which paths exist, coherence says whether "
+       "they agree."),
+    _o("holonomy_worst", "s", 0,
+       "Magnitude of the largest cycle holonomy, and the cycle realising it. "
+       "Computed over a cycle basis of size |E|-|V|+1, so polynomial and "
+       "requiring no simulation."),
+    _o("is_coherent", "categorical", 0,
+       "Whether every cycle in the circuit closes to within tolerance."),
+    _o("character_cost", "conductance", 0,
+       "Total boundary weight of the minimum-residual partition: what an "
+       "observer finds invariant about the circuit under every "
+       "weight-preserving relabelling."),
+    _o("identity_blocks", "count", 0,
+       "Number of blocks in the minimum-residual partition -- where the "
+       "circuit divides most cheaply, read from inside."),
+    _o("is_block_cut", "categorical", 0,
+       "Whether the minimising partition is a multi-block split rather than "
+       "isolating a single compartment. When true, identity is a region and "
+       "no single compartment carries it."),
+    _o("path_multiplicity", "count", 0,
+       "Number of distinct interiors realising the outbound phase between "
+       "its declared endpoints. Greater than one means the endpoints do not "
+       "determine the interior."),
+    _o("floor_tightness", "ratio", 0,
+       "min separation cost / min edge weight. Near 1 means the floor bound "
+       "is essentially tight rather than a loose safety margin."),
+
+    # ── E6: antagonist pairs ──────────────────────────────────────
         _o("cocontraction_ratio", "fraction", 1,
            "Temporal overlap of activation in the agonist and antagonist "
            "circuits of a declared pair, coupled through their shared "

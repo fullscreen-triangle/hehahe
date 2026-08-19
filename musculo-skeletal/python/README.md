@@ -12,6 +12,7 @@ fails.
 
 ```bash
 python run_all.py                        # run everything -> results/*.json
+python validate_coherence.py             # 2432 checks -> coherence_validation.json
 python -m vitruvius check  experiments/01_stroke_umn_lmn.vvs
 python -m vitruvius run    experiments/03_nerve_block_phases.vvs
 python -m vitruvius table  experiments/05_tremor_classification.vvs
@@ -51,6 +52,7 @@ when the backend does.
 | `backend.py` | numerics; obligations B1–B4 |
 | `estimation.py` | catalytic power, telescoping, the typed estimator |
 | `antagonist.py` | coupled pairs sharing compartments |
+| `coherence.py` | **coherence, identity/character, opacity, floor** |
 | `runtime.py` | operational semantics, phases |
 | `report.py` | formatting |
 | `serialize.py` | JSON export with backend provenance |
@@ -78,6 +80,19 @@ declared lesion, never an oversight.
 same data that measures the outcome is an algebraic identity that agrees
 with itself on every possible dataset. Rule IV requires a declared event
 type; `type_separation` reports whether that typing separates at all.
+
+**Closure is not coherence.** A circuit offering two routes between the same
+compartments can be perfectly closed while the routes disagree on the
+traversal delay. `coherence_margin` asks whether the paths *agree*, not
+merely whether they *match* — computed from declared delays alone, so a
+lesion can be refused before it is committed. In the shipped programs three
+circuits share a closure index *and* a loop latency (33.8 ms) and are
+separated only by coherence.
+
+**Severance repairs, attenuation does not.** Coherence reads delays; scaling
+alters a gain. So `without element` removes a disagreeing route and restores
+agreement, while `with … scaling` leaves the disagreement exactly where it
+was — 120/120 in both directions.
 
 **Every observable has a procedure.** `observables.py` is the registry;
 a name absent from it is rejected. An observable without a defined
@@ -114,6 +129,8 @@ observable, not syntax).
 | `05_tremor_classification.vvs` | four tremor types, one anatomy |
 | `06_cocontraction.vvs` | joint stiffness as an emergent property |
 | `07_telescoping.py` | the degenerate estimator, demonstrated |
+| `11_coherence_holonomy.vvs` | **closed circuits that disagree with themselves** |
+| `12_identity_character.vvs` | **identity as a region; character as an invariant** |
 | `08_myasthenia.vvs` | fatigable weakness as a phase trajectory |
 | `09_rehabilitation.vvs` | why multi-component trial statistics are vacuous |
 | `10_gait_asymmetry.vvs` | prosthetic compliance as capacitance |
@@ -126,7 +143,8 @@ observable, not syntax).
 |---|---|
 | `<program>.json` | full record: circuits, closure, apertures, every observation |
 | `index.json` | one row per program |
-| `observations.json` / `.csv` | flat table, 257 observations |
+| `observations.json` / `.csv` | flat table, 308 observations |
+| `coherence_validation.json` | 2432 checks over 8 claim groups |
 | `07_telescoping.json` | the estimator demonstration |
 
 Every measurement records what the backend was obliged to disclose — the

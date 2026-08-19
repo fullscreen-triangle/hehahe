@@ -1,0 +1,92 @@
+-- Experiment 12: Identity and character are two orientations of one cut.
+--
+-- The aperture analysis reads a circuit's closure from OUTSIDE: it inspects
+-- declared paths and reports whether they match. The resting cut defines the
+-- floor from INSIDE: it is the cheapest way to hold one compartment apart
+-- from the rest. These have looked like two unrelated computations.
+--
+-- They are one object seen from opposite sides of a boundary. The
+-- minimum-residual partition of a circuit says, read inward, WHERE the
+-- circuit divides most cheaply -- its identity. Read outward, the boundary
+-- carried at that partition is what survives every relabelling -- its
+-- character. Neither is prior; each determines the other.
+--
+-- The distinction earns its keep in two ways. First, character is invariant
+-- under relabelling while identity names particular compartments, so an
+-- outside comparison can reach the character without reaching the identity.
+-- Second, when the cheapest cut is a MULTI-BLOCK split, no single
+-- compartment carries the character: identity is a region, and reading it
+-- off any one compartment is impossible in principle rather than merely
+-- difficult.
+--
+-- What is NOT encoded: which circuits have block cuts, or that a serial
+-- chain differs structurally from two coupled loops.
+
+module identity_character;
+
+-- A serial chain: cutting any interior compartment separates the circuit,
+-- so the cheapest cut is expected to be a singleton.
+compartment ch_a { capacitance: 1.0e-8 F;  stratum: reflex; }
+compartment ch_b { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment ch_c { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment ch_d { capacitance: 1.41e-4 F; stratum: reflex; }
+
+circuit serial_chain {
+  floor    : derived(resting_cut(ch_a));
+
+  outbound : ch_a -> ch_b -> ch_c -> ch_d;
+  return   : ch_d -> ch_a;
+
+  element s1 conducts ch_a -> ch_b delay 4.0 ms gain 3.0;
+  element s2 conducts ch_b -> ch_c delay 4.0 ms gain 3.0;
+  element s3 conducts ch_c -> ch_d delay 4.0 ms gain 3.0;
+  element s4 conducts ch_d -> ch_a delay 8.0 ms gain 1.0;
+}
+
+-- Two densely joined groups linked by one thin bridge. Isolating a single
+-- compartment means cutting its several strong contacts; separating the two
+-- groups means cutting the bridge alone. The cheapest cut should therefore
+-- be a block cut, and no single compartment should carry the character.
+compartment gl_1 { capacitance: 1.0e-8 F; stratum: reflex; }
+compartment gl_2 { capacitance: 1.0e-8 F; stratum: reflex; }
+compartment gl_3 { capacitance: 1.0e-8 F; stratum: reflex; }
+compartment gr_1 { capacitance: 1.0e-8 F; stratum: reflex; }
+compartment gr_2 { capacitance: 1.0e-8 F; stratum: reflex; }
+compartment gr_3 { capacitance: 1.0e-8 F; stratum: reflex; }
+
+circuit bridged_groups {
+  floor    : derived(resting_cut(gl_1));
+
+  outbound : gl_1 -> gl_2 -> gl_3 -> gr_1;
+  return   : gr_1 -> gr_2 -> gr_3 -> gl_1;
+
+  -- Left group: strongly interconnected.
+  element l12 conducts gl_1 -> gl_2 delay 3.0 ms gain 4.0;
+  element l23 conducts gl_2 -> gl_3 delay 3.0 ms gain 4.0;
+  element l31 conducts gl_3 -> gl_1 delay 3.0 ms gain 4.0;
+
+  -- The bridge: a single thin contact between the groups.
+  element bridge conducts gl_3 -> gr_1 delay 6.0 ms gain 1.0;
+
+  -- Right group: strongly interconnected.
+  element r12 conducts gr_1 -> gr_2 delay 3.0 ms gain 4.0;
+  element r23 conducts gr_2 -> gr_3 delay 3.0 ms gain 4.0;
+  element r31 conducts gr_3 -> gl_1 delay 6.0 ms gain 1.0;
+}
+
+experiment identity_serial {
+  intact  : serial_chain;
+  observe : closure_index, character_cost, identity_blocks, is_block_cut,
+            floor_value, floor_tightness, path_multiplicity;
+}
+
+experiment identity_bridged {
+  intact  : bridged_groups;
+
+  -- Cutting the bridge does not merely raise a cost: it removes the cheapest
+  -- separation, so the character is carried elsewhere afterwards.
+  lesion cut_bridge : bridged_groups without element(bridge);
+
+  observe : closure_index, character_cost, identity_blocks, is_block_cut,
+            floor_value, floor_tightness, path_multiplicity;
+}

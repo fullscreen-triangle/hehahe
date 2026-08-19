@@ -1,0 +1,336 @@
+% Panel captions for musculo-skeletal-syntax.tex
+%
+% Every numeric value quoted below is read from the JSON records written by
+% the reference implementation (musculo-skeletal/python/results/), not from
+% the prose. Panels 1-8 report the executed programs; panels 9-10 report the
+% coherence, identity, opacity and floor validation suite (seed 20260819,
+% 2432 checks, all passing).
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel1-closure-dynamics.png}
+    \caption{\textbf{Closure decides the character of the dynamics, not
+    merely its magnitude.}
+    The closure index of every arm below is decided statically from the
+    declared paths in linear time (\Cref{thm:closure-decidable}), before any
+    integration is performed, so the separation between the two families is
+    fixed by the program text rather than discovered in the trace.
+    (\textbf{A})~State of a corticospinal circulation over $12$\,s, closed
+    (left axis) and after severance of the cortical output element (right
+    axis). The two require separate scales because they differ by four orders
+    of magnitude: the closed circulation executes bounded oscillation about a
+    non-zero centre, as \Cref{cor:perpetual} requires of an ungrounded graph
+    under sustained supply, while the severed one ramps monotonically until
+    it saturates the integrator. No value of a gain interpolates between
+    these.
+    (\textbf{B})~Phase portrait of the closed circulation, state against its
+    time derivative over $9$\,s. The trajectory fills an annular region and
+    never approaches the marked centroid, which is the geometric content of
+    \Cref{thm:no-equilibrium}: the system has no fixed point to relax onto,
+    so what electrophysiology calls a resting potential is the centre of a
+    cycle rather than a state the circuit occupies.
+    (\textbf{C})~Excursion envelope on a logarithmic axis, closed and open,
+    with the median divergence time across all open arms in the corpus marked
+    at $3.72$\,s. The closed envelope is stationary near $10^{-2}$; the open
+    envelope crosses it within the first second and saturates four decades
+    higher. Divergence is reported as a time, not raised as an exception,
+    which is the totality obligation a conforming backend must discharge.
+    (\textbf{D})~Envelope of the closed circulation over loop gain and
+    elapsed time, with level contours projected onto the base plane. Decay is
+    governed by the product of gain and time, so a weakly conducting return
+    sustains a wider limit cycle without ever failing to close: the surface
+    approaches zero envelope only asymptotically and never leaves the closed
+    regime.}
+    \label{fig:panel1}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel2-attenuation-severance.png}
+    \caption{\textbf{Attenuation and severance are different in kind, and the
+    language refuses to let a scaling factor imitate a cut.}
+    The sweep below is exhaustive over twelve decades of $\lambda$ rather than
+    sampled, so the invariance is a property of the analysis and not an
+    artefact of the grid: \Cref{prop:attenuation} is checked, not illustrated.
+    (\textbf{A})~Closure index against attenuation factor $\lambda$ down to
+    $10^{-12}$. The index remains \texttt{closed} at every $\lambda>0$, while
+    the single removal \texttt{without element(k)} opens the circuit outright.
+    The two operators are therefore not endpoints of one continuum, and a
+    program cannot reach an aperture by shrinking a gain.
+    (\textbf{B})~Force output through the six declared phases of a peripheral
+    nerve block: $420$, $420$, $420$, $0$, $126$, $420$\,N. Analgesia and
+    proprioceptive loss leave force intact although the third phase is already
+    open; motor block abolishes it; recovery restores $30\%$ before resolution
+    returns the full value. Force reads the outbound phase alone, so an open
+    return does not inflate it.
+    (\textbf{C})~Divergence time against $\lambda$, showing the discontinuity
+    at $\lambda=0$. Every $\lambda>0$ yields no divergence; the removal yields
+    $3.72$\,s. The gap at the origin is the quantitative form of the design
+    commitment.
+    (\textbf{D})~Loop-gain surface over $\lambda$ and elapsed time. The
+    surface descends smoothly toward the $\lambda\to0$ edge without ever
+    reaching the open plane, which is why a limit argument on the attenuation
+    parameter does not recover severance.}
+    \label{fig:panel2}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel3-lesion-level.png}
+    \caption{\textbf{Upper- and lower-motor-neuron syndromes separate without
+    either being encoded: the taxonomy falls out of which phase the lesion
+    opens.}
+    Neither program declares spasticity, flaccidity, nor a lesion level. Each
+    declares only a circulation and an element to remove, so the clinical
+    contrast below is derived rather than restated.
+    (\textbf{A})~Tonic discharge rate by arm. The supraspinal circulation
+    after a cortical lesion sustains no rhythm at all, while the segmental
+    circulation in the same program sustains $15.72$\,Hz --- the descending
+    path is severed, the local loop is not, and rhythmicity survives exactly
+    where the loop does. The anterior-horn arm supports neither.
+    (\textbf{B})~Loop latency across the arms: $52.8$, $31.8$, $60.8$,
+    $38.8$ and $49.8$\,ms. Latency shortens when a lesion removes a long
+    descending limb and lengthens when it removes a fast one, so latency alone
+    is not a severity ordering.
+    (\textbf{C})~Below- and above-lesion behaviour of a complete T6
+    transection: reflex activity below the lesion persists at $12.89$\,Hz
+    while voluntary function above it persists at $10.04$\,Hz, the two now
+    uncoupled. That both survive is the point --- a transection is a partition
+    of circulations, not a global loss of function.
+    (\textbf{D})~State trajectories of the intact, upper-motor-neuron and
+    lower-motor-neuron arms in a common space of activation, rate and time.
+    The three occupy disjoint regions, and the separation is generated by the
+    closure structure alone, with no syndrome-specific parameter anywhere in
+    the source.}
+    \label{fig:panel3}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel4-spectral-separation.png}
+    \caption{\textbf{Tremor type is read from which stratum carries the power,
+    and the type-separation statistic reports honestly when it cannot be
+    read.}
+    Band powers are integrated over the stratum bands fixed in
+    \Cref{def:strata}, which are declared in the specification and not tuned
+    per arm, so no arm receives a band chosen to flatter it.
+    (\textbf{A})~Reflex-band power across intact, parkinsonian, essential and
+    cerebellar arms: $0.241$, $0.278$, $0.229$, $0.281$. The four are close,
+    and reflex power alone does not discriminate.
+    (\textbf{B})~Supraspinal-band power for the same arms: $0.0123$, $0.0188$,
+    $0.0226$, $0.0198$. The parkinsonian and cerebellar arms carry roughly
+    $1.5$--$1.6\times$ the intact supraspinal power and the essential arm
+    nearly $1.8\times$; the ratio between strata, not either band alone,
+    carries the taxonomy.
+    (\textbf{C})~Cross-stratum coupling index by arm: $0.052$, $0.048$,
+    $0.063$, $0.047$. The essential arm is the outlier, consistent with a
+    lesion that widens coupling rather than shifting power between strata.
+    (\textbf{D})~Type separation $\eta$ over band power and coupling. Three
+    arms attain $\eta \geq 0.899$, but the essential arm attains only $0.166$.
+    Under \Cref{prop:degeneracy} this is the estimator declaring that its
+    types are not separated for that arm, so the estimate is reported together
+    with the warning rather than as a number of equal standing --- the
+    \emph{unconditional} claim that a typed estimate is available for every
+    arm is false, and \Cref{rem:report-eta} requires that this be stated
+    rather than absorbed.}
+    \label{fig:panel4}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel5-repair-closure.png}
+    \caption{\textbf{Surgical repair is re-closure, and its cost is a latency
+    that the closure index by itself cannot see.}
+    All four arms below are read from one program in which only the declared
+    paths differ; the reroute operator is the sole construct in the language
+    permitted to raise a closure index, so a repair is syntactically visible
+    as such.
+    (\textbf{A})~Closure index by arm. The amputated arm is open; targeted
+    muscle reinnervation and the mirror construction both restore
+    \texttt{closed}. On the closure axis alone the two repairs are
+    indistinguishable from the intact circuit, which is precisely the
+    limitation that motivates the remaining three views.
+    (\textbf{B})~Loop latency: intact $49.8$\,ms, TMR $65.8$\,ms ($+16.0$),
+    mirror $35.8$\,ms ($-14.0$). Re-closure through a rerouted path is not
+    latency-neutral, and the two repairs err in opposite directions --- TMR
+    routes through a longer path, the mirror through a shorter one.
+    (\textbf{C})~Latency deviation from intact against restored closure,
+    showing that equal closure admits a $30$\,ms spread. Closure is a
+    predicate; the cost of achieving it is not recoverable from the predicate.
+    (\textbf{D})~State trajectories of the four arms in activation, rate and
+    time. The amputated arm departs the shared region and does not return; the
+    two repaired arms re-enter it along visibly different approaches, so the
+    difference the closure index cannot express is present in the dynamics.}
+    \label{fig:panel5}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel6-coupled-stiffness.png}
+    \caption{\textbf{Joint stiffness is a property of a coupled antagonist
+    pair, not of either muscle, and losing reciprocal inhibition raises it.}
+    Coupling is counted only over compartments lying on both declared loop
+    paths, so the shared-vertex count is a structural fact about the program
+    rather than a name collision between two independently declared circuits.
+    (\textbf{A})~Co-contraction ratio for the elbow pair: $0.6258$ intact
+    against $0.8682$ with reciprocal inhibition removed, a rise of $38.7\%$.
+    The direction matters --- removing the inhibition that separates the
+    antagonists must increase simultaneous activation, and an earlier
+    formulation that reported the opposite was diagnosed by exactly this
+    check.
+    (\textbf{B})~Derived joint stiffness: $138.58$ against
+    $148.02$\,N\,m$^{-1}$, a $6.8\%$ increase. Stiffness is computed from the
+    pair and is undefined for a single circulation, so it is an observable the
+    antagonist-pair construct makes available and the single-loop language
+    cannot express.
+    (\textbf{C})~Oscillation amplitude, $0.01368$ against $0.01385$. The
+    stiffer pair oscillates slightly more, not less: the added stiffness comes
+    from co-activation rather than from damping, a distinction a lumped
+    stiffness parameter would erase.
+    (\textbf{D})~Stiffness surface over agonist and antagonist drive, with the
+    intact and disinhibited operating points marked. The surface rises along
+    the diagonal and is flat along either axis alone, which is the geometric
+    statement that stiffness responds to the \emph{pair} and is insensitive to
+    either member driven by itself.}
+    \label{fig:panel6}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel7-degenerate-estimator.png}
+    \caption{\textbf{The instance-specific estimator agrees with its own
+    measurement on data generated by no process at all.}
+    Each generating process below contributes $4000$ independently drawn
+    cascades, including one constructed specifically to violate the
+    composition law, so an agreement that survives the adversarial corpus
+    cannot be a property of the data.
+    (\textbf{A})~Composed prediction against directly measured net power for
+    the three processes: one obeying the composition law, one violating it,
+    one a random walk. Every point of every process lies on the identity line,
+    with Pearson $r = 1.000000$ throughout. Were the two quantities
+    independent, the adversarial and random-walk clouds would scatter.
+    (\textbf{B})~Maximum absolute discrepancy per process on a logarithmic
+    axis, with double-precision epsilon marked: $2.2\times10^{-16}$,
+    $1.8\times10^{-15}$, $1.4\times10^{-15}$. All three sit within one order
+    of magnitude of machine epsilon. A statistic reporting perfect agreement
+    on a random walk is not measuring the random walk (\Cref{cor:no-null}).
+    (\textbf{C})~Residual over cascade length and process index. The surface
+    is flat in the process direction --- agreement is insensitive to what
+    generated the data, the signature of an algebraic identity rather than a
+    confirmation (\Cref{thm:telescoping}) --- and rises only with length, as
+    accumulated floating-point error.
+    (\textbf{D})~Root-mean-square error of four candidate composition laws
+    under the typed estimator on multiplicatively generated mixed-type
+    cascades. The multiplicative law attains $0.0338$ against $0.191$, $0.333$
+    and $0.452$; the typed test therefore selects among competitors, which is
+    what a test possessing a null hypothesis is supposed to do
+    (\Cref{thm:nondegenerate}). The corpora also bracket the condition:
+    $\eta = 0.934$ on separated types against $\eta = 0.013$ on compressed
+    ones, at nearly equal residual.}
+    \label{fig:panel7}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel8-capacitance-force.png}
+    \caption{\textbf{Prosthetic compliance enters as a capacitance, and the
+    force it yields is fixed by a ratio the program never states.}
+    Charge is computed compartment-wise as $Q=\sqrt{2CP}$
+    (\Cref{eq:charge}); mixing capacitances across compartments is rejected by
+    \Cref{def:comp-rule}, so the two limbs below are compared, never summed.
+    (\textbf{A})~Peak force at the biological and prosthetic hip: $474.5$ and
+    $335.6$\,N. The ratio is $0.707107$, which is $\sqrt{0.9/1.8}$ to six
+    figures --- exactly the square root of the declared capacitance ratio, and
+    a consequence of \Cref{eq:charge} rather than a fitted coefficient.
+    (\textbf{B})~Loop latency at both hips, $72.8$\,ms each. Compliance
+    changes what force the limb can develop without changing when it develops
+    it, so a latency-based gait metric is blind to the asymmetry panel A
+    reports.
+    (\textbf{C})~Oscillation amplitude, $0.01404$ and $0.01416$, and derived
+    floor value $4.0$ at both limbs. The floor is derived from connectivity
+    and positive edge weights (\Cref{prop:floor}) and is unchanged by the
+    substitution, confirming that a prosthesis alters capacitance without
+    altering the separation structure.
+    (\textbf{D})~Force surface over compartment capacitance and supplied
+    power, with both hips marked. The surface is a square root in each
+    argument, so the two operating points lie on one sheet: no
+    prosthesis-specific term is introduced, and the asymmetry is entirely a
+    displacement along the capacitance axis.}
+    \label{fig:panel8}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel9-coherence-closure.png}
+    \caption{\textbf{Closure and coherence are independent axes: a circuit can
+    match its paths perfectly and still disagree with itself about them.}
+    Coherence is computed from declared delays alone by signing each transport
+    with its traversal direction, so a route taken backwards discharges the
+    delay it accrues forwards and a cycle sums a \emph{disagreement} rather
+    than a total. The margin is therefore backend-independent in the sense of
+    \Cref{prop:backend-independent}, verified across two seeds on $60$
+    circuits with agreement below $10^{-15}$.
+    (\textbf{A})~Coherence margin against closure index over $200$ randomly
+    generated circulations. All $200$ are closed, yet $76$ carry a strictly
+    negative margin. Closure asks whether the declared paths \emph{match};
+    coherence asks whether they \emph{agree}, and the first does not imply the
+    second.
+    (\textbf{B})~Distribution of route disagreement among the incoherent
+    circuits, ranging from $4.9$ to $29.4$\,ms with median $16.8$\,ms. The
+    disagreement is of the same order as the loop latencies themselves, so it
+    is not a rounding-scale effect.
+    (\textbf{C})~Margin before and after two expressible operators applied to
+    $120$ incoherent circuits. Removal of the offending element repairs the
+    disagreement in $120/120$ cases; scaling that element to $\lambda=0.05$
+    leaves it incoherent in $120/120$. Both operators are expressible, so
+    expressibility alone does not discriminate --- this is why admissibility
+    is two-factor. Note also that scaling changes the margin by less than
+    $10^{-12}$ and therefore \emph{passes} a coherence-preserving test while
+    leaving the circuit broken: a preservation test cannot substitute for
+    reporting the post-state margin.
+    (\textbf{D})~Disagreement surface over route delay mismatch and the number
+    of parallel routes. The surface is identically zero along the
+    single-route edge and rises with mismatch only once a second route exists,
+    which is the structural statement that incoherence requires an alternative
+    and cannot arise on a circuit with one path.}
+    \label{fig:panel9}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel10-identity-opacity-floor.png}
+    \caption{\textbf{Identity and character are two orientations of one cut,
+    the interior of a path is not determined by its endpoints, and the floor
+    bound is positive without being tight.}
+    Minimum cuts are exact, obtained by enumeration over all partitions up to
+    the declared vertex cap rather than by a heuristic solver, so no agreement
+    below can be a solver artefact; where the cap binds, the analysis reports
+    that it has fallen back rather than returning a silently approximate cut.
+    (\textbf{A})~Minimum cut cost against cheapest singleton cut for two
+    declared circuits. The serial chain gives $4.000$ against $4.000$ --- the
+    cheapest cut \emph{is} a singleton, and one compartment carries the
+    character. The bridged pair gives $2.000$ against $5.000$, a ratio of
+    $2.50$: the minimising partition is a block cut into two groups of three,
+    so no single compartment carries the character, and reading identity off
+    any one compartment is impossible in principle rather than merely
+    difficult.
+    (\textbf{B})~Character cost of $120$ circuits against the same circuits
+    under a random weight-preserving relabelling of every compartment. All
+    $120$ lie exactly on the identity line, maximum deviation $0$ --- not
+    small, but zero. Character is what survives relabelling; identity names
+    particular compartments and does not survive it.
+    (\textbf{C})~Distinct realisable interiors, shortest route latency and
+    latency spread over $120$ circuits. $79$ of $120$ are opaque: endpoints
+    and closure index admit more than one interior, with spreads reaching
+    $19.1$\,ms and averaging $5.1$\,ms. An observer who records only where a
+    path begins and ends, and whether it closes, has not thereby determined
+    what it traverses.
+    (\textbf{D})~Distribution of floor tightness, the ratio of separation cost
+    to minimum edge weight, over $400$ circuits. The bound of
+    \Cref{prop:floor} holds in every case, minimum $2.000$ and mean $2.502$,
+    but the minimum is twice the bound rather than equal to it. The floor is
+    therefore \emph{positive} by connectivity and positive edge weights, and
+    \emph{not} tight: \Cref{prop:floor} is a guarantee, not an estimate, and
+    \Cref{rem:floor-estimators} should be read accordingly.}
+    \label{fig:panel10}
+\end{figure*}

@@ -287,6 +287,43 @@ class Backend:
         if name == "loop_latency":
             return Measurement(c.loop_delay(), "s", rep)
 
+        # Coherence / identity / opacity: all computed from the declaration,
+        # so none of them consults the integrator.
+        if name in ("coherence_margin", "holonomy_worst", "is_coherent",
+                    "character_cost", "identity_blocks", "is_block_cut",
+                    "path_multiplicity", "floor_tightness"):
+            from .coherence import (
+                coherence_margin, floor_tightness, identity_character,
+                is_coherent, path_opacity, worst_cycle,
+            )
+            if name == "coherence_margin":
+                return Measurement(coherence_margin(c), "s", rep)
+            if name == "is_coherent":
+                return Measurement("coherent" if is_coherent(c) else "incoherent",
+                                   "categorical", rep)
+            if name == "holonomy_worst":
+                w = worst_cycle(c)
+                return Measurement(w.magnitude if w else 0.0, "s", rep,
+                                   note=w.describe() if w else "no cycle basis")
+            if name in ("character_cost", "identity_blocks", "is_block_cut"):
+                ic = identity_character(c)
+                if name == "character_cost":
+                    return Measurement(ic.cost, "conductance", rep,
+                                       note=ic.describe())
+                if name == "identity_blocks":
+                    return Measurement(float(ic.n_blocks), "count", rep)
+                return Measurement("block" if ic.is_block_cut else "singleton",
+                                   "categorical", rep,
+                                   note=f"cheapest singleton {ic.cheapest_singleton:.4g}")
+            if name == "path_multiplicity":
+                if len(c.outbound) < 2:
+                    return Measurement(float("nan"), "count", rep,
+                                       note="outbound phase has no interior")
+                r = path_opacity(c, c.outbound[0], c.outbound[-1])
+                return Measurement(float(r.n_realisations), "count", rep,
+                                   note=r.describe())
+            return Measurement(floor_tightness(c), "ratio", rep)
+
         if name == "divergence_time":
             v = self.divergence_time(c)
             note = "" if not math.isnan(v) else "circuit is closed; no divergence"

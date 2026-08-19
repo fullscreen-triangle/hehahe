@@ -1,0 +1,108 @@
+-- Experiment 11: Closure and coherence are independent.
+--
+-- The closure analysis asks whether the declared paths MATCH. It cannot ask
+-- whether they AGREE. A circuit offering two routes from one compartment to
+-- another can be perfectly closed while the two routes disagree on how long
+-- the traversal takes -- and a circulation whose routes disagree does not
+-- have one well-defined loop delay, so every quantity computed from that
+-- delay is ambiguous.
+--
+-- Coherence is the missing test: the largest delay disagreement between any
+-- two routes joining the same pair of compartments. It is checkable from
+-- declared delays alone, before any integration, which is what makes it
+-- possible to REFUSE a lesion rather than merely to report it afterwards.
+--
+-- What is NOT encoded: which circuit is coherent, or that divergent
+-- conduction velocities produce ambiguity.
+
+module coherence_holonomy;
+
+compartment spinal_in { capacitance: 3.0e-8 F;  stratum: spinal; }
+compartment fast_mn   { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment slow_mn   { capacitance: 1.2e-8 F;  stratum: reflex; }
+compartment nmj       { capacitance: 4.0e-9 F;  stratum: reflex; }
+compartment fibre     { capacitance: 1.41e-4 F; stratum: reflex; }
+compartment spindle   { capacitance: 2.0e-9 F;  stratum: reflex; }
+compartment ia_aff    { capacitance: 8.0e-9 F;  stratum: reflex; }
+
+-- One route only: closed and trivially coherent, since a single route
+-- cannot disagree with itself.
+circuit single_route {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : spinal_in -> fast_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_aff -> spinal_in;
+
+  element relay_f  conducts spinal_in -> fast_mn delay 2.0 ms;
+  element axon_f   conducts fast_mn   -> nmj     delay 5.0 ms;
+  element plate_f  conducts nmj       -> fibre   delay 0.8 ms;
+  element ec       conducts fibre     -> spindle delay 15.0 ms;
+  element mechano  conducts spindle   -> ia_aff  delay 3.0 ms;
+  element ia_axon  conducts ia_aff    -> spinal_in delay 8.0 ms gain 1.0;
+}
+
+-- Two routes with MATCHED conduction: closed and coherent. The parallel
+-- pathway costs the same, so the circulation still has one loop delay.
+circuit matched_routes {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : spinal_in -> fast_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_aff -> spinal_in;
+
+  element relay_f  conducts spinal_in -> fast_mn delay 2.0 ms;
+  element axon_f   conducts fast_mn   -> nmj     delay 5.0 ms;
+  element relay_s  conducts spinal_in -> slow_mn delay 2.0 ms;
+  element axon_s   conducts slow_mn   -> nmj     delay 5.0 ms;
+  element plate_f  conducts nmj       -> fibre   delay 0.8 ms;
+  element ec       conducts fibre     -> spindle delay 15.0 ms;
+  element mechano  conducts spindle   -> ia_aff  delay 3.0 ms;
+  element ia_axon  conducts ia_aff    -> spinal_in delay 8.0 ms gain 1.0;
+}
+
+-- Two routes with MISMATCHED conduction: still closed -- the declared paths
+-- match exactly as before -- but the routes disagree by 16 ms. The closure
+-- index cannot see this; the coherence margin can.
+circuit divergent_routes {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : spinal_in -> fast_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_aff -> spinal_in;
+
+  element relay_f  conducts spinal_in -> fast_mn delay 2.0 ms;
+  element axon_f   conducts fast_mn   -> nmj     delay 5.0 ms;
+  element relay_s  conducts spinal_in -> slow_mn delay 2.0 ms;
+  element axon_s   conducts slow_mn   -> nmj     delay 21.0 ms;
+  element plate_f  conducts nmj       -> fibre   delay 0.8 ms;
+  element ec       conducts fibre     -> spindle delay 15.0 ms;
+  element mechano  conducts spindle   -> ia_aff  delay 3.0 ms;
+  element ia_axon  conducts ia_aff    -> spinal_in delay 8.0 ms gain 1.0;
+}
+
+experiment coherence_single {
+  intact  : single_route;
+  observe : closure_index, coherence_margin, is_coherent, holonomy_worst,
+            path_multiplicity, loop_latency;
+}
+
+experiment coherence_matched {
+  intact  : matched_routes;
+  observe : closure_index, coherence_margin, is_coherent, holonomy_worst,
+            path_multiplicity, loop_latency;
+}
+
+-- The headline: closed, and incoherent.
+experiment coherence_divergent {
+  intact  : divergent_routes;
+
+  -- Severing the slow route restores agreement. This is a lesion that
+  -- IMPROVES coherence, so the two-factor rule admits it.
+  lesion prune_slow : divergent_routes without element(axon_s);
+
+  -- Attenuating it does not: the route still exists and still disagrees,
+  -- because coherence reads delays, not gains. Attenuation preserves
+  -- closure AND preserves incoherence.
+  lesion damp_slow  : divergent_routes with axon_s scaling 0.05;
+
+  observe : closure_index, coherence_margin, is_coherent, holonomy_worst,
+            path_multiplicity, loop_latency;
+}
