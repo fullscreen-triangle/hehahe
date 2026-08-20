@@ -17,6 +17,7 @@
  * every conforming backend and available at the cost of parsing.
  */
 
+import { checkBinding, type BindReport } from "./binding";
 import {
   type AntagonistDecl, type CircuitDecl, type CircuitExpr, type ElementDecl,
   type Program, type Quantity, type Span, dimension, si,
@@ -47,6 +48,7 @@ export interface CheckResult {
   diagnostics: Diagnostic[];
   eventTypes: Map<string, string[]>;
   antagonists: Map<string, AntagonistDecl>;
+  bindings: BindReport[];
   ok: boolean;
   errors: Diagnostic[];
   warnings: Diagnostic[];
@@ -76,6 +78,7 @@ class Checker {
     this.buildCircuits();
     this.checkEventTypes();
     this.checkExperiments();
+    const bindings = this.checkBindings();
 
     const errors = this.diags.filter((d) => d.severity === "error");
     const warnings = this.diags.filter((d) => d.severity === "warning");
@@ -84,10 +87,45 @@ class Checker {
       diagnostics: this.diags,
       eventTypes: this.eventTypes,
       antagonists: new Map(this.prog.antagonists.map((a) => [a.name, a])),
+      bindings,
       ok: errors.length === 0,
       errors,
       warnings,
     };
+  }
+
+  /**
+   * Anatomical bindings. Every binding names a circuit and a rig; the rig
+   * contributes an adjacency and a tissue index that the program does not
+   * have, so these checks can fail on a program that is otherwise
+   * well-typed. A binding error is a real error -- it says the two
+   * descriptions of one system disagree -- but a span disagreement (B4) is
+   * only a note, because neither the program nor the rig is the arbiter.
+   */
+  private checkBindings(): BindReport[] {
+    const reports: BindReport[] = [];
+    for (const b of this.prog.binds) {
+      const circ = this.circuits.get(b.circuit);
+      if (!circ) {
+        this.err("bind", `bind names circuit "${b.circuit}", which is not declared.`, b.span);
+        continue;
+      }
+      const rep = checkBinding(circ, {
+        rig: b.rig,
+        circuit: b.circuit,
+        map: b.map,
+        conductionVelocity: b.conductionVelocity,
+        unitsPerMetre: b.unitsPerMetre,
+      });
+      reports.push(rep);
+      for (const d of rep.diagnostics) {
+        const msg = `[${d.check}] ${d.message}`;
+        if (d.severity === "error") this.err("bind", msg, b.span);
+        else if (d.severity === "warning") this.warn("bind", msg, b.span);
+        else this.note("bind", msg, b.span);
+      }
+    }
+    return reports;
   }
 
   private collectCompartments() {

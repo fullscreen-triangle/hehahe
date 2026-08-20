@@ -9,6 +9,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnatomyView } from "./components/AnatomyView";
 import { ApertureView } from "./components/ApertureView";
 import { CircuitView } from "./components/CircuitView";
 import { CompareView } from "./components/CompareView";
@@ -26,10 +27,11 @@ import {
 import PROGRAMS from "./data/programs.json";
 import { DARK, LIGHT, MONO, SANS, type Theme } from "./theme";
 
-type TabId = "circuit" | "spectra" | "phase" | "results" | "compare" | "aperture";
+type TabId = "circuit" | "anatomy" | "spectra" | "phase" | "results" | "compare" | "aperture";
 
 const TABS: { id: TabId; label: string; needsRun: boolean }[] = [
   { id: "circuit", label: "Circuit", needsRun: false },
+  { id: "anatomy", label: "Anatomy", needsRun: false },
   { id: "spectra", label: "Spectra", needsRun: true },
   { id: "phase", label: "State space", needsRun: true },
   { id: "results", label: "Results", needsRun: true },
@@ -232,6 +234,22 @@ export default function App() {
       ) ?? null
     : null;
 
+  /** The binding declared in the source, for the circuit the selected arm
+   *  derives from. Anatomy is only available when the program asks for it. */
+  const bindSpec = useMemo(() => {
+    const binds = compiled.program?.binds ?? [];
+    if (!binds.length) return null;
+    const base = selectedArmCircuitName(arms, armName);
+    const b = binds.find((x) => x.circuit === base) ?? binds[0];
+    return {
+      rig: b.rig,
+      circuit: b.circuit,
+      map: b.map,
+      conductionVelocity: b.conductionVelocity,
+      unitsPerMetre: b.unitsPerMetre,
+    };
+  }, [compiled.program, arms, armName]);
+
   const selectedArm = arms.find((a) => a.name === armName) ?? arms[0];
 
   return (
@@ -353,13 +371,28 @@ export default function App() {
 
           {/* content */}
           <div style={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
-            {!run && tab !== "circuit" && tab !== "aperture" ? (
+            {!run && tab !== "circuit" && tab !== "aperture" && tab !== "anatomy" ? (
               <Placeholder T={T} hasErrors={!!errors.length || !!compiled.parseError} />
             ) : !run && !arms.length ? (
               <Placeholder T={T} hasErrors={!!errors.length || !!compiled.parseError}
                 note="Static analyses are already complete. Run to discharge observables." />
             ) : tab === "circuit" && selectedArm ? (
               <CircuitView arm={selectedArm} intact={intactCircuit} theme={T} animate={animate} />
+            ) : tab === "anatomy" ? (
+              <AnatomyView
+                theme={T}
+                arms={arms.map((a) => ({
+                  name: a.name,
+                  closure: a.closure,
+                  circuit: a.circuit,
+                  divergenceTime:
+                    (a.store?.get("divergence_time")?.value as number | null) ?? null,
+                }))}
+                selectedArm={armName}
+                onSelectArm={setArmName}
+                bindSpec={bindSpec}
+                backend={run?.backend ?? new Backend(2e-3, duration, seed)}
+              />
             ) : tab === "spectra" && run ? (
               <SpectraView arms={arms} backend={run.backend} theme={T}
                 selected={selectedArms}
@@ -445,4 +478,15 @@ function Placeholder({ T, hasErrors, note }: { T: Theme; hasErrors: boolean; not
       </div>
     </div>
   );
+}
+
+/** The circuit a lesioned arm derives from, so a binding declared on the base
+ *  circuit applies to every arm of the experiment.
+ *
+ *  `cloneCircuit` carries `name` through every lesion operator unchanged --
+ *  provenance records the operators applied, not the base -- so the name is
+ *  what identifies the circuit a binding was declared against. */
+function selectedArmCircuitName(arms: ArmResult[], armName: string): string {
+  const a = arms.find((x) => x.name === armName) ?? arms[0];
+  return a ? a.circuit.name : "";
 }

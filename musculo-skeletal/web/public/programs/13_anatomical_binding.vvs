@@ -1,0 +1,115 @@
+-- Experiment 13: The rig is a second witness.
+--
+-- Every analysis so far reads the program and only the program. Closure is
+-- decided from declared paths; the floor from declared weights; coherence
+-- from declared delays. That is a virtue -- it makes the results
+-- backend-independent -- but it also means the language cannot be wrong
+-- about anatomy, because it never mentions any.
+--
+-- A binding attaches compartments to joints of a skeleton authored by
+-- someone who never saw this program. The joint hierarchy carries an
+-- adjacency and a tissue index that the source does not, so the two
+-- descriptions can DISAGREE, and a disagreement is a finding.
+--
+-- The rig used here (windows_3d_viewer_flexing_arm) has three tissue chains
+-- -- bone, vein, muscle -- with identical topology and rest translations
+-- agreeing to 0.0000. That is a compartment index in the sense of Rule I,
+-- sitting in a file that knows nothing about Rule I.
+--
+-- What is NOT encoded: which bindings are correct. Each experiment below
+-- declares a binding that is wrong in exactly one way, and the check says
+-- which way.
+
+module anatomical_binding;
+
+compartment upper_arm  { capacitance: 2.0e-8 F; stratum: reflex; }
+compartment lower_arm  { capacitance: 1.6e-8 F; stratum: reflex; }
+compartment bicep_belly{ capacitance: 1.2e-8 F; stratum: reflex; }
+compartment tricep_belly{capacitance: 1.2e-8 F; stratum: reflex; }
+compartment cord       { capacitance: 3.0e-8 F; stratum: spinal;  }
+
+-- A closed elbow circulation. Nothing here refers to anatomy.
+circuit elbow_loop {
+  floor    : derived(resting_cut(cord));
+
+  outbound : cord -> upper_arm -> bicep_belly;
+  return   : bicep_belly -> lower_arm -> cord;
+
+  element descend  conducts cord        -> upper_arm   delay 12.0 ms gain 2.0;
+  element to_belly conducts upper_arm   -> bicep_belly delay  3.0 ms gain 2.0;
+  element ec_coup  conducts bicep_belly -> lower_arm   delay  8.0 ms gain 1.0;
+  element afferent conducts lower_arm   -> cord        delay 14.0 ms gain 1.0;
+}
+
+-- The antagonist pair the rig already contains: bicep and tricep hang off a
+-- shared parent joint, which is what makes them antagonists anatomically
+-- rather than by declaration.
+circuit tricep_loop {
+  floor    : derived(resting_cut(cord));
+
+  outbound : cord -> upper_arm -> tricep_belly;
+  return   : tricep_belly -> lower_arm -> cord;
+
+  element t_descend conducts cord         -> upper_arm    delay 12.0 ms gain 2.0;
+  element t_belly   conducts upper_arm    -> tricep_belly delay  3.0 ms gain 2.0;
+  element t_ec      conducts tricep_belly -> lower_arm    delay  8.0 ms gain 1.0;
+  element t_aff     conducts lower_arm    -> cord         delay 14.0 ms gain 1.0;
+}
+
+antagonist elbow_pair {
+  agonist    : elbow_loop;
+  antagonist : tricep_loop;
+  shared     : upper_arm, lower_arm;
+}
+
+-- ── Binding 1: consistent ──────────────────────────────────────────
+-- Every compartment sits in the muscle chain; conduction follows the
+-- skeleton. `cord` is deliberately left unbound: a spinal compartment has
+-- no joint in an arm rig, and the check reports that as information rather
+-- than pretending otherwise.
+bind elbow_loop to rig("windows_3d_viewer_flexing_arm") {
+  upper_arm   -> "muscle_UpperArm.25_25";
+  lower_arm   -> "muscle_LowerArm.26_26";
+  bicep_belly -> "muscle_Bicep.30_30";
+
+  velocity : 50;      -- m/s, a myelinated Ia afferent
+  units    : 100;     -- rig is authored in centimetres
+}
+
+-- ── Binding 2: crosses tissue compartments (B2) ────────────────────
+-- The circuit is unchanged. Only the binding differs: the lower arm is
+-- bound to BONE while everything else is muscle, so `ec_coup` conducts from
+-- a muscle compartment into a bone one. That is either a real transduction
+-- step -- muscle pulling on bone is exactly what a tendon does -- or a
+-- binding mistake. The analysis reports the crossing and says it cannot
+-- distinguish the two, which is the honest answer.
+bind tricep_loop to rig("windows_3d_viewer_flexing_arm") {
+  upper_arm    -> "muscle_UpperArm.25_25";
+  lower_arm    -> "bone_LowerArm.6_6";
+  tricep_belly -> "muscle_Tricep.31_31";
+
+  velocity : 50;
+  units    : 100;
+}
+
+experiment binding_consistency {
+  intact  : elbow_loop;
+
+  -- Severing the return opens the circuit. The binding is untouched, so the
+  -- anatomy still says the joints are adjacent: closure and binding are
+  -- independent, and the viewer shows an open circuit inhabiting intact
+  -- anatomy.
+  lesion severed : elbow_loop without element(afferent);
+
+  observe : closure_index, loop_latency, force_output,
+            oscillation_amplitude, divergence_time, floor_value;
+}
+
+experiment antagonist_binding {
+  intact  : tricep_loop;
+
+  lesion no_reciprocal : tricep_loop without element(t_ec);
+
+  observe : closure_index, loop_latency, force_output,
+            oscillation_amplitude, floor_value;
+}

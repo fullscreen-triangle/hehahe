@@ -44,6 +44,8 @@ export const KEYWORDS = new Set([
   "phase", "from",
   // E6 antagonists
   "antagonist", "agonist", "shared",
+  // anatomical binding
+  "bind", "to", "rig", "velocity", "units",
 ]);
 
 export const STRATA = ["reflex", "spinal", "supraspinal"] as const;

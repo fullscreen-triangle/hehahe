@@ -91,6 +91,19 @@ export interface EventTypeDecl {
   span: Span;
 }
 
+export interface BindDecl {
+  kind: "bind";
+  circuit: string;
+  rig: string;
+  /** compartment -> joint name */
+  map: Record<string, string>;
+  /** metres per second; enables the span analysis (B4) */
+  conductionVelocity?: number;
+  /** rig units per metre; rigs are authored at arbitrary scale */
+  unitsPerMetre?: number;
+  span: Span;
+}
+
 export interface AntagonistDecl {
   kind: "antagonist";
   name: string;
@@ -149,6 +162,7 @@ export interface Program {
   instances: InstanceDecl[];
   eventTypes: EventTypeDecl[];
   antagonists: AntagonistDecl[];
+  binds: BindDecl[];
   experiments: ExperimentDecl[];
 }
 
@@ -160,5 +174,6 @@ export const emptyProgram = (): Program => ({
   instances: [],
   eventTypes: [],
   antagonists: [],
+  binds: [],
   experiments: [],
 });

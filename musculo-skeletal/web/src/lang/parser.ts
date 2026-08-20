@@ -8,7 +8,7 @@
  */
 
 import {
-  type AntagonistDecl, type CircuitDecl, type CircuitExpr,
+  type AntagonistDecl, type BindDecl, type CircuitDecl, type CircuitExpr,
   type ElementDecl, type EventTypeDecl, type ExperimentDecl,
   type FloorSpec, type InstanceDecl, type LesionDecl, type Observable,
   type PhaseDecl, type Program, type Quantity, type Span,
@@ -70,6 +70,17 @@ class Parser {
     return this.eat("ident").text;
   }
 
+  /** Joint names carry dots and digits (`muscle_Bicep.30_30`), so a binding
+   *  target may be written as a quoted string. A bare identifier is also
+   *  accepted for the rigs whose names happen to be identifier-shaped. */
+  private stringOrIdent(): string {
+    if (this.cur.kind === "string") {
+      const t = this.toks[this.i++];
+      return t.text.slice(1, -1);
+    }
+    return this.ident();
+  }
+
   private quantity(): Quantity {
     const t = this.cur;
     if (t.kind === "quantity") {
@@ -120,6 +131,8 @@ class Parser {
         prog.eventTypes.push(this.parseEventType());
       } else if (this.atKw("antagonist")) {
         prog.antagonists.push(this.parseAntagonist());
+      } else if (this.atKw("bind")) {
+        prog.binds.push(this.parseBind());
       } else if (this.atKw("experiment")) {
         prog.experiments.push(this.parseExperiment());
       } else {
@@ -307,6 +320,54 @@ class Parser {
     this.punct(";");
     this.punct("}");
     return { kind: "antagonist", name, agonist, antagonist, shared, span: this.span(t0) };
+  }
+
+  /**
+   * bind <circuit> to rig("<name>") { comp -> joint; ... velocity: 50 m/s; }
+   *
+   * The binding lives in the source rather than in tool configuration
+   * because it is checkable: the rig contributes an adjacency and a tissue
+   * index the program does not have, so a binding can contradict the
+   * circulation it binds. A contradiction is only reportable if the claim
+   * was made in the language.
+   */
+  private parseBind(): BindDecl {
+    const t0 = this.kw("bind");
+    const circuit = this.ident();
+    this.kw("to");
+    this.kw("rig");
+    this.punct("(");
+    const rig = this.stringOrIdent();
+    this.punct(")");
+    this.punct("{");
+
+    const map: Record<string, string> = {};
+    let conductionVelocity: number | undefined;
+    let unitsPerMetre: number | undefined;
+
+    while (!this.at("punct", "}")) {
+      if (this.atKw("velocity")) {
+        this.kw("velocity");
+        this.punct(":");
+        conductionVelocity = this.quantity().value;
+        this.punct(";");
+        continue;
+      }
+      if (this.atKw("units")) {
+        this.kw("units");
+        this.punct(":");
+        unitsPerMetre = this.quantity().value;
+        this.punct(";");
+        continue;
+      }
+      const comp = this.ident();
+      this.eat("arrow");
+      const joint = this.stringOrIdent();
+      this.punct(";");
+      map[comp] = joint;
+    }
+    this.punct("}");
+    return { kind: "bind", circuit, rig, map, conductionVelocity, unitsPerMetre, span: this.span(t0) };
   }
 
   private parseExperiment(): ExperimentDecl {
