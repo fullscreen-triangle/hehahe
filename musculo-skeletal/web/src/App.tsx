@@ -15,6 +15,10 @@ import { CircuitView } from "./components/CircuitView";
 import { CompareView } from "./components/CompareView";
 import { Editor } from "./components/Editor";
 import { PhaseView } from "./components/PhaseView";
+import { ParametersView } from "./components/ParametersView";
+import { PostureView } from "./components/PostureView";
+import { AnatomyFigure } from "./components/AnatomyFigure";
+import { analyseSubject, type Subject } from "./lang/bsp";
 import { ResultsView } from "./components/ResultsView";
 import { SpectraView } from "./components/SpectraView";
 import { Backend } from "./lang/backend";
@@ -27,17 +31,22 @@ import {
 import PROGRAMS from "./data/programs.json";
 import { DARK, LIGHT, MONO, SANS, type Theme } from "./theme";
 
-type TabId = "circuit" | "anatomy" | "spectra" | "phase" | "results" | "compare" | "aperture";
+type TabId = "circuit" | "anatomy" | "posture" | "parameters" | "spectra" | "phase" | "results" | "compare" | "aperture";
 
 const TABS: { id: TabId; label: string; needsRun: boolean }[] = [
   { id: "circuit", label: "Circuit", needsRun: false },
   { id: "anatomy", label: "Anatomy", needsRun: false },
+  { id: "posture", label: "Posture", needsRun: false },
+  { id: "parameters", label: "Parameters", needsRun: false },
   { id: "spectra", label: "Spectra", needsRun: true },
   { id: "phase", label: "State space", needsRun: true },
   { id: "results", label: "Results", needsRun: true },
   { id: "compare", label: "Compare", needsRun: true },
   { id: "aperture", label: "Aperture", needsRun: false },
 ];
+
+/** Tabs that show results and therefore carry the reference figure. */
+const RESULT_TABS = new Set<TabId>(["spectra", "phase", "results", "compare", "aperture"]);
 
 const PROG = PROGRAMS as Record<string, string>;
 const PROG_NAMES = Object.keys(PROG).sort();
@@ -61,6 +70,11 @@ export default function App() {
   const [seed, setSeed] = useState(0);
   const [duration, setDuration] = useState(20);
   const [showDiag, setShowDiag] = useState(true);
+  /** The subject the anthropometry is built from. Every downstream mass and
+   *  inertia scales from this rather than from a hard-coded constant. */
+  const [subject, setSubject] = useState<Subject>({
+    massKg: 83, statureM: 1.85, sex: "male", model: "deLeva",
+  });
   const shellRef = useRef<HTMLDivElement>(null);
 
   // Debounced compile on edit: static analyses are live.
@@ -250,6 +264,22 @@ export default function App() {
     };
   }, [compiled.program, arms, armName]);
 
+  /** Segment mass per region, for the corner reference figure. This is the
+   *  one quantity that is always defined regardless of what has been run, so
+   *  the figure orients the reader even before a run. */
+  const segmentHeat = useMemo(() => {
+    try {
+      const out: Record<string, number> = {};
+      for (const seg of analyseSubject(subject)) {
+        if (!seg.region) continue;
+        out[seg.region] = Math.max(out[seg.region] ?? 0, seg.massKg);
+      }
+      return out;
+    } catch {
+      return {};
+    }
+  }, [subject]);
+
   const selectedArm = arms.find((a) => a.name === armName) ?? arms[0];
 
   return (
@@ -370,8 +400,30 @@ export default function App() {
           </div>
 
           {/* content */}
-          <div style={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
-            {!run && tab !== "circuit" && tab !== "aperture" && tab !== "anatomy" ? (
+          <div style={{ flex: 1, overflow: "hidden", minHeight: 0, position: "relative" }}>
+            {/* Reference figure, top right of every RESULTS page.
+                Not on Parameters (which has its own, larger, at the sunburst
+                centre) nor on Anatomy/Posture (which are already anatomical),
+                because a second small body there would compete rather than
+                orient. */}
+            {RESULT_TABS.has(tab) && (
+              <div style={{
+                position: "absolute", top: 8, right: 10, zIndex: 5,
+                padding: "5px 7px", borderRadius: 5,
+                background: `${T.panelBg}e8`, border: `1px solid ${T.border}`,
+                pointerEvents: "none",
+              }}>
+                <AnatomyFigure
+                  theme={T}
+                  heat={segmentHeat}
+                  width={52}
+                  height={88}
+                  caption="segment mass"
+                  unit="kg"
+                />
+              </div>
+            )}
+            {!run && tab !== "circuit" && tab !== "aperture" && tab !== "anatomy" && tab !== "posture" && tab !== "parameters" ? (
               <Placeholder T={T} hasErrors={!!errors.length || !!compiled.parseError} />
             ) : !run && !arms.length ? (
               <Placeholder T={T} hasErrors={!!errors.length || !!compiled.parseError}
@@ -392,6 +444,21 @@ export default function App() {
                 onSelectArm={setArmName}
                 bindSpec={bindSpec}
                 backend={run?.backend ?? new Backend(2e-3, duration, seed)}
+              />
+            ) : tab === "parameters" ? (
+              <ParametersView theme={T} arms={arms} subject={subject} onSubjectChange={setSubject} />
+            ) : tab === "posture" ? (
+              <PostureView
+                theme={T}
+                onGenerate={(src) => {
+                  // The generated program replaces the editor contents and the
+                  // view switches to Circuit, so the record's own claim can be
+                  // run immediately against the record it came from.
+                  setCode(src);
+                  setRun(null);
+                  setExpIdx(0);
+                  setTab("circuit");
+                }}
               />
             ) : tab === "spectra" && run ? (
               <SpectraView arms={arms} backend={run.backend} theme={T}
