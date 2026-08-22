@@ -31,7 +31,11 @@ function loadRig(name: string) {
   if (hit) return hit;
   const p = new Promise<{ scene: THREE.Group; clips: THREE.AnimationClip[] }>((res, rej) => {
     new GLTFLoader().load(
-      `models/${name}.glb`,
+      // Root-absolute, not relative: a relative URL resolves against the
+      // current path, so it would break the moment the app is served from
+      // anywhere but the domain root. Vite rewrites this against `base` at
+      // build time.
+      `${import.meta.env.BASE_URL}models/${name}.glb`,
       (g) => res({ scene: g.scene as THREE.Group, clips: g.animations }),
       undefined,
       rej,

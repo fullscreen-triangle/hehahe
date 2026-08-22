@@ -1,0 +1,1820 @@
+{
+  "anatomy_study": {
+    "file": "anatomy_study.glb",
+    "bytes": 16350740,
+    "meshes": [
+      "Object_0",
+      "Object_1",
+      "Object_2",
+      "Object_3",
+      "Object_4",
+      "Object_5"
+    ],
+    "jointCount": 0,
+    "joints": [],
+    "tissues": [],
+    "segments": [],
+    "coregistration": {
+      "segments": 0,
+      "maxRestDrift": 0
+    },
+    "animations": [],
+    "bindable": false
+  },
+  "windows_3d_viewer_flexing_arm": {
+    "file": "windows_3d_viewer_flexing_arm.glb",
+    "bytes": 12260760,
+    "meshes": [
+      "Object_0",
+      "Object_1",
+      "Object_2"
+    ],
+    "jointCount": 32,
+    "joints": [
+      {
+        "node": 6,
+        "name": "GLTF_created_0_rootJoint",
+        "parent": null,
+        "tissue": null,
+        "segment": "GLTF_created_0_rootJoint",
+        "rest": [
+          0,
+          0,
+          0
+        ],
+        "world": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "node": 7,
+        "name": "Root.2_2",
+        "parent": "GLTF_created_0_rootJoint",
+        "tissue": null,
+        "segment": "Root",
+        "rest": [
+          0,
+          0,
+          0
+        ],
+        "world": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "node": 8,
+        "name": "bone_scale.3_3",
+        "parent": "Root.2_2",
+        "tissue": "bone",
+        "segment": "scale",
+        "rest": [
+          0,
+          0,
+          0
+        ],
+        "world": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "node": 9,
+        "name": "bone_Clevicle.4_4",
+        "parent": "bone_scale.3_3",
+        "tissue": "bone",
+        "segment": "Clevicle",
+        "rest": [
+          2.6539,
+          8.1645,
+          -0.2652
+        ],
+        "world": [
+          2.6539,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 10,
+        "name": "bone_UpperArm.5_5",
+        "parent": "bone_Clevicle.4_4",
+        "tissue": "bone",
+        "segment": "UpperArm",
+        "rest": [
+          2.5966,
+          0,
+          0
+        ],
+        "world": [
+          5.2506,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 11,
+        "name": "bone_LowerArm.6_6",
+        "parent": "bone_UpperArm.5_5",
+        "tissue": "bone",
+        "segment": "LowerArm",
+        "rest": [
+          4.4229,
+          0,
+          0
+        ],
+        "world": [
+          9.6735,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 12,
+        "name": "bone_LowerArm_End.7_7",
+        "parent": "bone_LowerArm.6_6",
+        "tissue": "bone",
+        "segment": "LowerArm_End",
+        "rest": [
+          3.6896,
+          0.639,
+          -1.4581
+        ],
+        "world": [
+          13.3631,
+          8.8035,
+          -1.7234
+        ]
+      },
+      {
+        "node": 13,
+        "name": "bone_Front_LowerArm.8_8",
+        "parent": "bone_UpperArm.5_5",
+        "tissue": "bone",
+        "segment": "Front_LowerArm",
+        "rest": [
+          4.4229,
+          -0.1696,
+          0.1146
+        ],
+        "world": [
+          9.6735,
+          7.9949,
+          -0.1506
+        ]
+      },
+      {
+        "node": 14,
+        "name": "bone_Back_LowerArm.9_9",
+        "parent": "bone_UpperArm.5_5",
+        "tissue": "bone",
+        "segment": "Back_LowerArm",
+        "rest": [
+          4.5906,
+          0.3229,
+          -0.2182
+        ],
+        "world": [
+          9.8412,
+          8.4874,
+          -0.4834
+        ]
+      },
+      {
+        "node": 15,
+        "name": "bone_Bicep.10_10",
+        "parent": "bone_UpperArm.5_5",
+        "tissue": "bone",
+        "segment": "Bicep",
+        "rest": [
+          2.6663,
+          -0.5251,
+          0.0407
+        ],
+        "world": [
+          7.9169,
+          7.6394,
+          -0.2246
+        ]
+      },
+      {
+        "node": 16,
+        "name": "bone_Tricep.11_11",
+        "parent": "bone_UpperArm.5_5",
+        "tissue": "bone",
+        "segment": "Tricep",
+        "rest": [
+          2.6767,
+          0.4964,
+          -0.1541
+        ],
+        "world": [
+          7.9273,
+          8.6609,
+          -0.4193
+        ]
+      },
+      {
+        "node": 17,
+        "name": "bone_UpperArm_spo.12_12",
+        "parent": "bone_Clevicle.4_4",
+        "tissue": "bone",
+        "segment": "UpperArm_spo",
+        "rest": [
+          2.5966,
+          0,
+          0
+        ],
+        "world": [
+          5.2506,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 18,
+        "name": "vein_scale.13_13",
+        "parent": "Root.2_2",
+        "tissue": "vein",
+        "segment": "scale",
+        "rest": [
+          0,
+          0,
+          0
+        ],
+        "world": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "node": 19,
+        "name": "vein_Clevicle.14_14",
+        "parent": "vein_scale.13_13",
+        "tissue": "vein",
+        "segment": "Clevicle",
+        "rest": [
+          2.6539,
+          8.1645,
+          -0.2652
+        ],
+        "world": [
+          2.6539,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 20,
+        "name": "vein_UpperArm.15_15",
+        "parent": "vein_Clevicle.14_14",
+        "tissue": "vein",
+        "segment": "UpperArm",
+        "rest": [
+          2.5966,
+          0,
+          0
+        ],
+        "world": [
+          5.2506,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 21,
+        "name": "vein_LowerArm.16_16",
+        "parent": "vein_UpperArm.15_15",
+        "tissue": "vein",
+        "segment": "LowerArm",
+        "rest": [
+          4.4229,
+          0,
+          0
+        ],
+        "world": [
+          9.6735,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 22,
+        "name": "vein_LowerArm_End.17_17",
+        "parent": "vein_LowerArm.16_16",
+        "tissue": "vein",
+        "segment": "LowerArm_End",
+        "rest": [
+          3.6896,
+          0.639,
+          -1.4581
+        ],
+        "world": [
+          13.3631,
+          8.8035,
+          -1.7234
+        ]
+      },
+      {
+        "node": 23,
+        "name": "vein_Front_LowerArm.18_18",
+        "parent": "vein_UpperArm.15_15",
+        "tissue": "vein",
+        "segment": "Front_LowerArm",
+        "rest": [
+          4.4229,
+          -0.1696,
+          0.1146
+        ],
+        "world": [
+          9.6735,
+          7.9949,
+          -0.1506
+        ]
+      },
+      {
+        "node": 24,
+        "name": "vein_Back_LowerArm.19_19",
+        "parent": "vein_UpperArm.15_15",
+        "tissue": "vein",
+        "segment": "Back_LowerArm",
+        "rest": [
+          4.5906,
+          0.3229,
+          -0.2182
+        ],
+        "world": [
+          9.8412,
+          8.4874,
+          -0.4834
+        ]
+      },
+      {
+        "node": 25,
+        "name": "vein_Bicep.20_20",
+        "parent": "vein_UpperArm.15_15",
+        "tissue": "vein",
+        "segment": "Bicep",
+        "rest": [
+          2.6663,
+          -0.5251,
+          0.0407
+        ],
+        "world": [
+          7.9169,
+          7.6394,
+          -0.2246
+        ]
+      },
+      {
+        "node": 26,
+        "name": "vein_Tricep.21_21",
+        "parent": "vein_UpperArm.15_15",
+        "tissue": "vein",
+        "segment": "Tricep",
+        "rest": [
+          2.6767,
+          0.4964,
+          -0.1541
+        ],
+        "world": [
+          7.9273,
+          8.6609,
+          -0.4193
+        ]
+      },
+      {
+        "node": 27,
+        "name": "vein_UpperArm_spo.22_22",
+        "parent": "vein_Clevicle.14_14",
+        "tissue": "vein",
+        "segment": "UpperArm_spo",
+        "rest": [
+          2.5966,
+          0,
+          0
+        ],
+        "world": [
+          5.2506,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 28,
+        "name": "muscle_scale.23_23",
+        "parent": "Root.2_2",
+        "tissue": "muscle",
+        "segment": "scale",
+        "rest": [
+          0,
+          0,
+          0
+        ],
+        "world": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "node": 29,
+        "name": "muscle_Clevicle.24_24",
+        "parent": "muscle_scale.23_23",
+        "tissue": "muscle",
+        "segment": "Clevicle",
+        "rest": [
+          2.6539,
+          8.1645,
+          -0.2652
+        ],
+        "world": [
+          2.6539,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 30,
+        "name": "muscle_UpperArm.25_25",
+        "parent": "muscle_Clevicle.24_24",
+        "tissue": "muscle",
+        "segment": "UpperArm",
+        "rest": [
+          2.5966,
+          0,
+          0
+        ],
+        "world": [
+          5.2506,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 31,
+        "name": "muscle_LowerArm.26_26",
+        "parent": "muscle_UpperArm.25_25",
+        "tissue": "muscle",
+        "segment": "LowerArm",
+        "rest": [
+          4.4229,
+          0,
+          0
+        ],
+        "world": [
+          9.6735,
+          8.1645,
+          -0.2652
+        ]
+      },
+      {
+        "node": 32,
+        "name": "muscle_LowerArm_End.27_27",
+        "parent": "muscle_LowerArm.26_26",
+        "tissue": "muscle",
+        "segment": "LowerArm_End",
+        "rest": [
+          3.6896,
+          0.639,
+          -1.4581
+        ],
+        "world": [
+          13.3631,
+          8.8035,
+          -1.7234
+        ]
+      },
+      {
+        "node": 33,
+        "name": "muscle_Front_LowerArm.28_28",
+        "parent": "muscle_UpperArm.25_25",
+        "tissue": "muscle",
+        "segment": "Front_LowerArm",
+        "rest": [
+          4.4229,
+          -0.1696,
+          0.1146
+        ],
+        "world": [
+          9.6735,
+          7.9949,
+          -0.1506
+        ]
+      },
+      {
+        "node": 34,
+        "name": "muscle_Back_LowerArm.29_29",
+        "parent": "muscle_UpperArm.25_25",
+        "tissue": "muscle",
+        "segment": "Back_LowerArm",
+        "rest": [
+          4.5906,
+          0.3229,
+          -0.2182
+        ],
+        "world": [
+          9.8412,
+          8.4874,
+          -0.4834
+        ]
+      },
+      {
+        "node": 35,
+        "name": "muscle_Bicep.30_30",
+        "parent": "muscle_UpperArm.25_25",
+        "tissue": "muscle",
+        "segment": "Bicep",
+        "rest": [
+          2.6663,
+          -0.5251,
+          0.0407
+        ],
+        "world": [
+          7.9169,
+          7.6394,
+          -0.2246
+        ]
+      },
+      {
+        "node": 36,
+        "name": "muscle_Tricep.31_31",
+        "parent": "muscle_UpperArm.25_25",
+        "tissue": "muscle",
+        "segment": "Tricep",
+        "rest": [
+          2.6767,
+          0.4964,
+          -0.1541
+        ],
+        "world": [
+          7.9273,
+          8.6609,
+          -0.4193
+        ]
+      },
+      {
+        "node": 37,
+        "name": "muscle_UpperArm_spo.32_32",
+        "parent": "muscle_Clevicle.24_24",
+        "tissue": "muscle",
+        "segment": "UpperArm_spo",
+        "rest": [
+          2.5966,
+          0,
+          0
+        ],
+        "world": [
+          5.2506,
+          8.1645,
+          -0.2652
+        ]
+      }
+    ],
+    "tissues": [
+      "bone",
+      "vein",
+      "muscle"
+    ],
+    "segments": [
+      "scale",
+      "Clevicle",
+      "UpperArm",
+      "LowerArm",
+      "LowerArm_End",
+      "Front_LowerArm",
+      "Back_LowerArm",
+      "Bicep",
+      "Tricep",
+      "UpperArm_spo"
+    ],
+    "coregistration": {
+      "segments": 10,
+      "maxRestDrift": 0
+    },
+    "animations": [
+      {
+        "name": "artery_view",
+        "duration": 5.533,
+        "targets": 24
+      },
+      {
+        "name": "muscle_view",
+        "duration": 5.567,
+        "targets": 26
+      },
+      {
+        "name": "bone_view",
+        "duration": 5.533,
+        "targets": 28
+      }
+    ],
+    "bindable": true
+  },
+  "xbot_multiple_animations": {
+    "file": "xbot_multiple_animations.glb",
+    "bytes": 2986564,
+    "meshes": [
+      "Beta_Joints_Beta_Joints_MAT_0",
+      "Beta_Surface_asdf1:Beta_HighLimbsGeoSG2_0"
+    ],
+    "jointCount": 68,
+    "joints": [
+      {
+        "node": 5,
+        "name": "_rootJoint",
+        "parent": null,
+        "tissue": null,
+        "segment": "_rootJoint",
+        "rest": [
+          0,
+          0,
+          0
+        ],
+        "world": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "node": 8,
+        "name": "mixamorig:Hips_01",
+        "parent": "_rootJoint",
+        "tissue": null,
+        "segment": "mixamorig:Hips_01",
+        "rest": [
+          0,
+          103.9915,
+          2.0761
+        ],
+        "world": [
+          0,
+          103.9915,
+          2.0761
+        ]
+      },
+      {
+        "node": 9,
+        "name": "mixamorig:Spine_02",
+        "parent": "mixamorig:Hips_01",
+        "tissue": null,
+        "segment": "mixamorig:Spine_02",
+        "rest": [
+          0,
+          10.1816,
+          0.1315
+        ],
+        "world": [
+          0,
+          114.1731,
+          2.2076
+        ]
+      },
+      {
+        "node": 10,
+        "name": "mixamorig:Spine1_03",
+        "parent": "mixamorig:Spine_02",
+        "tissue": null,
+        "segment": "mixamorig:Spine1_03",
+        "rest": [
+          0,
+          10.0835,
+          -1.0008
+        ],
+        "world": [
+          0,
+          124.2565,
+          1.2068
+        ]
+      },
+      {
+        "node": 11,
+        "name": "mixamorig:Spine2_04",
+        "parent": "mixamorig:Spine1_03",
+        "tissue": null,
+        "segment": "mixamorig:Spine2_04",
+        "rest": [
+          0,
+          9.1,
+          -1.3734
+        ],
+        "world": [
+          0,
+          133.3565,
+          -0.1666
+        ]
+      },
+      {
+        "node": 12,
+        "name": "mixamorig:Neck_05",
+        "parent": "mixamorig:Spine2_04",
+        "tissue": null,
+        "segment": "mixamorig:Neck_05",
+        "rest": [
+          0,
+          16.6717,
+          -2.5162
+        ],
+        "world": [
+          0,
+          150.0282,
+          -2.6828
+        ]
+      },
+      {
+        "node": 13,
+        "name": "mixamorig:Head_06",
+        "parent": "mixamorig:Neck_05",
+        "tissue": null,
+        "segment": "mixamorig:Head_06",
+        "rest": [
+          0,
+          9.6179,
+          1.685
+        ],
+        "world": [
+          0,
+          159.6461,
+          -0.9978
+        ]
+      },
+      {
+        "node": 14,
+        "name": "mixamorig:HeadTop_End_07",
+        "parent": "mixamorig:Head_06",
+        "tissue": null,
+        "segment": "mixamorig:HeadTop_End_07",
+        "rest": [
+          0,
+          17.8152,
+          2.585
+        ],
+        "world": [
+          0,
+          177.4612,
+          1.5872
+        ]
+      },
+      {
+        "node": 15,
+        "name": "mixamorig:LeftEye_08",
+        "parent": "mixamorig:Head_06",
+        "tissue": null,
+        "segment": "mixamorig:LeftEye_08",
+        "rest": [
+          3.0676,
+          6.4095,
+          9.2836
+        ],
+        "world": [
+          3.0676,
+          166.0556,
+          8.2858
+        ]
+      },
+      {
+        "node": 16,
+        "name": "mixamorig:RightEye_09",
+        "parent": "mixamorig:Head_06",
+        "tissue": null,
+        "segment": "mixamorig:RightEye_09",
+        "rest": [
+          -3.0676,
+          6.4095,
+          9.2835
+        ],
+        "world": [
+          -3.0675,
+          166.0556,
+          8.2858
+        ]
+      },
+      {
+        "node": 17,
+        "name": "mixamorig:LeftShoulder_010",
+        "parent": "mixamorig:Spine2_04",
+        "tissue": null,
+        "segment": "mixamorig:LeftShoulder_010",
+        "rest": [
+          4.5704,
+          10.946,
+          -2.628
+        ],
+        "world": [
+          4.5705,
+          144.3025,
+          -2.7946
+        ]
+      },
+      {
+        "node": 18,
+        "name": "mixamorig:LeftArm_011",
+        "parent": "mixamorig:LeftShoulder_010",
+        "tissue": null,
+        "segment": "mixamorig:LeftArm_011",
+        "rest": [
+          10.5924,
+          -0.5246,
+          -2.2321
+        ],
+        "world": [
+          15.1628,
+          143.7779,
+          -5.0267
+        ]
+      },
+      {
+        "node": 19,
+        "name": "mixamorig:LeftForeArm_012",
+        "parent": "mixamorig:LeftArm_011",
+        "tissue": null,
+        "segment": "mixamorig:LeftForeArm_012",
+        "rest": [
+          27.8415,
+          -0.0001,
+          0
+        ],
+        "world": [
+          43.0043,
+          143.7778,
+          -5.0267
+        ]
+      },
+      {
+        "node": 20,
+        "name": "mixamorig:LeftHand_013",
+        "parent": "mixamorig:LeftForeArm_012",
+        "tissue": null,
+        "segment": "mixamorig:LeftHand_013",
+        "rest": [
+          28.3288,
+          0,
+          0
+        ],
+        "world": [
+          71.3332,
+          143.7778,
+          -5.0267
+        ]
+      },
+      {
+        "node": 21,
+        "name": "mixamorig:LeftHandThumb1_014",
+        "parent": "mixamorig:LeftHand_013",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandThumb1_014",
+        "rest": [
+          2.4661,
+          -1.575,
+          2.6824
+        ],
+        "world": [
+          73.7993,
+          142.2028,
+          -2.3442
+        ]
+      },
+      {
+        "node": 22,
+        "name": "mixamorig:LeftHandThumb2_015",
+        "parent": "mixamorig:LeftHandThumb1_014",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandThumb2_015",
+        "rest": [
+          3.2298,
+          -1.8647,
+          1.8647
+        ],
+        "world": [
+          77.0291,
+          140.3381,
+          -0.4796
+        ]
+      },
+      {
+        "node": 23,
+        "name": "mixamorig:LeftHandThumb3_016",
+        "parent": "mixamorig:LeftHandThumb2_015",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandThumb3_016",
+        "rest": [
+          2.6526,
+          -1.5315,
+          1.5315
+        ],
+        "world": [
+          79.6817,
+          138.8066,
+          1.0519
+        ]
+      },
+      {
+        "node": 24,
+        "name": "mixamorig:LeftHandThumb4_017",
+        "parent": "mixamorig:LeftHandThumb3_016",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandThumb4_017",
+        "rest": [
+          1.9546,
+          -1.1285,
+          1.1285
+        ],
+        "world": [
+          81.6363,
+          137.6781,
+          2.1804
+        ]
+      },
+      {
+        "node": 25,
+        "name": "mixamorig:LeftHandIndex1_018",
+        "parent": "mixamorig:LeftHand_013",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandIndex1_018",
+        "rest": [
+          9.1093,
+          -0.5171,
+          2.2601
+        ],
+        "world": [
+          80.4425,
+          143.2607,
+          -2.7666
+        ]
+      },
+      {
+        "node": 26,
+        "name": "mixamorig:LeftHandIndex2_019",
+        "parent": "mixamorig:LeftHandIndex1_018",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandIndex2_019",
+        "rest": [
+          3.6764,
+          0,
+          0
+        ],
+        "world": [
+          84.1189,
+          143.2607,
+          -2.7666
+        ]
+      },
+      {
+        "node": 27,
+        "name": "mixamorig:LeftHandIndex3_020",
+        "parent": "mixamorig:LeftHandIndex2_019",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandIndex3_020",
+        "rest": [
+          2.8831,
+          0,
+          0
+        ],
+        "world": [
+          87.002,
+          143.2608,
+          -2.7666
+        ]
+      },
+      {
+        "node": 28,
+        "name": "mixamorig:LeftHandIndex4_021",
+        "parent": "mixamorig:LeftHandIndex3_020",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandIndex4_021",
+        "rest": [
+          2.3927,
+          0,
+          0
+        ],
+        "world": [
+          89.3947,
+          143.2608,
+          -2.7666
+        ]
+      },
+      {
+        "node": 29,
+        "name": "mixamorig:LeftHandMiddle1_022",
+        "parent": "mixamorig:LeftHand_013",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandMiddle1_022",
+        "rest": [
+          9.5334,
+          0,
+          0
+        ],
+        "world": [
+          80.8666,
+          143.7778,
+          -5.0266
+        ]
+      },
+      {
+        "node": 30,
+        "name": "mixamorig:LeftHandMiddle2_023",
+        "parent": "mixamorig:LeftHandMiddle1_022",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandMiddle2_023",
+        "rest": [
+          3.6982,
+          0,
+          0
+        ],
+        "world": [
+          84.5648,
+          143.7778,
+          -5.0266
+        ]
+      },
+      {
+        "node": 31,
+        "name": "mixamorig:LeftHandMiddle3_024",
+        "parent": "mixamorig:LeftHandMiddle2_023",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandMiddle3_024",
+        "rest": [
+          2.9509,
+          0,
+          0
+        ],
+        "world": [
+          87.5157,
+          143.7777,
+          -5.0266
+        ]
+      },
+      {
+        "node": 32,
+        "name": "mixamorig:LeftHandMiddle4_025",
+        "parent": "mixamorig:LeftHandMiddle3_024",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandMiddle4_025",
+        "rest": [
+          2.8339,
+          0,
+          0
+        ],
+        "world": [
+          90.3496,
+          143.7777,
+          -5.0266
+        ]
+      },
+      {
+        "node": 33,
+        "name": "mixamorig:LeftHandRing1_026",
+        "parent": "mixamorig:LeftHand_013",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandRing1_026",
+        "rest": [
+          9.1045,
+          -0.0439,
+          -1.8651
+        ],
+        "world": [
+          80.4377,
+          143.7339,
+          -6.8917
+        ]
+      },
+      {
+        "node": 34,
+        "name": "mixamorig:LeftHandRing2_027",
+        "parent": "mixamorig:LeftHandRing1_026",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandRing2_027",
+        "rest": [
+          3.154,
+          0,
+          0
+        ],
+        "world": [
+          83.5917,
+          143.7339,
+          -6.8917
+        ]
+      },
+      {
+        "node": 35,
+        "name": "mixamorig:LeftHandRing3_028",
+        "parent": "mixamorig:LeftHandRing2_027",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandRing3_028",
+        "rest": [
+          2.9377,
+          0,
+          0
+        ],
+        "world": [
+          86.5294,
+          143.7338,
+          -6.8917
+        ]
+      },
+      {
+        "node": 36,
+        "name": "mixamorig:LeftHandRing4_029",
+        "parent": "mixamorig:LeftHandRing3_028",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandRing4_029",
+        "rest": [
+          2.6475,
+          0,
+          0
+        ],
+        "world": [
+          89.1769,
+          143.7338,
+          -6.8917
+        ]
+      },
+      {
+        "node": 37,
+        "name": "mixamorig:LeftHandPinky1_030",
+        "parent": "mixamorig:LeftHand_013",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandPinky1_030",
+        "rest": [
+          8.0778,
+          -0.4887,
+          -3.8061
+        ],
+        "world": [
+          79.411,
+          143.2891,
+          -8.8327
+        ]
+      },
+      {
+        "node": 38,
+        "name": "mixamorig:LeftHandPinky2_031",
+        "parent": "mixamorig:LeftHandPinky1_030",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandPinky2_031",
+        "rest": [
+          3.6,
+          0,
+          0
+        ],
+        "world": [
+          83.011,
+          143.2891,
+          -8.8328
+        ]
+      },
+      {
+        "node": 39,
+        "name": "mixamorig:LeftHandPinky3_032",
+        "parent": "mixamorig:LeftHandPinky2_031",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandPinky3_032",
+        "rest": [
+          2.1142,
+          0,
+          0
+        ],
+        "world": [
+          85.1252,
+          143.2892,
+          -8.8328
+        ]
+      },
+      {
+        "node": 40,
+        "name": "mixamorig:LeftHandPinky4_033",
+        "parent": "mixamorig:LeftHandPinky3_032",
+        "tissue": null,
+        "segment": "mixamorig:LeftHandPinky4_033",
+        "rest": [
+          1.9757,
+          0,
+          0
+        ],
+        "world": [
+          87.1009,
+          143.2892,
+          -8.8328
+        ]
+      },
+      {
+        "node": 41,
+        "name": "mixamorig:RightShoulder_034",
+        "parent": "mixamorig:Spine2_04",
+        "tissue": null,
+        "segment": "mixamorig:RightShoulder_034",
+        "rest": [
+          -4.57,
+          10.9462,
+          -2.628
+        ],
+        "world": [
+          -4.57,
+          144.3027,
+          -2.7946
+        ]
+      },
+      {
+        "node": 42,
+        "name": "mixamorig:RightArm_035",
+        "parent": "mixamorig:RightShoulder_034",
+        "tissue": null,
+        "segment": "mixamorig:RightArm_035",
+        "rest": [
+          -10.5928,
+          -0.5248,
+          -2.2321
+        ],
+        "world": [
+          -15.1628,
+          143.7779,
+          -5.0267
+        ]
+      },
+      {
+        "node": 43,
+        "name": "mixamorig:RightForeArm_036",
+        "parent": "mixamorig:RightArm_035",
+        "tissue": null,
+        "segment": "mixamorig:RightForeArm_036",
+        "rest": [
+          -27.8415,
+          0,
+          0
+        ],
+        "world": [
+          -43.0043,
+          143.7779,
+          -5.0267
+        ]
+      },
+      {
+        "node": 44,
+        "name": "mixamorig:RightHand_037",
+        "parent": "mixamorig:RightForeArm_036",
+        "tissue": null,
+        "segment": "mixamorig:RightHand_037",
+        "rest": [
+          -28.3288,
+          0,
+          0.0001
+        ],
+        "world": [
+          -71.3332,
+          143.7779,
+          -5.0267
+        ]
+      },
+      {
+        "node": 45,
+        "name": "mixamorig:RightHandPinky1_038",
+        "parent": "mixamorig:RightHand_037",
+        "tissue": null,
+        "segment": "mixamorig:RightHandPinky1_038",
+        "rest": [
+          -8.0767,
+          -0.4885,
+          -3.806
+        ],
+        "world": [
+          -79.4098,
+          143.2894,
+          -8.8327
+        ]
+      },
+      {
+        "node": 46,
+        "name": "mixamorig:RightHandPinky2_039",
+        "parent": "mixamorig:RightHandPinky1_038",
+        "tissue": null,
+        "segment": "mixamorig:RightHandPinky2_039",
+        "rest": [
+          -3.6,
+          0,
+          0.0001
+        ],
+        "world": [
+          -83.0099,
+          143.2894,
+          -8.8326
+        ]
+      },
+      {
+        "node": 47,
+        "name": "mixamorig:RightHandPinky3_040",
+        "parent": "mixamorig:RightHandPinky2_039",
+        "tissue": null,
+        "segment": "mixamorig:RightHandPinky3_040",
+        "rest": [
+          -2.1142,
+          0,
+          0
+        ],
+        "world": [
+          -85.1241,
+          143.2895,
+          -8.8326
+        ]
+      },
+      {
+        "node": 48,
+        "name": "mixamorig:RightHandPinky4_041",
+        "parent": "mixamorig:RightHandPinky3_040",
+        "tissue": null,
+        "segment": "mixamorig:RightHandPinky4_041",
+        "rest": [
+          -1.9757,
+          0,
+          0
+        ],
+        "world": [
+          -87.0998,
+          143.2894,
+          -8.8326
+        ]
+      },
+      {
+        "node": 49,
+        "name": "mixamorig:RightHandRing1_042",
+        "parent": "mixamorig:RightHand_037",
+        "tissue": null,
+        "segment": "mixamorig:RightHandRing1_042",
+        "rest": [
+          -9.1036,
+          -0.0439,
+          -1.8651
+        ],
+        "world": [
+          -80.4368,
+          143.734,
+          -6.8917
+        ]
+      },
+      {
+        "node": 50,
+        "name": "mixamorig:RightHandRing2_043",
+        "parent": "mixamorig:RightHandRing1_042",
+        "tissue": null,
+        "segment": "mixamorig:RightHandRing2_043",
+        "rest": [
+          -3.154,
+          0,
+          0
+        ],
+        "world": [
+          -83.5908,
+          143.734,
+          -6.8917
+        ]
+      },
+      {
+        "node": 51,
+        "name": "mixamorig:RightHandRing3_044",
+        "parent": "mixamorig:RightHandRing2_043",
+        "tissue": null,
+        "segment": "mixamorig:RightHandRing3_044",
+        "rest": [
+          -2.9377,
+          0,
+          0
+        ],
+        "world": [
+          -86.5284,
+          143.7339,
+          -6.8917
+        ]
+      },
+      {
+        "node": 52,
+        "name": "mixamorig:RightHandRing4_045",
+        "parent": "mixamorig:RightHandRing3_044",
+        "tissue": null,
+        "segment": "mixamorig:RightHandRing4_045",
+        "rest": [
+          -2.6475,
+          0,
+          0
+        ],
+        "world": [
+          -89.1759,
+          143.734,
+          -6.8917
+        ]
+      },
+      {
+        "node": 53,
+        "name": "mixamorig:RightHandMiddle1_046",
+        "parent": "mixamorig:RightHand_037",
+        "tissue": null,
+        "segment": "mixamorig:RightHandMiddle1_046",
+        "rest": [
+          -9.5325,
+          0,
+          0
+        ],
+        "world": [
+          -80.8657,
+          143.7778,
+          -5.0267
+        ]
+      },
+      {
+        "node": 54,
+        "name": "mixamorig:RightHandMiddle2_047",
+        "parent": "mixamorig:RightHandMiddle1_046",
+        "tissue": null,
+        "segment": "mixamorig:RightHandMiddle2_047",
+        "rest": [
+          -3.6982,
+          0,
+          0
+        ],
+        "world": [
+          -84.5639,
+          143.7779,
+          -5.0267
+        ]
+      },
+      {
+        "node": 55,
+        "name": "mixamorig:RightHandMiddle3_048",
+        "parent": "mixamorig:RightHandMiddle2_047",
+        "tissue": null,
+        "segment": "mixamorig:RightHandMiddle3_048",
+        "rest": [
+          -2.9509,
+          0,
+          0
+        ],
+        "world": [
+          -87.5148,
+          143.7779,
+          -5.0267
+        ]
+      },
+      {
+        "node": 56,
+        "name": "mixamorig:RightHandMiddle4_049",
+        "parent": "mixamorig:RightHandMiddle3_048",
+        "tissue": null,
+        "segment": "mixamorig:RightHandMiddle4_049",
+        "rest": [
+          -2.8339,
+          0,
+          0.0001
+        ],
+        "world": [
+          -90.3487,
+          143.7779,
+          -5.0266
+        ]
+      },
+      {
+        "node": 57,
+        "name": "mixamorig:RightHandIndex1_050",
+        "parent": "mixamorig:RightHand_037",
+        "tissue": null,
+        "segment": "mixamorig:RightHandIndex1_050",
+        "rest": [
+          -9.1083,
+          -0.5168,
+          2.2601
+        ],
+        "world": [
+          -80.4414,
+          143.2611,
+          -2.7666
+        ]
+      },
+      {
+        "node": 58,
+        "name": "mixamorig:RightHandIndex2_051",
+        "parent": "mixamorig:RightHandIndex1_050",
+        "tissue": null,
+        "segment": "mixamorig:RightHandIndex2_051",
+        "rest": [
+          -3.6764,
+          0,
+          0
+        ],
+        "world": [
+          -84.1179,
+          143.2611,
+          -2.7665
+        ]
+      },
+      {
+        "node": 59,
+        "name": "mixamorig:RightHandIndex3_052",
+        "parent": "mixamorig:RightHandIndex2_051",
+        "tissue": null,
+        "segment": "mixamorig:RightHandIndex3_052",
+        "rest": [
+          -2.8831,
+          0,
+          0
+        ],
+        "world": [
+          -87.0009,
+          143.261,
+          -2.7665
+        ]
+      },
+      {
+        "node": 60,
+        "name": "mixamorig:RightHandIndex4_053",
+        "parent": "mixamorig:RightHandIndex3_052",
+        "tissue": null,
+        "segment": "mixamorig:RightHandIndex4_053",
+        "rest": [
+          -2.3927,
+          0,
+          0
+        ],
+        "world": [
+          -89.3936,
+          143.2611,
+          -2.7665
+        ]
+      },
+      {
+        "node": 61,
+        "name": "mixamorig:RightHandThumb1_054",
+        "parent": "mixamorig:RightHand_037",
+        "tissue": null,
+        "segment": "mixamorig:RightHandThumb1_054",
+        "rest": [
+          -2.4648,
+          -1.5727,
+          2.6826
+        ],
+        "world": [
+          -73.798,
+          142.2052,
+          -2.344
+        ]
+      },
+      {
+        "node": 62,
+        "name": "mixamorig:RightHandThumb2_055",
+        "parent": "mixamorig:RightHandThumb1_054",
+        "tissue": null,
+        "segment": "mixamorig:RightHandThumb2_055",
+        "rest": [
+          -3.2298,
+          -1.8647,
+          1.8647
+        ],
+        "world": [
+          -77.0277,
+          140.3404,
+          -0.4793
+        ]
+      },
+      {
+        "node": 63,
+        "name": "mixamorig:RightHandThumb3_056",
+        "parent": "mixamorig:RightHandThumb2_055",
+        "tissue": null,
+        "segment": "mixamorig:RightHandThumb3_056",
+        "rest": [
+          -2.6526,
+          -1.5314,
+          1.5314
+        ],
+        "world": [
+          -79.6803,
+          138.809,
+          1.0521
+        ]
+      },
+      {
+        "node": 64,
+        "name": "mixamorig:RightHandThumb4_057",
+        "parent": "mixamorig:RightHandThumb3_056",
+        "tissue": null,
+        "segment": "mixamorig:RightHandThumb4_057",
+        "rest": [
+          -1.9546,
+          -1.1285,
+          1.1285
+        ],
+        "world": [
+          -81.6349,
+          137.6805,
+          2.1806
+        ]
+      },
+      {
+        "node": 65,
+        "name": "mixamorig:LeftUpLeg_058",
+        "parent": "mixamorig:Hips_01",
+        "tissue": null,
+        "segment": "mixamorig:LeftUpLeg_058",
+        "rest": [
+          8.2078,
+          -6.7517,
+          -1.5996
+        ],
+        "world": [
+          8.2078,
+          97.2398,
+          0.4765
+        ]
+      },
+      {
+        "node": 66,
+        "name": "mixamorig:LeftLeg_059",
+        "parent": "mixamorig:LeftUpLeg_058",
+        "tissue": null,
+        "segment": "mixamorig:LeftLeg_059",
+        "rest": [
+          0,
+          -44.3705,
+          0.2846
+        ],
+        "world": [
+          8.2078,
+          52.8693,
+          0.7612
+        ]
+      },
+      {
+        "node": 67,
+        "name": "mixamorig:LeftFoot_00",
+        "parent": "mixamorig:LeftLeg_059",
+        "tissue": null,
+        "segment": "mixamorig:LeftFoot_00",
+        "rest": [
+          0,
+          -44.4279,
+          -2.9822
+        ],
+        "world": [
+          8.2078,
+          8.4414,
+          -2.221
+        ]
+      },
+      {
+        "node": 68,
+        "name": "mixamorig:LeftToeBase_060",
+        "parent": "mixamorig:LeftFoot_00",
+        "tissue": null,
+        "segment": "mixamorig:LeftToeBase_060",
+        "rest": [
+          0,
+          -8.7287,
+          10.7106
+        ],
+        "world": [
+          8.2078,
+          -0.2873,
+          8.4895
+        ]
+      },
+      {
+        "node": 69,
+        "name": "mixamorig:LeftToe_End_061",
+        "parent": "mixamorig:LeftToeBase_060",
+        "tissue": null,
+        "segment": "mixamorig:LeftToe_End_061",
+        "rest": [
+          0,
+          -0.0007,
+          9.2781
+        ],
+        "world": [
+          8.2078,
+          -0.2879,
+          17.7677
+        ]
+      },
+      {
+        "node": 70,
+        "name": "mixamorig:RightUpLeg_062",
+        "parent": "mixamorig:Hips_01",
+        "tissue": null,
+        "segment": "mixamorig:RightUpLeg_062",
+        "rest": [
+          -8.2078,
+          -6.7517,
+          -1.5996
+        ],
+        "world": [
+          -8.2078,
+          97.2398,
+          0.4765
+        ]
+      },
+      {
+        "node": 71,
+        "name": "mixamorig:RightLeg_063",
+        "parent": "mixamorig:RightUpLeg_062",
+        "tissue": null,
+        "segment": "mixamorig:RightLeg_063",
+        "rest": [
+          0,
+          -44.3705,
+          0.2862
+        ],
+        "world": [
+          -8.2078,
+          52.8693,
+          0.7627
+        ]
+      },
+      {
+        "node": 72,
+        "name": "mixamorig:RightFoot_064",
+        "parent": "mixamorig:RightLeg_063",
+        "tissue": null,
+        "segment": "mixamorig:RightFoot_064",
+        "rest": [
+          0,
+          -44.4277,
+          -2.9838
+        ],
+        "world": [
+          -8.2078,
+          8.4415,
+          -2.2211
+        ]
+      },
+      {
+        "node": 73,
+        "name": "mixamorig:RightToeBase_065",
+        "parent": "mixamorig:RightFoot_064",
+        "tissue": null,
+        "segment": "mixamorig:RightToeBase_065",
+        "rest": [
+          0,
+          -8.7287,
+          10.7106
+        ],
+        "world": [
+          -8.2078,
+          -0.2871,
+          8.4894
+        ]
+      },
+      {
+        "node": 74,
+        "name": "mixamorig:RightToe_End_066",
+        "parent": "mixamorig:RightToeBase_065",
+        "tissue": null,
+        "segment": "mixamorig:RightToe_End_066",
+        "rest": [
+          0,
+          -0.0007,
+          9.2781
+        ],
+        "world": [
+          -8.2078,
+          -0.2878,
+          17.7676
+        ]
+      }
+    ],
+    "tissues": [],
+    "segments": [],
+    "coregistration": {
+      "segments": 0,
+      "maxRestDrift": 0
+    },
+    "animations": [
+      {
+        "name": "mixamo.com",
+        "duration": 16.633,
+        "targets": 52
+      },
+      {
+        "name": "Idle",
+        "duration": 1.967,
+        "targets": 44
+      },
+      {
+        "name": "Jump",
+        "duration": 1,
+        "targets": 52
+      },
+      {
+        "name": "Running",
+        "duration": 0.633,
+        "targets": 52
+      },
+      {
+        "name": "Walking",
+        "duration": 0.867,
+        "targets": 52
+      }
+    ],
+    "bindable": true
+  }
+}
