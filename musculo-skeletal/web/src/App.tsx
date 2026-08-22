@@ -10,6 +10,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnatomyView } from "./components/AnatomyView";
+import { BodyMapView } from "./components/BodyMapView";
 import { ApertureView } from "./components/ApertureView";
 import { CircuitView } from "./components/CircuitView";
 import { CompareView } from "./components/CompareView";
@@ -31,10 +32,11 @@ import {
 import PROGRAMS from "./data/programs.json";
 import { DARK, LIGHT, MONO, SANS, type Theme } from "./theme";
 
-type TabId = "circuit" | "anatomy" | "posture" | "parameters" | "spectra" | "phase" | "results" | "compare" | "aperture";
+type TabId = "circuit" | "bodymap" | "anatomy" | "posture" | "parameters" | "spectra" | "phase" | "results" | "compare" | "aperture";
 
 const TABS: { id: TabId; label: string; needsRun: boolean }[] = [
   { id: "circuit", label: "Circuit", needsRun: false },
+  { id: "bodymap", label: "Body map", needsRun: false },
   { id: "anatomy", label: "Anatomy", needsRun: false },
   { id: "posture", label: "Posture", needsRun: false },
   { id: "parameters", label: "Parameters", needsRun: false },
@@ -47,6 +49,10 @@ const TABS: { id: TabId; label: string; needsRun: boolean }[] = [
 
 /** Tabs that show results and therefore carry the reference figure. */
 const RESULT_TABS = new Set<TabId>(["spectra", "phase", "results", "compare", "aperture"]);
+
+// Tabs that are themselves anatomical. A second small body drawn over them
+// competes with the view rather than orienting the reader.
+const ANATOMICAL_TABS = new Set<TabId>(["bodymap", "anatomy", "posture", "parameters"]);
 
 const PROG = PROGRAMS as Record<string, string>;
 const PROG_NAMES = Object.keys(PROG).sort();
@@ -406,7 +412,7 @@ export default function App() {
                 centre) nor on Anatomy/Posture (which are already anatomical),
                 because a second small body there would compete rather than
                 orient. */}
-            {RESULT_TABS.has(tab) && (
+            {RESULT_TABS.has(tab) && !ANATOMICAL_TABS.has(tab) && (
               <div style={{
                 position: "absolute", top: 8, right: 10, zIndex: 5,
                 padding: "5px 7px", borderRadius: 5,
@@ -423,13 +429,15 @@ export default function App() {
                 />
               </div>
             )}
-            {!run && tab !== "circuit" && tab !== "aperture" && tab !== "anatomy" && tab !== "posture" && tab !== "parameters" ? (
+            {!run && tab !== "circuit" && tab !== "aperture" && tab !== "anatomy" && tab !== "posture" && tab !== "parameters" && tab !== "bodymap" ? (
               <Placeholder T={T} hasErrors={!!errors.length || !!compiled.parseError} />
             ) : !run && !arms.length ? (
               <Placeholder T={T} hasErrors={!!errors.length || !!compiled.parseError}
                 note="Static analyses are already complete. Run to discharge observables." />
             ) : tab === "circuit" && selectedArm ? (
               <CircuitView arm={selectedArm} intact={intactCircuit} theme={T} animate={animate} />
+            ) : tab === "bodymap" ? (
+              <BodyMapView theme={T} subject={subject} arms={arms} />
             ) : tab === "anatomy" ? (
               <AnatomyView
                 theme={T}

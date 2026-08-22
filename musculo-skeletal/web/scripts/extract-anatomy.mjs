@@ -18,10 +18,42 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const SRC = join(HERE, "..", "public", "anatomy", "index.html");
+const ANATOMY = join(HERE, "..", "public", "anatomy");
+const SRC = join(ANATOMY, "index.html");
+const SETTINGS = join(ANATOMY, "anatomy-settings.js");
 const OUT = join(HERE, "..", "src", "data", "anatomy.json");
 
 const html = readFileSync(SRC, "utf8");
+
+/**
+ * Display labels from the template's own settings file.
+ *
+ * The template carries a human label for every region ("RIGHT EYE", not
+ * "right-eye"). Regenerating those from the CSS class would lose the
+ * distinctions the author drew, so they are read from the source rather than
+ * derived -- and a region whose label is missing is reported, not silently
+ * given a prettified class name.
+ */
+function labels() {
+  let js;
+  try {
+    js = readFileSync(SETTINGS, "utf8");
+  } catch {
+    console.warn("  anatomy-settings.js not readable; labels will be absent");
+    return {};
+  }
+  const out = {};
+  // "ana12":{ ... "hover": "PUBIS", ...
+  const re = /"(ana\d+)"\s*:\s*\{[^}]*?"hover"\s*:\s*"([^"]*)"/g;
+  let m;
+  while ((m = re.exec(js))) {
+    // Strip any markup the template allows in a tooltip.
+    out[m[1]] = m[2].replace(/<[^>]*>/g, "").trim();
+  }
+  return out;
+}
+
+const LABELS = labels();
 
 /** Split the document into its two views. */
 function viewBlocks(s) {
@@ -45,11 +77,21 @@ for (const { id, body } of viewBlocks(html)) {
   const re = /<path\s+id="(ana\d+)"\s+class="([^"]+)"[^>]*\sd="([^"]+)"/g;
   let m;
   while ((m = re.exec(body))) {
-    paths.push({ id: m[1], region: m[2], d: m[3] });
+    paths.push({
+      id: m[1],
+      region: m[2],
+      d: m[3],
+      label: LABELS[m[1]] ?? null,
+    });
   }
   // Navigation overlays (.gob/.goa) are template chrome, not anatomy.
   views[id === "basea" ? "body" : "organs"] = {
     viewBox: viewBox(body),
+    // The template's own backdrop for this view. The SVG regions are painted
+    // over a photographic plate; carrying the reference lets the app show
+    // the full illustration where there is room for it, while the outlines
+    // alone remain usable at thumbnail size.
+    image: (body.match(/xlink:href="([^"]+)"/) ?? [])[1] ?? null,
     paths: paths.filter((p) => p.region !== "gob" && p.region !== "goa"),
   };
 }
@@ -59,6 +101,11 @@ const total = Object.values(views).reduce((n, v) => n + v.paths.length, 0);
 for (const [name, v] of Object.entries(views)) {
   console.log(`${name}: ${v.paths.length} regions, viewBox ${v.viewBox.join(" ")}`);
   console.log(`  ${v.paths.map((p) => p.region).join(", ")}`);
+  const unlabelled = v.paths.filter((p) => !p.label).map((p) => p.region);
+  if (unlabelled.length) {
+    console.log(`  ${unlabelled.length} without a label: ${unlabelled.join(", ")}`);
+  }
+  console.log(`  backdrop: ${v.image ?? "none"}`);
 }
 console.log(`\ntotal ${total} regions`);
 

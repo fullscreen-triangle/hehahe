@@ -10,7 +10,7 @@ import {
   analyseSubject, massClosure, movingMassForRegion, REFERENCE_SAMPLE,
   segmentParameters, type Subject,
 } from "./bsp";
-import { allRegions, resolveRegion } from "../components/AnatomyFigure";
+import { allRegions, regionLabel, resolveRegion } from "../components/AnatomyFigure";
 
 describe("table integrity", () => {
   it("de Leva masses close to the whole body, both sexes", () => {
@@ -249,5 +249,39 @@ describe("stature law integrity", () => {
     for (const k of Object.keys(BREADTH_FRACTION)) {
       expect(STATURE_FRACTION[k]).toBeUndefined();
     }
+  });
+});
+
+describe("anatomy template integration", () => {
+  it("every region carries the template's own display label", async () => {
+    // The labels come from anatomy-settings.js, not from prettifying the CSS
+    // class. If the extractor stops reading them this goes silent, so it is
+    // asserted rather than assumed.
+    for (const view of ["body", "organs"] as const) {
+      for (const r of allRegions(view)) {
+        const label = regionLabel(r);
+        expect(label, r).toBeTruthy();
+        expect(label!.length).toBeGreaterThan(1);
+      }
+    }
+  });
+
+  it("labels are human-readable, not the slug", () => {
+    expect(regionLabel("right-thigh")).toBe("RIGHT THIGH");
+    expect(regionLabel("brain")).toBe("BRAIN");
+  });
+
+  it("both views reference their illustration plate", async () => {
+    const ANATOMY = (await import("../data/anatomy.json")).default as Record<
+      string, { image: string | null; paths: unknown[] }
+    >;
+    expect(ANATOMY.body.image).toBe("images/modela.png");
+    expect(ANATOMY.organs.image).toBe("images/modelb.png");
+  });
+
+  it("the organ view is populated, not just the body view", () => {
+    // The organ plate was extracted but unused before the body map existed.
+    expect(allRegions("organs").length).toBe(11);
+    expect(allRegions("organs")).toContain("heart");
   });
 });

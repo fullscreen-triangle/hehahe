@@ -199,6 +199,11 @@ export function Sunburst({ theme, root, size = 520, centreRadius = 92, onSelect 
             width={centreRadius * 1.05}
             height={centreRadius * 1.75}
             unit={shown.data.unit}
+            // The hole is large enough for the illustration to read, and it
+            // is what makes the centre an anatomical reference rather than an
+            // abstract silhouette. Kept faint so the heat stays dominant.
+            backdrop
+            backdropOpacity={0.32}
           />
         </div>
       </div>

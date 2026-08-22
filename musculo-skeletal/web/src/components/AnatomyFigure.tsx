@@ -20,7 +20,9 @@ import type { Theme } from "../theme";
 
 interface AnatomyView {
   viewBox: number[];
-  paths: { id: string; region: string; d: string }[];
+  /** the template's photographic plate, relative to public/anatomy/ */
+  image: string | null;
+  paths: { id: string; region: string; d: string; label: string | null }[];
 }
 
 const VIEWS = ANATOMY as unknown as Record<"body" | "organs", AnatomyView>;
@@ -46,6 +48,17 @@ export interface AnatomyFigureProps {
   caption?: string;
   /** unit for the tooltip value */
   unit?: string;
+  /**
+   * Draw the template's photographic plate behind the regions.
+   *
+   * Off by default: at thumbnail size the plate is illegible and competes
+   * with the heat colours, and it costs ~230 KB per view. At the size the
+   * sunburst centre or a dedicated panel gives it, it is what makes the
+   * figure readable as anatomy rather than as an abstract outline.
+   */
+  backdrop?: boolean;
+  /** opacity of that plate, when shown */
+  backdropOpacity?: number;
 }
 
 /**
@@ -123,6 +136,15 @@ export function viewOf(name: string): "body" | "organs" | null {
 export const allRegions = (view: "body" | "organs" = "body") =>
   VIEWS[view].paths.map((p) => p.region);
 
+/** The template's own display label for a region, e.g. "RIGHT EYE". */
+export function regionLabel(region: string): string | null {
+  for (const v of ["body", "organs"] as const) {
+    const hit = VIEWS[v].paths.find((p) => p.region === region);
+    if (hit) return hit.label;
+  }
+  return null;
+}
+
 /**
  * Sequential colour ramp, cold to hot.
  *
@@ -155,6 +177,7 @@ export function heatColour(t: number): string {
 export function AnatomyFigure({
   theme, heat, domain, selected, view = "body",
   width = 120, height = 200, onPick, caption, unit,
+  backdrop = false, backdropOpacity = 0.55,
 }: AnatomyFigureProps) {
   const v = VIEWS[view];
 
@@ -198,6 +221,22 @@ export function AnatomyFigure({
         role="img"
         aria-label={caption ?? "anatomical reference"}
       >
+        {backdrop && v.image && (
+          <image
+            href={`${import.meta.env.BASE_URL}anatomy/${v.image}`}
+            x={v.viewBox[0]}
+            y={v.viewBox[1]}
+            width={v.viewBox[2]}
+            height={v.viewBox[3]}
+            opacity={backdropOpacity}
+            preserveAspectRatio="xMidYMid meet"
+            // The plates are dark-on-dark photographs. On a dark panel they
+            // sink into the background; lifting brightness and contrast makes
+            // the anatomy legible without competing with the heat colours,
+            // which sit above at 0.85 alpha.
+            style={{ filter: "brightness(1.55) contrast(1.12)" }}
+          />
+        )}
         {v.paths.map((p) => {
           const value = resolved.get(p.region);
           const has = value !== undefined;
@@ -215,7 +254,7 @@ export function AnatomyFigure({
               onClick={onPick ? () => onPick(p.region) : undefined}
             >
               <title>
-                {p.region}
+                {p.label ?? p.region}
                 {has ? `: ${fmt(value)}${unit ? " " + unit : ""}` : " (no value)"}
               </title>
             </path>
