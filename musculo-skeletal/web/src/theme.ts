@@ -26,6 +26,14 @@ export const DARK: Theme = {
   series: ["#7aa2f7", "#f7768e", "#9ece6a", "#e0af68", "#bb9af7", "#7dcfff"],
 };
 
+/**
+ * Light palette.
+ *
+ * Retained but no longer wired to anything: the app pins itself to DARK, and
+ * a light variant that nothing renders is a variant nobody checks. Kept so
+ * the Theme shape stays exercised by a second instance, and so re-enabling a
+ * toggle is an edit rather than a rewrite.
+ */
 export const LIGHT: Theme = {
   bg: "#f4f5f8", editorBg: "#ffffff", panelBg: "#ffffff", surfaceBg: "#eef1f6",
   border: "#d5dae4", borderSoft: "#e6eaf1",

@@ -30,7 +30,7 @@ import {
   type CompileResult, type ExperimentResult, type RunResult,
 } from "./lang/runtime";
 import PROGRAMS from "./data/programs.json";
-import { DARK, LIGHT, MONO, SANS, type Theme } from "./theme";
+import { DARK, MONO, SANS, type Theme } from "./theme";
 
 type TabId = "circuit" | "bodymap" | "anatomy" | "posture" | "parameters" | "spectra" | "phase" | "results" | "compare" | "aperture";
 
@@ -58,8 +58,11 @@ const PROG = PROGRAMS as Record<string, string>;
 const PROG_NAMES = Object.keys(PROG).sort();
 
 export default function App() {
-  const [dark, setDark] = useState(true);
-  const T: Theme = dark ? DARK : LIGHT;
+  // Dark, unconditionally. The tool ships one appearance rather than a
+  // preference: the panels, the anatomy plates, and the 3-D views are all
+  // tuned against this background, and a light variant that nobody checks
+  // is worse than no light variant at all.
+  const T: Theme = DARK;
 
   const [progName, setProgName] = useState(PROG_NAMES[0]);
   const [code, setCode] = useState(PROG[PROG_NAMES[0]] ?? "");
@@ -237,7 +240,9 @@ export default function App() {
 
   const btn = (active: boolean): React.CSSProperties => ({
     background: active ? T.keyword : T.surfaceBg,
-    color: active ? (dark ? T.editorBg : "#fff") : T.textDim,
+    // On the dark theme an active button is light-on-accent, so the
+    // label takes the editor background rather than white.
+    color: active ? T.editorBg : T.textDim,
     border: `1px solid ${active ? T.keyword : T.border}`,
     padding: "3px 12px", borderRadius: 3, fontSize: 11, fontWeight: 600,
     cursor: "pointer", fontFamily: SANS,
@@ -339,9 +344,6 @@ export default function App() {
             style={{ ...sel, width: 48 }} />s
         </label>
 
-        <button onClick={() => setDark((d) => !d)} style={{ ...btn(false), padding: "3px 9px" }}>
-          {dark ? "☾" : "☀"}
-        </button>
         {run && <button onClick={exportJson} style={btn(false)}>Export JSON</button>}
         <button onClick={doRun} disabled={!compiled.checked || !!compiled.parseError || running}
           style={{

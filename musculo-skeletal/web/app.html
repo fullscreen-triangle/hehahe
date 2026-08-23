@@ -4,8 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vitruvius IDE</title>
+    <!-- The app paints its own surfaces, but the page behind them, the
+         scrollbars, and any native form control are the browser's. Without
+         this they render light and flash white before React mounts. -->
+    <meta name="color-scheme" content="dark" />
+    <style>
+      html, body { background: #14161a; color-scheme: dark; }
+    </style>
   </head>
-  <body style="margin:0">
+  <body style="margin:0; background:#14161a">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

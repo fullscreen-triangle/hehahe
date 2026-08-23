@@ -4,28 +4,30 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Vitruvius — a language for musculoskeletal experiments</title>
+<meta name="color-scheme" content="dark" />
 <meta name="description" content="Vitruvius is a domain-specific language whose primitive is a closed circulation. Closure, coherence, and anatomical binding are decided statically, before anything is integrated." />
 <style>
+  /* Dark, unconditionally. Not a `prefers-color-scheme` default that a
+     visitor's OS setting can override -- the site commits to one appearance
+     so that a screenshot, a shared link, and the IDE next door all look the
+     same regardless of who opens them. */
   :root {
-    --ink: #1a1a1a;
-    --dim: #55606e;
-    --faint: #8a94a3;
-    --rule: #dfe3e8;
-    --bg: #ffffff;
-    --panel: #f7f8fa;
-    --accent: #1b6ca8;
-    --warn: #c1442e;
-    --ok: #1f7a4d;
+    --ink: #dfe4ec;
+    --dim: #9aa5b4;
+    --faint: #6b7686;
+    --rule: #2a2f3a;
+    --bg: #14161a;
+    --panel: #1b1e24;
+    --accent: #6aa9dd;
+    --warn: #e8836f;
+    --ok: #57b98a;
     --mono: "SFMono-Regular", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
     --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    /* Tells the browser to render its own chrome dark too: form controls,
+       scrollbars, and the address-bar tint on mobile. */
+    color-scheme: dark;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ink: #dfe4ec; --dim: #9aa5b4; --faint: #6b7686;
-      --rule: #2a2f3a; --bg: #14161a; --panel: #1b1e24;
-      --accent: #6aa9dd; --warn: #e8836f; --ok: #57b98a;
-    }
-  }
+  html { background: var(--bg); }
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
@@ -74,7 +76,9 @@
     font-family: var(--mono); font-size: .84rem; text-decoration: none;
     border: 1px solid var(--accent); color: var(--accent);
   }
-  .btn.primary { background: var(--accent); color: #fff; }
+  /* --accent is a light blue on this palette, so white-on-accent is
+     low contrast. The label takes the page background instead. */
+  .btn.primary { background: var(--accent); color: var(--bg); font-weight: 600; }
   ul, ol { margin: 0 0 1.1rem; padding-left: 1.3rem; }
   li { margin-bottom: .42rem; }
   footer {
