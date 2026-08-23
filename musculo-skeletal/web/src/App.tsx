@@ -298,9 +298,18 @@ export default function App() {
         height: 38, background: T.editorBg, borderBottom: `1px solid ${T.border}`,
         display: "flex", alignItems: "center", padding: "0 12px", gap: 12, flexShrink: 0,
       }}>
-        <span style={{ fontSize: 12, fontWeight: 700, color: T.keyword, letterSpacing: 1.4 }}>
+        {/* Back to the landing page. The IDE is reachable directly, so a
+            visitor can arrive here without ever seeing what the tool is. */}
+        <a
+          href="./index.html"
+          title="About Vitruvius"
+          style={{
+            fontSize: 12, fontWeight: 700, color: T.keyword, letterSpacing: 1.4,
+            textDecoration: "none",
+          }}
+        >
           VITRUVIUS
-        </span>
+        </a>
         <select value={progName} onChange={(e) => loadProgram(e.target.value)} style={sel}>
           {PROG_NAMES.map((n) => <option key={n} value={n}>{n}.vvs</option>)}
         </select>

@@ -1,12 +1,369 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vitruvius</title>
-  </head>
-  <body style="margin:0">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vitruvius — a language for musculoskeletal experiments</title>
+<meta name="description" content="Vitruvius is a domain-specific language whose primitive is a closed circulation. Closure, coherence, and anatomical binding are decided statically, before anything is integrated." />
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --dim: #55606e;
+    --faint: #8a94a3;
+    --rule: #dfe3e8;
+    --bg: #ffffff;
+    --panel: #f7f8fa;
+    --accent: #1b6ca8;
+    --warn: #c1442e;
+    --ok: #1f7a4d;
+    --mono: "SFMono-Regular", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #dfe4ec; --dim: #9aa5b4; --faint: #6b7686;
+      --rule: #2a2f3a; --bg: #14161a; --panel: #1b1e24;
+      --accent: #6aa9dd; --warn: #e8836f; --ok: #57b98a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--serif); font-size: 17px; line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+  header { border-bottom: 1px solid var(--rule); padding-bottom: 2rem; margin-bottom: 2.5rem; }
+  h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 .4rem; letter-spacing: -.015em; }
+  .sub { color: var(--dim); font-size: 1.06rem; margin: 0 0 1.2rem; }
+  .meta { font-family: var(--mono); font-size: .78rem; color: var(--faint); letter-spacing: .02em; }
+  h2 {
+    font-size: 1.02rem; text-transform: uppercase; letter-spacing: .09em;
+    font-family: var(--mono); font-weight: 700; color: var(--dim);
+    margin: 3rem 0 .9rem; padding-bottom: .4rem; border-bottom: 1px solid var(--rule);
+  }
+  h3 { font-size: 1.08rem; margin: 2rem 0 .5rem; font-weight: 600; }
+  p { margin: 0 0 1.05rem; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  code, .mono { font-family: var(--mono); font-size: .87em; }
+  code { background: var(--panel); padding: .1em .32em; border-radius: 3px; }
+  pre {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 5px;
+    padding: .9rem 1rem; overflow-x: auto; font-family: var(--mono);
+    font-size: .8rem; line-height: 1.55; margin: 0 0 1.2rem;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  .abstract {
+    background: var(--panel); border-left: 3px solid var(--accent);
+    padding: 1.1rem 1.3rem; margin-bottom: 1.5rem; font-size: .96rem;
+  }
+  .abstract p:last-child { margin-bottom: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 0 0 1.3rem; font-size: .86rem; }
+  th, td { text-align: left; padding: .42rem .6rem; border-bottom: 1px solid var(--rule); }
+  th { font-family: var(--mono); font-size: .74rem; text-transform: uppercase;
+       letter-spacing: .05em; color: var(--dim); font-weight: 600; }
+  td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .note {
+    border-left: 3px solid var(--warn); background: var(--panel);
+    padding: .8rem 1rem; margin: 0 0 1.2rem; font-size: .92rem;
+  }
+  .note strong { color: var(--warn); }
+  .cta { display: flex; gap: .7rem; flex-wrap: wrap; margin: 1.6rem 0 0; }
+  .btn {
+    display: inline-block; padding: .55rem 1.15rem; border-radius: 5px;
+    font-family: var(--mono); font-size: .84rem; text-decoration: none;
+    border: 1px solid var(--accent); color: var(--accent);
+  }
+  .btn.primary { background: var(--accent); color: #fff; }
+  ul, ol { margin: 0 0 1.1rem; padding-left: 1.3rem; }
+  li { margin-bottom: .42rem; }
+  footer {
+    margin-top: 4rem; padding-top: 1.4rem; border-top: 1px solid var(--rule);
+    font-size: .82rem; color: var(--faint);
+  }
+  .kicker { font-family: var(--mono); font-size: .74rem; letter-spacing: .08em;
+            text-transform: uppercase; color: var(--faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Domain-specific language &middot; musculoskeletal simulation</div>
+  <h1>Vitruvius</h1>
+  <p class="sub">A language whose primitive is a closed circulation, in which
+  the questions that matter are decided before anything is integrated.</p>
+  <div class="meta">Kundai Farai Sachikonye &middot; <code>.vvs</code> &middot; TypeScript engine, Python reference</div>
+  <div class="cta">
+    <a class="btn primary" href="./app.html">Open the IDE</a>
+    <a class="btn" href="https://github.com/fullscreen-triangle/hehahe">Source</a>
+  </div>
+</header>
+
+<div class="abstract">
+  <p><strong>Abstract.</strong> Musculoskeletal simulation tools generally
+  take a muscle, a joint, or a rigid body as their unit of description. Each
+  of those is an <em>open</em> object: it has an input and an output, and
+  closing a loop is something the modeller does afterwards, by wiring. This
+  tool takes the opposite starting point. Its primitive is a
+  <em>circulation</em> — an outbound path and a return path as one
+  indivisible object — because a neuromuscular loop that does not close does
+  not merely perform worse, it fails in a different way.</p>
+
+  <p>The consequence is that several properties usually discovered by running
+  a simulation are instead <em>decided from the program text</em>: whether a
+  circuit closes, whether its routes agree with one another, where its
+  identity lies, and whether the anatomy it claims to inhabit can carry it.
+  A lesion that severs a path is a different kind of object from one that
+  attenuates it, and the type system refuses to let a scaling factor imitate
+  a cut at any magnitude.</p>
+</div>
+
+<h2>1. The primitive</h2>
+
+<p>A circulation is declared as two phases and the elements that conduct
+between them. Both phases are mandatory, so an open circuit cannot arise by
+omission — only through an explicit operator inside an experiment.</p>
+
+<pre><code>circuit postural_loop {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : cortex -&gt; spinal_in -&gt; alpha_mn -&gt; nmj -&gt; fibre;
+  return   : fibre -&gt; spindle -&gt; ia_afferent -&gt; spinal_in -&gt; cortex;
+
+  element descend  conducts cortex      -&gt; spinal_in   delay 12.0 ms;
+  element ia_axon  conducts ia_afferent -&gt; spinal_in   delay  8.0 ms gain 1.0;
+}
+
+experiment deafferentation {
+  intact  : postural_loop;
+
+  lesion attenuated : postural_loop with ia_axon scaling 0.1;
+  lesion severed    : postural_loop without element(ia_axon);
+
+  observe : closure_index, divergence_time, band_power(reflex);
+}</code></pre>
+
+<p>The two lesions above are not points on one continuum. Attenuation
+preserves closure at every positive factor; severance opens the circuit
+outright. This is checked exhaustively over twelve decades rather than
+sampled, and it is the language's central design commitment.</p>
+
+<h2>2. What is decided without running anything</h2>
+
+<p>Five analyses run at compile time, on the declaration alone.</p>
+
+<table>
+  <thead><tr><th>Analysis</th><th>Question</th><th>Cost</th></tr></thead>
+  <tbody>
+    <tr><td>Closure</td><td>do the declared paths match?</td><td>linear in elements</td></tr>
+    <tr><td>Coherence</td><td>do alternative routes <em>agree</em>?</td><td>signed transports</td></tr>
+    <tr><td>Compartment</td><td>are capacitances mixed across anatomy?</td><td>units-of-measure</td></tr>
+    <tr><td>Stratum</td><td>does an element skip a time-scale?</td><td>effect system</td></tr>
+    <tr><td>Floor</td><td>is the resting separation positive?</td><td>connectivity</td></tr>
+  </tbody>
+</table>
+
+<p>Closure and coherence are independent axes, which is not obvious and is
+worth stating precisely. Over 200 randomly generated circulations, all 200
+closed, yet <strong>76 carried a strictly negative coherence margin</strong> —
+disagreements between 4.9 and 29.4&nbsp;ms, comparable to the loop latencies
+themselves. Closure asks whether the paths <em>match</em>; coherence asks
+whether they <em>agree</em>, and the first does not imply the second.</p>
+
+<div class="note">
+  <p><strong>An aperture is a diagnostic, not an error.</strong> When a
+  circuit opens, the tool reports where it opened, what circulation lost its
+  return, and what to expect — a failure to resolve rather than degraded
+  precision. Divergence is reported as a <em>time</em>, not raised as an
+  exception, because a backend that threw would be answering a different
+  question than the one asked.</p>
+</div>
+
+<h2>3. Anatomy as a second witness</h2>
+
+<p>Everything above reads the program and only the program. That makes the
+results backend-independent, but it also means the language cannot be
+<em>wrong</em> about anatomy, because it never mentions any.</p>
+
+<p>A binding attaches compartments to joints of a rig authored by someone who
+never saw the program, so the joint hierarchy carries an adjacency and a
+tissue index the source does not — and the two descriptions can disagree.</p>
+
+<pre><code>bind elbow_loop to rig("windows_3d_viewer_flexing_arm") {
+  upper_arm   -&gt; "muscle_UpperArm.25_25";
+  bicep_belly -&gt; "muscle_Bicep.30_30";
+  velocity : 50;
+}</code></pre>
+
+<p>The rig used here has 32 joints in three co-registered chains — bone,
+vein, muscle — with identical topology and rest translations agreeing to
+<strong>0.0000</strong>. That is a compartment index already sitting in the
+file, and four checks exploit it: adjacency, tissue consistency,
+reachability, and span.</p>
+
+<p>Two of those fired on circuits written without them in mind. The adjacency
+check found an element conducting between joints two hops apart, naming the
+anatomy the program crossed but never mentioned. The span check found that
+two independent elements both declare delays <strong>5.5&times; longer</strong>
+than pure conduction over their measured distance predicts — the same ratio
+for both, which is what one expects when synaptic and excitation–contraction
+delay dominate and do not scale with axon length.</p>
+
+<h2>4. Reading a program out of measurement</h2>
+
+<p>The tool also runs backwards. A rig's animation clip is a body-sway record
+— joint transforms sampled at a fixed rate — so the rambling/trembling
+decomposition applies to it directly, and the result can be turned back into
+a circuit whose declared strata reproduce the bands that were measured.</p>
+
+<p>This is where refusal matters more than reporting. A decomposition returns
+numbers whatever you feed it, so two limits are computed per record and shown
+<em>before</em> any result:</p>
+
+<ul>
+  <li>At 30&nbsp;Hz sampling, Nyquist is 15&nbsp;Hz. Tremor above that is
+  invisible and would alias into the trembling band.</li>
+  <li>A 1.967&nbsp;s clip is <em>shorter than one rambling period</em>.
+  Resolving below 0.4&nbsp;Hz needs 7.5&nbsp;s.</li>
+</ul>
+
+<p>So on a single pass the panel shows rambling as an em-dash, not a number,
+and the generated source omits the supraspinal compartment with a comment
+saying why. Reaching the slow band means looping the clip, and looping injects
+a peak at 1/clip&nbsp;duration — for this clip <strong>0.508&nbsp;Hz, inside
+the trembling band</strong>, indistinguishable from a finding. The analysis
+compares the dominant peak against the known repeat frequency and, when they
+coincide, writes the refusal into the generated program rather than emitting a
+number that looks measured.</p>
+
+<h2>5. Inverse dynamics from wearable sensors</h2>
+
+<p>A shoe pod and a watch are not a force plate: there is no measured ground
+reaction force, no joint kinematics, no EMG. What there is, per step, is
+contact time, step frequency, vertical oscillation and speed — and those close
+the vertical impulse, because over one stride at steady speed the body's
+vertical momentum returns to where it started.</p>
+
+<pre><code>F_mean = m g / duty          exact, impulse-momentum
+F_peak = F_mean &times; &pi;/2        requires a contact waveform</code></pre>
+
+<p>The first line is a conservation statement, not a fit. The second needs an
+assumption, and the assumption is named at the point it is used. Results from
+a 94&nbsp;s sprint, 42 strides, 4.3–5.6&nbsp;m/s:</p>
+
+<table>
+  <thead><tr><th>Quantity</th><th class="num">Value</th><th>Basis</th></tr></thead>
+  <tbody>
+    <tr><td>duty factor</td><td class="num">0.272</td><td>measured</td></tr>
+    <tr><td>contact / flight</td><td class="num">171 / 149 ms</td><td>measured</td></tr>
+    <tr><td>mean vertical GRF</td><td class="num">3.68 BW</td><td><em>exact</em></td></tr>
+    <tr><td>peak vertical GRF</td><td class="num">5.77 BW</td><td>half-sine assumed</td></tr>
+    <tr><td>leg stiffness</td><td class="num">29.2 kN/m</td><td>+ spring-mass geometry</td></tr>
+    <tr><td>ankle moment at peak</td><td class="num">273 N&middot;m</td><td>quasi-static</td></tr>
+  </tbody>
+</table>
+
+<p>Two things the data forced. First, the units were <em>discovered</em>, not
+assumed: <code>v = length &times; cadence / k</code> is a redundant identity, and
+testing it showed the watch and the shoe pod use <strong>different
+conventions</strong> (k&nbsp;=&nbsp;30 and k&nbsp;=&nbsp;60). Assuming one for
+both gave 11&nbsp;BW peak force and 0.43&nbsp;s flight — impossible, and the
+signal that something was wrong.</p>
+
+<p>Second, a device's <em>vertical oscillation</em> is the total per-step
+excursion, while the ballistic rise is the flight arc alone. They differ by
+the stance dip:</p>
+
+<pre><code>measured 9.9 cm  =  stance dip 7.1 cm  +  flight arc 2.7 cm</code></pre>
+
+<p>The spring-mass model needs the <em>stance dip</em>, and passing the total
+understated stiffness by a third.</p>
+
+<h2>6. Muscle model</h2>
+
+<p>A Thelen (2003) Hill-type unit is driven over one stance phase from a
+prescribed excitation and asked whether it <em>can</em> produce the force
+inverse dynamics says the tendon carried. It is not fitted to that target: it
+reaches <strong>9.8&nbsp;kN against 5.5&nbsp;kN required</strong>. Agreement is
+a result; a shortfall would also have been one.</p>
+
+<p>Three implementation details worth recording, because each is a place the
+published equations and the working code differ:</p>
+
+<ul>
+  <li>The <strong>eccentric asymptote cap</strong> is in OpenSim but not in
+  Thelen (2003). Without it the force–velocity inverse is singular at the
+  eccentric plateau and the integrator walks into it.</li>
+  <li>The tendon toe/linear constants use the <strong>exact</strong>
+  expressions, not the paper's rounded ones; a test asserts the slope is
+  continuous at the junction.</li>
+  <li>Thelen's force–velocity expression <em>already contains</em> activation
+  and force–length. Multiplying again — correct for a model whose
+  <em>f<sub>v</sub></em> is a pure multiplier — double-counts.</li>
+</ul>
+
+<p>The swing trajectory gives a peak-to-mean speed ratio of exactly
+<strong>15/8 = 1.875</strong>, which is what minimum jerk predicts
+analytically. Reaching studies report 1.75, so the criterion overshoots by
+7.1% — reported rather than smoothed over.</p>
+
+<h2>7. Body segment parameters</h2>
+
+<p>Segment masses, centres of mass, and inertias come from published
+anthropometry rather than hard-coded constants, and the two available models
+are never mixed: de&nbsp;Leva's thigh is 42% heavier than Dempster's because
+the segments are <em>defined differently</em>. Both close at exactly
+<strong>100.00%</strong> of body mass, which is asserted in tests — a
+fractional table that does not sum to the whole body is wrong in a way no
+single row reveals.</p>
+
+<p>Dempster has no female data at all: the sample was eight elderly male
+cadavers. Asking for it raises an error rather than substituting the male
+table.</p>
+
+<h2>8. Implementation</h2>
+
+<table>
+  <thead><tr><th>Component</th><th class="num">Lines</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td>TypeScript engine + IDE</td><td class="num">10,100</td><td>lexer, parser, checker, backends, views</td></tr>
+    <tr><td>Python reference</td><td class="num">5,100</td><td>independent implementation, figures</td></tr>
+    <tr><td>Tests</td><td class="num">209</td><td>116 TypeScript, 93 Python</td></tr>
+  </tbody>
+</table>
+
+<p>The two implementations agree exactly on every shipped program's arm and
+closure counts, which is what makes backend-independence a checked property
+rather than a claim. The IDE compiles on every keystroke, so the static
+analyses are live before anything is run; execution is a separate act,
+because that is the architecture the language commits to.</p>
+
+<h2>9. Scope</h2>
+
+<p>Muscle forces are not identified from wearable data. A joint moment is the
+<em>net</em> moment, and splitting it between agonist and antagonist is
+indeterminate without EMG or an optimisation criterion. The muscle model
+answers "could this muscle do it", not "did it".</p>
+
+<p>Peak forces require a contact waveform the sensors do not record. Joint
+moments are quasi-static. Moment arms are population values and are the
+dominant uncertainty in converting a moment into a tendon force. Each of these
+is a parameter rather than a constant, and each is surfaced in the interface
+next to the number it conditions.</p>
+
+<div class="cta">
+  <a class="btn primary" href="./app.html">Open the IDE</a>
+  <a class="btn" href="https://github.com/fullscreen-triangle/hehahe">Source</a>
+</div>
+
+<footer>
+  Part of <strong>Hehahe</strong> — <em>Kwira Gomo, Ushedzera kuMusha</em>.
+  Anatomical illustration adapted from a licensed template; rigs are
+  third-party GLB assets. Figures on this page are measured outputs of the
+  code, regenerated by <code>analyse_wearable.py</code> and the test suite.
+</footer>
+
+</div>
+</body>
 </html>

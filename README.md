@@ -7,6 +7,174 @@
 
 A mathematical framework for analyzing human biomechanics through multi-scale oscillatory coupling principles using consumer-grade wearable sensor data.
 
+---
+
+## Vitruvius — a language for musculoskeletal experiments
+
+**[Open the tool](musculo-skeletal/web/)** &middot;
+[Language specification](musculo-skeletal/docs/musculo-skeletal-syntax/) &middot;
+[Design notes](musculo-skeletal/web/ANATOMY.md)
+
+Musculoskeletal simulation tools generally take a muscle, a joint, or a rigid
+body as their unit of description. Each of those is an *open* object: it has an
+input and an output, and closing a loop is something the modeller does
+afterwards, by wiring. Vitruvius takes the opposite starting point. Its
+primitive is a **circulation** — an outbound path and a return path as one
+indivisible object — because a neuromuscular loop that does not close does not
+merely perform worse, it fails in a different way.
+
+The consequence is that several properties usually discovered by running a
+simulation are instead **decided from the program text**: whether a circuit
+closes, whether its routes agree with one another, where its identity lies, and
+whether the anatomy it claims to inhabit can carry it.
+
+### The primitive
+
+```
+circuit postural_loop {
+  floor    : derived(resting_cut(spinal_in));
+
+  outbound : cortex -> spinal_in -> alpha_mn -> nmj -> fibre;
+  return   : fibre -> spindle -> ia_afferent -> spinal_in -> cortex;
+
+  element descend  conducts cortex      -> spinal_in   delay 12.0 ms;
+  element ia_axon  conducts ia_afferent -> spinal_in   delay  8.0 ms gain 1.0;
+}
+
+experiment deafferentation {
+  intact  : postural_loop;
+
+  lesion attenuated : postural_loop with ia_axon scaling 0.1;
+  lesion severed    : postural_loop without element(ia_axon);
+
+  observe : closure_index, divergence_time, band_power(reflex);
+}
+```
+
+Both phases are mandatory, so an open circuit cannot arise by omission — only
+through an explicit operator. The two lesions above are not points on one
+continuum: attenuation preserves closure at every positive factor, severance
+opens the circuit outright. This is checked exhaustively over twelve decades,
+and it is the language's central design commitment.
+
+### Decided without running anything
+
+| Analysis | Question | Cost |
+|---|---|---|
+| Closure | do the declared paths match? | linear in elements |
+| Coherence | do alternative routes *agree*? | signed transports |
+| Compartment | are capacitances mixed across anatomy? | units-of-measure |
+| Stratum | does an element skip a time-scale? | effect system |
+| Floor | is the resting separation positive? | connectivity |
+
+Closure and coherence are independent axes. Over 200 randomly generated
+circulations all 200 closed, yet **76 carried a strictly negative coherence
+margin** — disagreements of 4.9 to 29.4 ms, comparable to the loop latencies
+themselves. Closure asks whether the paths *match*; coherence asks whether they
+*agree*.
+
+An aperture is a **diagnostic, not an error**: divergence is reported as a
+time, not raised as an exception.
+
+### Anatomy as a second witness
+
+A binding attaches compartments to joints of a rig authored by someone who
+never saw the program, so the joint hierarchy carries an adjacency and a tissue
+index the source does not — and the two can disagree.
+
+```
+bind elbow_loop to rig("windows_3d_viewer_flexing_arm") {
+  upper_arm   -> "muscle_UpperArm.25_25";
+  bicep_belly -> "muscle_Bicep.30_30";
+  velocity : 50;
+}
+```
+
+The rig has 32 joints in three co-registered chains — bone, vein, muscle — with
+rest translations agreeing to **0.0000**. Two of the four checks fired on
+circuits written without them in mind: one found an element conducting between
+joints two hops apart, and one found two independent elements declaring delays
+**5.5x longer** than conduction over their measured distance predicts — the
+same ratio for both, as expected when synaptic delay dominates.
+
+### Inverse dynamics from wearable sensors
+
+A shoe pod and a watch are not a force plate. But contact time, step frequency,
+vertical oscillation and speed close the vertical impulse, because over one
+stride at steady speed the body's vertical momentum returns to where it started:
+
+```
+F_mean = m g / duty          exact, impulse-momentum
+F_peak = F_mean x pi/2       requires a contact waveform
+```
+
+From a 94 s sprint, 42 strides, 4.3–5.6 m/s:
+
+| Quantity | Value | Basis |
+|---|---:|---|
+| duty factor | 0.272 | measured |
+| contact / flight | 171 / 149 ms | measured |
+| mean vertical GRF | 3.68 BW | **exact** |
+| peak vertical GRF | 5.77 BW | half-sine assumed |
+| leg stiffness | 29.2 kN/m | + spring-mass geometry |
+| ankle moment at peak | 273 N·m | quasi-static |
+
+The units were **discovered, not assumed**: `v = length x cadence / k` is a
+redundant identity, and testing it showed the watch and the shoe pod use
+different conventions (k = 30 and k = 60). Assuming one for both gave 11 BW
+peak force — impossible, and the signal something was wrong.
+
+A device's *vertical oscillation* is the total per-step excursion; the
+ballistic rise is the flight arc alone. They differ by the stance dip:
+
+```
+measured 9.9 cm  =  stance dip 7.1 cm  +  flight arc 2.7 cm
+```
+
+The spring-mass model needs the stance dip; passing the total understated
+stiffness by a third.
+
+### Muscle model
+
+A Thelen (2003) Hill-type unit is driven over one stance phase and asked
+whether it *can* produce the force inverse dynamics says the tendon carried —
+not fitted to it. It reaches **9.8 kN against 5.5 kN required**.
+
+Three places the published equations and working code differ, all recorded in
+the source: the eccentric asymptote cap is in OpenSim but not in Thelen (2003)
+and without it the force–velocity inverse is singular; the tendon toe/linear
+constants use the exact rather than rounded expressions; and Thelen's
+force–velocity expression already contains activation and force–length, so
+multiplying again double-counts.
+
+Minimum jerk gives a peak-to-mean speed ratio of exactly **15/8 = 1.875**
+against the 1.75 reaching studies report — a 7.1% overshoot, reported rather
+than smoothed over.
+
+### Implementation
+
+| Component | Lines | Role |
+|---|---:|---|
+| TypeScript engine + IDE | 10,100 | lexer, parser, checker, backends, views |
+| Python reference | 5,100 | independent implementation, figures |
+| Tests | 209 | 116 TypeScript, 93 Python |
+
+The two implementations agree exactly on every shipped program's arm and
+closure counts, which makes backend-independence a checked property rather than
+a claim.
+
+### Scope
+
+Muscle forces are **not** identified from wearable data. A joint moment is the
+*net* moment; splitting it between agonist and antagonist is indeterminate
+without EMG. The muscle model answers "could this muscle do it", not "did it".
+Peak forces require a contact waveform the sensors do not record, joint moments
+are quasi-static, and moment arms are population values. Each is a parameter
+rather than a constant, surfaced next to the number it conditions.
+
+---
+
+
 ## Overview
 
 This project implements the theoretical framework described in `docs/publication/consumer-grade-sensors-biomechanics.tex`, providing tools for:
@@ -385,14 +553,19 @@ kundai.sachikonye@tum.de
 
 ## Status
 
-**Current Status:** Initial implementation phase
-
 - [x] Theoretical framework documentation
+- [x] **Vitruvius language** — lexer, parser, typechecker, five static
+      analyses, operational semantics, reference backend
+- [x] **Browser IDE** — TypeScript port, live typechecking, 3-D anatomy,
+      parameter sunburst, body map
+- [x] **Python reference implementation** — independently reproduces every
+      shipped program's arm and closure counts
+- [x] **Body segment parameters** — de Leva (1996) and Dempster/Winter,
+      both closing at 100.00% of body mass
+- [x] **Inverse dynamics from wearable data** — units established from the
+      data, gait classified per sample
+- [x] **Hill-type muscle model** — Thelen (2003) with the OpenSim guards
+- [x] 209 tests (116 TypeScript, 93 Python)
 - [ ] Rust core implementation
-- [ ] Python validation framework
 - [ ] FIT file parser
-- [ ] Coupling analysis algorithms
-- [ ] State space computation
-- [ ] Performance prediction models
 - [ ] Empirical validation with 4+ years of data
-- [ ] Documentation and examples
